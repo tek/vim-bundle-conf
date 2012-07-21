@@ -1,4 +1,3 @@
-
 fun! s:template_keywords() "{{{
   for var in ['year', 'author']
     let val = eval('g:template_'.var)
@@ -20,8 +19,13 @@ END
   endif
 endfunction "}}}
 
+" skeletons
+let g:template_basedir = '~/.vim/tek'
+let g:template_year = strftime('%Y')
+let g:template_author = 'Torsten Schmits'
+
 augroup tek_global
-" after the template for a new file has been loaded, replace keywords like
-" date and name
-autocmd User plugin-template-loaded call s:template_keywords()
+  " after the template for a new file has been loaded, replace keywords like
+  " date and name
+  autocmd User plugin-template-loaded call s:template_keywords()
 augroup end
