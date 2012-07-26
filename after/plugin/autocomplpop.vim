@@ -37,4 +37,11 @@ if exists('g:loaded_acp')
         \   'meets'   : 'tek_acp#meets_cucumber_omni',
         \   'repeat'  : 0,
         \ })
+
+  let acp_behavior['vim'] = deepcopy(g:acp_behavior['*'])
+  call insert(acp_behavior.vim, {
+        \   'command' : "\<C-x>\<C-o>",
+        \   'meets'   : 'tek_acp#meets_vim_omni',
+        \   'repeat'  : 0,
+        \ })
 endif
