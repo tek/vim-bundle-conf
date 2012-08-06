@@ -8,3 +8,5 @@ let g:pymode_virtualenv = 0
 let g:pymode_syntax = 0
 let g:pymode_rope_guess_project = 0
 let g:pymode_utils_whitespaces = 0
+let g:pymode_options_indent = 0
+let g:pymode_options_other = 0
