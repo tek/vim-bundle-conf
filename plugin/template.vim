@@ -17,6 +17,9 @@ END
   if exists('l:pytestname')
     exe '%s#<pythontestname>#'.l:pytestname.'#e'
   endif
+	if search('<+CURSOR+>')
+	  execute 'normal! "_da>'
+	endif
 endfunction "}}}
 
 " skeletons
