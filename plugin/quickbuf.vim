@@ -1,1 +1,1 @@
-let g:qb_hotkey = '<leader>b'
+let g:quickbuf_map = '<leader>b'
