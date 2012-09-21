@@ -33,9 +33,11 @@ if exists('g:loaded_acp')
 
   let acp_behavior['cucumber'] = deepcopy(g:acp_behavior['*'])
   call insert(acp_behavior.cucumber, {
-        \   'command' : "\<C-x>\<C-o>",
+        \   'command' : "\<C-x>\<C-u>",
+        \   'completefunc': 'tek_acp#cucumber_user',
         \   'meets'   : 'tek_acp#meets_cucumber_omni',
         \   'repeat'  : 0,
+        \   'onPopupClose': 'tek_acp#cucumber_post',
         \ })
 
   let acp_behavior['vim'] = deepcopy(g:acp_behavior['*'])

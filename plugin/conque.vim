@@ -8,3 +8,5 @@ let g:ConqueTerm_StartMessages = 0
 let g:ConqueTerm_SendFunctionKeys = 0
 let g:ConqueTerm_CWInsert = 1
 let g:ConqueTerm_TERM = 'xterm-256color'
+let g:ConqueTerm_ColorMode = 'conceal'
+let g:ConqueTerm_Color = 2
