@@ -27,18 +27,11 @@ if exists('g:populate_actions')
         \   'completefunc': 'tek_populate#python_user',
         \   'meets'   : 'tek_populate#meets_python_user',
         \   'repeat'  : 0,
+        \   'on_popup_close': 'tek_populate#on_popup_close_omni'
         \ })
 
-  let g:populate_actions.python[-1].onPopupClose = 'tek_populate#on_popup_close_omni'
-
-  let g:populate_actions['cucumber'] = deepcopy(g:populate_actions['*'])
-  call insert(g:populate_actions.cucumber, {
-        \   'command' : "\<C-x>\<C-u>",
-        \   'completefunc': 'tek_populate#cucumber_user',
-        \   'meets'   : 'tek_populate#meets_cucumber_omni',
-        \   'repeat'  : 0,
-        \   'onPopupClose': 'tek_populate#cucumber_post',
-        \ })
+  let g:populate_actions.python[1].on_popup_close = 'tek_populate#on_popup_close_omni'
+  " let g:populate_actions.python[1].meets = 'tek_populate#meets_python_omni'
 
   let g:populate_actions['vim'] = deepcopy(g:populate_actions['*'])
   call insert(g:populate_actions.vim, {
