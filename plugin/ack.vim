@@ -1,2 +1,2 @@
 " ack
-nnoremap <leader>A :Ack!<space>
+nnoremap <leader>a :Ack!<space>
