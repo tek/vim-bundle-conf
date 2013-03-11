@@ -39,4 +39,11 @@ if exists('g:populate_actions')
         \   'meets'   : 'tek_populate#meets_vim_omni',
         \   'repeat'  : 0,
         \ })
+
+  let g:populate_actions['tex'] = deepcopy(g:populate_actions['*'])
+  call insert(g:populate_actions.tex, {
+        \   'command' : "\<C-x>\<C-o>",
+        \   'meets'   : 'tek_populate#meets_tex_omni',
+        \   'repeat'  : 0,
+        \ })
 endif
