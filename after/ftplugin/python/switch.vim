@@ -1,9 +1,6 @@
 let s:switch_definitions = 
     \ [ 
-    \ {
-    \   '\k\+ = ': 'return ',
-    \   'return ': 'value = ', 
-    \ },
+    \  ['extend', 'append']
     \ ]
 
 if !exists('g:switch_definitions')
