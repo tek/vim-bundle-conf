@@ -8,3 +8,8 @@ if expand('%:p') =~ $HOME.'/.vim' && getcwd() == $HOME
   let g:ctrlp_root_markers = ['vim.vim']
   let g:ctrlp_working_path_mode = 'r'
 endif
+
+if expand('%:p') =~ $HOME.'/.zsh' && getcwd() == $HOME
+  let g:ctrlp_root_markers = ['zshrc.zsh']
+  let g:ctrlp_working_path_mode = 'r'
+endif
