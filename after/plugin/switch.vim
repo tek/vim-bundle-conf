@@ -4,6 +4,7 @@ let s:switch_definitions =
     \   '\k\+ = ': 'return ',
     \   'return ': 'value = ', 
     \ },
+    \ ['yes', 'no']
     \ ]
 
 if !exists('g:switch_definitions')
