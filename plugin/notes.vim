@@ -1,1 +1,1 @@
-let g:notes_directory = '~/data/private/vim-notes'
+let g:notes_directories = ['~/data/private/vim-notes']
