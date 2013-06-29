@@ -6,6 +6,5 @@ let g:ctrlp_open_multiple_files = '1r'
 
 if expand('%:p') =~ $HOME && getcwd() == $HOME
   let dir = substitute(expand('%:p'), $HOME.'/[^/]\+/\zs.*', '', '')
-  echom dir
   let g:ctrlp_cmd = 'CtrlP '.dir
 endif
