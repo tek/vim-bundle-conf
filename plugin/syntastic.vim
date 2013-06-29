@@ -6,3 +6,5 @@ let g:syntastic_warning_symbol='⚠'
 map <silent> <leader>q :Error<cr><c-w><c-w>
 
 let g:syntastic_haml_checkers = []
+
+map <silent> <f7> :call tek#bundle#syntastic#cycle()<cr>
