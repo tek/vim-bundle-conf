@@ -1,0 +1,3 @@
+VimL: call s:Include('gpl', 'c')
+
+VimL: if exists('g:cpp_project') | call Cpp_impl() | endif
