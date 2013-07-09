@@ -37,7 +37,6 @@ END
 endfunction "}}}
 
 " skeletons
-let g:template_basedir = '~/.vim/tek'
 let g:template_year = strftime('%Y')
 let g:template_author = 'Torsten Schmits'
 
