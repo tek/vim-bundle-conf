@@ -1,2 +1,2 @@
-nmap <buffer> <leader>tf <Plug>MaqueFile
-nmap <buffer> <leader>tl <Plug>MaqueLine
+nmap <buffer> <leader>tf <Plug>(maque-file)
+nmap <buffer> <leader>tl <Plug>(maque-line)
