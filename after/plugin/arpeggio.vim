@@ -1,2 +1,1 @@
-Arpeggioinoremap jk <esc>
-Arpeggioinoremap fd <esc>
+Arpeggioinoremap fj <esc>
