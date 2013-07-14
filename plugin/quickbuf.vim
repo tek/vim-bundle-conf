@@ -1,1 +1,1 @@
-let g:quickbuf_map = '<leader>b'
+let g:quickbuf_map = '<leader>gb'
