@@ -5,7 +5,7 @@ ycm_tek_reg(ycm_state)
 EOF
 endfunction "}}}
 
-if has('python')
+if has('python') && exists('g:loaded_youcompleteme')
 
   augroup youcompletemeStart
     autocmd VimEnter * call Register_python_completer()
