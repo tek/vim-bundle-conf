@@ -1,7 +1,11 @@
 function! Register_python_completer() "{{{
-  python <<EOF
-from ycm_tek import register as ycm_tek_reg
-ycm_tek_reg(ycm_state)
+python <<EOF
+try:
+  from ycm_tek import register as ycm_tek_reg
+except ImportError as e:
+  print e
+else:
+  ycm_tek_reg(ycm_state)
 EOF
 endfunction "}}}
 
