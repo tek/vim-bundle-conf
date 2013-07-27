@@ -8,3 +8,7 @@ except Exception as e:
   print e
 EOPY
 endif
+
+if exists('g:powerline_loaded')
+  set noshowmode
+endif
