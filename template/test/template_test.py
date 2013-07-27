@@ -14,12 +14,19 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, see <http://www.gnu.org/licenses/>.
 """
 
-import unittest
+import spec
+import sure
+from flexmock import flexmock
 
-class <pythontestname>(unittest.TestCase):
+from tek import Configurations, logger
 
-    def test(self):
+
+class <pythontestname>(spec.Spec, ):
+
+    def setup(self, *a, **kw):
         pass
 
-if __name__ == '__main__':
-    unittest.main()
+    def test(self):
+        <+CURSOR+>pass
+
+__all__ = ['<pythontestname>']
