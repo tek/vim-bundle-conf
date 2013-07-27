@@ -5,19 +5,19 @@ fun! s:template_keywords() "{{{
   endfor
   python << END
 try:
-    import vim
-    from os import path
-    from tek.tools import camelcaseify
+  import vim
+  from os import path
+  from tek.tools import camelcaseify
+  import re
+except:
+    pass
+try:
     name = path.splitext(path.basename(vim.current.buffer.name))[0]
     name = camelcaseify(name)
     vim.command('let l:pytestname="{}"'.format(name))
 except:
     pass
 try:
-    import re
-    import vim
-    from os import path
-    from tek.tools import camelcaseify
     match = re.search('([^/]+)_controller.coffee$', vim.current.buffer.name)
     if match:
       ctrl = match.group(1)
@@ -32,8 +32,10 @@ END
     exe '%s#<coffee_ctrl_name>#'.l:coffee_ctrl.'#e'
   endif
 	if search('<+CURSOR+>')
-	  execute 'normal! "_da>'
+    execute 's#<+CURSOR+>##'
 	endif
+  normal! zv
+  call histdel("search", -1)
 endfunction "}}}
 
 " skeletons
