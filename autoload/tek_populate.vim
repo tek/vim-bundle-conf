@@ -1,4 +1,7 @@
 python import tek_populate, tek_vim_py_inspect
+echohl WarningMsg
+echo 'DEPRECATION WARNING: '.expand('%')
+echohl None
 
 function! tek_populate#python_user(findstart, base) "{{{
   python << END
