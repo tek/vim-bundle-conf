@@ -1,4 +1,4 @@
-function! Register_python_completer() "{{{
+function! s:register_python_completer() "{{{
 python <<EOF
 try:
   from ycm_tek import register as ycm_tek_reg
@@ -12,7 +12,7 @@ endfunction "}}}
 if has('python') && exists('g:loaded_youcompleteme')
 
   augroup youcompletemeStart
-    autocmd VimEnter * call Register_python_completer()
+    autocmd VimEnter * call <sid>register_python_completer()
   augroup END
 
 endif
