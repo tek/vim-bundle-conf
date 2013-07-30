@@ -5,6 +5,7 @@
 " endif
 
 if &t_Co > 8 || has('gui')
-  set background=dark
+  " let g:solarized_termcolors = 256
+  " set background=dark
   silent! colorscheme solarized
 endif
