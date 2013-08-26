@@ -1,1 +1,1 @@
-nmap <esc> <Plug>(unite_exit)
+nmap <buffer> <esc> <Plug>(unite_exit)
