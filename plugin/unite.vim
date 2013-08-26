@@ -9,5 +9,10 @@ if executable('ag')
   let g:unite_source_grep_recursive_opt = ''
 endif
 
-nnoremap <leader>a :Unite -auto-resize -no-quit grep:.::<cr>
+nnoremap <silent> <leader>a :Unite -auto-resize -no-quit grep:.::<cr>
 "}}}
+
+nnoremap <silent> <m-u> :UniteResume<cr>
+nnoremap <silent> <leader>; :Unite -auto-resize -start-insert source<cr>
+nnoremap <silent> <m-/> :Unite -auto-resize line -start-insert -no-quit<cr>
+nnoremap <silent> <m-e> :Unite -auto-resize file_rec/async -start-insert<cr>
