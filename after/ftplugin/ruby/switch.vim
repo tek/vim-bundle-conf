@@ -1,6 +1,10 @@
 let s:switch_definitions = 
     \ [ 
-    \  ['extend', 'append']
+    \ {
+    \   '\(\w\+\)\.\(\w\+\)': '\1[:\2]',
+    \   '\(\w\+\)\[:\(\w\+\)\]': '\1[''\2'']',
+    \   '\v(\w+)\[''(\w+)''\]': '\1.\2',
+    \ },
     \ ]
 
 if !exists('b:switch_custom_definitions')
