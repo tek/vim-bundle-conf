@@ -1,20 +1,26 @@
 if has('python')
 python << EOF
-def pp_prepend(args):
-    old_pp = os.environ.get('PYTHONPATH', '')
-    os.environ['PYTHONPATH'] = ':'.join(args + [old_pp])
+from __future__ import print_function
 try:
-    from sys import version_info, path
-    import os
+    from sys import path
     import vim
-    if version_info < (2, 5, 0):
-        raise Exception('Python version %s too old!' % '.'.join(map(str, version_info)))
-    mods = [vim.eval('g:python_modules_bundle_conf')]
-    path[:0] = mods
-    pp_prepend(mods)
-except ImportError, e:
-    print 'Python: Unable to import! ({})'.format(e)
-except Exception, e:
-    print e
+    path.insert(0, vim.eval('g:python_modules_bundle_conf'))
+except ImportError as e:
+    print('Python: Unable to import! ({})'.format(e))
+except Exception as e:
+    print(e)
+EOF
+endif
+
+if has('python3')
+python3 << EOF
+try:
+    from sys import path
+    import vim
+    path.insert(0, vim.eval('g:python_modules_bundle_conf'))
+except ImportError as e:
+    print('Python: Unable to import! ({})'.format(e))
+except Exception as e:
+    print(e)
 EOF
 endif

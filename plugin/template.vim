@@ -3,7 +3,7 @@ fun! s:template_keywords() "{{{
     let val = eval('g:template_'.var)
     exe '%s/<'.var.'>/'.val.'/e'
   endfor
-  python << END
+  python3 << END
 try:
   import vim
   from os import path
@@ -12,18 +12,19 @@ try:
 except:
     pass
 try:
-    name = path.splitext(path.basename(vim.current.buffer.name))[0]
-    name = camelcaseify(name)
-    vim.command('let l:pytestname="{}"'.format(name))
-except:
-    pass
+    match = re.search(r'/([^/]+)_test.py$', vim.current.buffer.name)
+    if match:
+      name = camelcaseify(match.group(1))
+      vim.command('let l:pytestname="{}_"'.format(name))
+except Exception as e:
+    print('Error while creating python test class name: {}'.format(e))
 try:
     match = re.search('([^/]+)_controller.coffee$', vim.current.buffer.name)
     if match:
       ctrl = match.group(1)
       vim.command('let l:coffee_ctrl = "{}"'.format(camelcaseify(ctrl)))
-except:
-    pass
+except Exception as e:
+    print('Error while creating coffee controller name: {}'.format(e))
 END
   if exists('l:pytestname')
     exe '%s#<pythontestname>#'.l:pytestname.'#e'

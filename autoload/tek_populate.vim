@@ -1,10 +1,10 @@
-python import tek_populate, tek_vim_py_inspect
+python3 import tek_populate, tek_vim_py_inspect
 echohl WarningMsg
 echo 'DEPRECATION WARNING: '.expand('%')
 echohl None
 
 function! tek_populate#python_user(findstart, base) "{{{
-  python << END
+  python3 << END
 findstart = int(vim.eval("a:findstart"))
 base = vim.eval("a:base")
 vim.command('return {}'.format(tek_populate.user_completion(findstart, base)))
@@ -12,7 +12,7 @@ END
 endfunction "}}}
 
 function! tek_populate#meets_python_user(context) "{{{
-  python << END
+  python3 << END
 meets = tek_populate.meets_completion(vim.eval('a:context'))
 vim.command('return {}'.format(int(meets)))
 END

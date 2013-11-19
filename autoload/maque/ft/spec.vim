@@ -1,4 +1,4 @@
-function! maque#ft#nose#set_makeprg() "{{{
+function! maque#ft#spec#set_makeprg() "{{{
   python3 << EOP
 try:
   import tek_vim_py_test
