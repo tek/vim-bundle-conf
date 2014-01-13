@@ -1,6 +1,5 @@
-if has('python')
-python << EOF
-from __future__ import print_function
+if has('python3')
+python3 << EOF
 try:
     from sys import path
     import vim
@@ -12,8 +11,9 @@ except Exception as e:
 EOF
 endif
 
-if has('python3')
-python3 << EOF
+if has('python')
+python << EOF
+from __future__ import print_function
 try:
     from sys import path
     import vim
