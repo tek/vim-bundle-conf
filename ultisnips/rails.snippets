@@ -1,0 +1,37 @@
+snippet "(Then|Given|When|Transform)" "gherkin step definition" !br
+`!p snip.rv = match.group(0)` /^${1:regex}$/ do`!p
+snip.rv += (" |" if len(t[2]) else "")`${2:args}`!p
+snip.rv += ("|" if len(t[2]) else "")`
+  ${0:step}
+end
+endsnippet
+
+snippet after "AfterStep definition" !b
+AfterStep do |scenario|
+  ${0:step}
+end
+endsnippet
+
+snippet he "hash entry" !
+${1:key} => ${2:value},
+endsnippet
+
+snippet pi "puts .inspect" !b
+puts ${0:obj}.inspect
+endsnippet
+
+snippet int "inside the" !b
+within the '${1:identifier}' do
+end
+endsnippet
+
+snippet context "context" !b
+context '${1:description}' do
+end
+endsnippet
+
+snippet befe "before each" !b
+before(:each) do
+${0}
+end
+endsnippet

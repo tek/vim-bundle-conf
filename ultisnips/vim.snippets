@@ -1,0 +1,58 @@
+global !p
+import vim
+import re
+
+def autoload_path():
+	try:
+		return re.sub('/', '#',
+									re.search('autoload/(.*)\.vim$',
+														vim.current.buffer.name).group(1))
+	except:
+		return ''
+
+endglobal
+
+snippet fun "function" !b
+function! ${1:function_name}(${2}) "{{{
+	${0}
+endfunction "}}}
+endsnippet
+
+snippet fund "dict function" !b
+function! ${1:function_name}(${2}) dict "{{{
+	${0}
+endfunction "}}}
+endsnippet
+
+snippet funa "autoload function" !b
+function! `!p snip.rv = autoload_path()`#${1:function_name}(${2}) "{{{
+	${0}
+endfunction "}}}
+endsnippet
+
+snippet funs "script-local function" !b
+function! s:${1:function_name}(${2}) "{{{
+	${0}
+endfunction "}}}
+endsnippet
+
+snippet pyh "python heredoc" !b
+python << PYTHONEOF
+if 1:
+${1:# code}
+PYTHONEOF
+endsnippet
+
+snippet com "command" !b
+command! ${0:args}
+endsnippet
+
+snippet it "vspec example" !b
+it '${1:description}'
+end
+endsnippet
+
+snippet desc "vspec example group" !b
+describe '${1:description}'
+end
+endsnippet

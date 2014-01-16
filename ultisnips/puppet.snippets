@@ -1,0 +1,133 @@
+global !p
+import vim, re
+
+def module_manifest():
+  fname = vim.eval("expand('%')")
+  rex = 'modules/([^/]+)/manifests/(?:([^/]+)/)*([^/]+).pp$'
+  match = re.search(rex, fname)
+  if match:
+    return filter(None, match.groups())
+
+def qname():
+  parts = module_manifest()
+  if parts:
+    if parts[-1] == 'init':
+      parts = parts[:-1]
+    return '::'.join(parts)
+  
+endglobal
+
+snippet exec "Exec resource type" b!
+exec { '${1:comment}':
+  command => '${0:command}',
+}
+endsnippet
+
+snippet file "File resource type" b!
+file { '${1:comment}':
+  ${2:path => '${3:path}',
+  }source => "${4:puppet:///${5:path}}",
+  mode   => ${6:mode},
+}
+endsnippet
+
+snippet link "Symlink resource type" b!
+file { '${1:comment}':
+  ensure => link,
+  path   => '${2:path}',
+  target => '${3:target}',
+}
+endsnippet
+
+snippet /^class/ "Class declaration" r!
+class `!p
+snip.rv = qname() or '${1:name}'
+`${2:(${3:args})} {
+  ${0}
+}
+endsnippet
+
+snippet def "Defined type" !b
+define `!p
+snip.rv = qname() or '${1:name}'
+`${2:(${3:args})} {
+  ${0}
+}
+endsnippet
+
+snippet File "Defaults for file" b!
+File {
+  owner => ${1:username},
+  group => ${2:groupname},
+}
+endsnippet
+
+# Resource types
+snippet package "Package resource type" b!
+package { '${1:name}':
+  ensure => ${2:installed},
+}
+endsnippet
+
+snippet group "Group resource type" b!
+group { '${1:groupname}':
+  ensure => ${3:present},
+  gid    => ${2:gid},
+}
+endsnippet
+
+snippet user "user resource type" b!
+user { '${1:username}':
+  ensure     => ${2:present},
+  uid        => ${3:uid},
+  gid        => ${4:gid},
+  comment    => ${5:gecos},
+  home       => ${6:homedirectory},
+  managehome => false,
+  require    => Group["${7:group}"],
+}
+endsnippet
+
+snippet cron "Cron resource type" b!
+cron { '${1:name}':
+  user    => ${2:user},
+  command => "${3:command}",
+  minute  => ${3:minute},
+  hour    => ${4:hour},
+}
+endsnippet
+
+snippet mount "Mount resource type" b!
+mount { '${1:path}':
+  device  => "${2:/dev}",
+  fstype  => "${3:filesystem}",
+  ensure  => mounted,
+  options => "rw,errors=remount-ro",
+}
+endsnippet
+
+snippet service "Service resource type" b!
+service { '${1:name}':
+  hasstatus => true,
+  enable    => true,
+  ensure    => running,
+}
+endsnippet
+
+snippet def "Defined type" !b
+define `!p
+snip.rv = '${1:name}'
+parts = module_manifest()
+if parts is not None:
+  snip.rv = '{}::{}'.format(*parts)
+`(${2:args}) {
+  ${0}
+}
+endsnippet
+
+snippet node "node def" !b
+node ${1:name}${2: inherits ${3:default}} {
+}
+endsnippet
+
+# vim:ft=snippets:

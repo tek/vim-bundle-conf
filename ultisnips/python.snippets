@@ -1,0 +1,202 @@
+global !p
+import tek_vim_py_test
+endglobal
+
+snippet cl "class"
+class ${1:MyClass}(${2:object}):
+	${0:pass}
+endsnippet
+
+snippet s "self" w
+self.
+endsnippet
+
+snippet ss "self private" w
+self._
+endsnippet
+
+snippet def "function" !
+def ${1:function}(`!p
+if snip.indent:
+	snip.rv = 'self'
+	snip.rv += (", " if len(t[2]) else "")`${2:arg1}):
+	${0:pass}
+endsnippet
+
+snippet deff "explicit free function" !
+def ${1:function}(${2:arg1}):
+	${0:pass}
+endsnippet
+
+snippet defp "property" !
+@property
+def ${1:function}(self):
+	${0:pass}
+endsnippet
+
+snippet tli "import logger" !
+from tek import logger
+endsnippet
+
+snippet tdi "import debug" !
+from tek import debug
+endsnippet
+
+snippet inf "logger.info" !b
+logger.info(${0})
+endsnippet
+
+snippet defs "special function" !
+def __${1:function}__(self`!p
+snip.rv = (', ' if len(t[2]) else '')`${2:arg1}):
+	${0:pass}
+endsnippet
+
+snippet init "init function" !
+def __init__(self`!p
+snip.rv = (', ' if len(t[1]) else '')`${1:arg1}):
+	${0:pass}
+endsnippet
+
+snippet defg "generic function" !
+@generic()
+def ${1:name}(self`!p
+snip.rv = (', ' if len(t[1]) else '')`${2:arg1}):
+	${0:pass}
+endsnippet
+
+snippet defw "when function" !b
+@${1:name}.when(Signature(${2:condition}))
+def ${3:identifier}(self`!p
+snip.rv = (', ' if len(t[1]) else '')`${4:arg1}):
+	${0:pass}
+endsnippet
+
+snippet ds "docstring" !
+''' ${0:doc}
+'''
+endsnippet
+
+snippet i "import" !b
+import ${0:module}
+endsnippet
+
+snippet d "debug()" !b
+debug(${0})
+endsnippet
+
+##########################
+# Try / Except / Finally #
+##########################
+snippet try "Try / Except" !b
+try:
+	${1:pass}
+except ${2:Exception}`!p
+snip.rv = (' as ' if len(t[3]) else '')`${3:e}:
+	${4:raise $3}
+endsnippet
+
+snippet try "Try / Except / Else" b
+try:
+	${1:pass}
+except ${2:Exception}`!p
+snip.rv = (' as ' if len(t[3]) else '')`${3:e}:
+	${4:raise $3}
+else:
+	${5:pass}
+endsnippet
+
+snippet try "Try / Except / Finally" b
+try:
+	${1:pass}
+except ${2:Exception}`!p
+snip.rv = (' as ' if len(t[3]) else '')`${3:e}:
+	${4:raise $3}
+finally:
+	${5:pass}
+endsnippet
+
+snippet try "Try / Except / Else / Finally" b
+try:
+	${1:pass}
+except${2: ${3:Exception}`!p
+snip.rv = (' as ' if len(t[3]) else '')`${4:e}}:
+	${5:raise}
+else:
+	${6:pass}
+finally:
+	${7:pass}
+endsnippet
+
+snippet f "regular for loop" !b
+for ${1:iterator} in ${2:iterable}:
+    ${0:pass}
+endsnippet
+
+snippet "([\([]([^\([.]+)\.\S+\sf)f" "generator for with call on iterator" !r
+`!p
+snip.rv = '{}or {}'.format(match.group(1), match.group(2))` in ${2:iterable}
+endsnippet
+
+snippet "\S\sf" "generator for" !r
+`!p
+snip.rv = '{}or'.format(match.group(0))` ${1:iterator} in ${2:iterable}
+endsnippet
+
+snippet super "super" !
+super(${1:`!p
+snip.rv = tek_vim_py_test.current_class_name()`}, self).${2:`!p
+snip.rv = tek_vim_py_test.current_function_name()`}(${0:*a, **kw})
+endsnippet
+
+snippet aa "private attribute assignment" !b
+self._${1:argname} = $1
+endsnippet
+
+snippet wv "with statement from visual" !b
+with ${VISUAL} as ${2:id}:
+endsnippet
+
+snippet w "with statement" !b
+with ${1:conman} as ${2:id}:
+endsnippet
+
+snippet r "return statement" !b
+return ${0:value}
+endsnippet
+
+global !p
+import random
+import string
+
+def randname():
+    return ''.join(random.sample(string.ascii_lowercase, 6))
+endglobal
+
+snippet given "freshen given step" !b
+@Given('^${1:regex}$')
+def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
+  ${0:body}
+endsnippet
+
+snippet when "freshen when step" !b
+@When('^${1:regex}$')
+def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
+  ${0:body}
+endsnippet
+
+snippet then "freshen then step" !b
+@Then('^${1:regex}$')
+def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
+  ${0:body}
+endsnippet
+
+snippet trans "freshen transform step" !b
+@Transform('^${1:regex}$')
+def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
+  ${0:body}
+endsnippet
+
+snippet "foo " "Description" !r
+adf
+endsnippet

@@ -1,0 +1,37 @@
+snippet do "do |<key>| ... end" i!
+do |${1:key}|
+	$0
+end
+endsnippet
+
+snippet doo "do ... end" i!
+do
+	$0
+end
+endsnippet
+
+snippet class "class <class_name> def initialize ... end end" !
+class ${1:class_name}
+	def initialize${2:(${3:*args})}
+		$0
+	end
+end
+endsnippet
+
+snippet describe "rspec describe block" !b
+describe '${1:description}' do
+	$0
+end
+endsnippet
+
+snippet it "rspec example" !b
+it '${1:description}' do
+ $0
+end
+endsnippet
+
+snippet "\b(de)?f" "def <name>..." !r
+def ${1:name}${2:(${3:*args})}
+	${0:# TODO}
+end
+endsnippet
