@@ -1,14 +1,14 @@
-import spec
-import sure
-from flexmock import flexmock
+import sure  # NOQA
+from flexmock import flexmock  # NOQA
+from tek import Configurations  # NOQA
+from tek.test import Spec
+import tests  # NOQA
 
-from tek import Configurations, logger
 
-
-class <pythontestname>(spec.Spec, ):
+class <pythontestname>(Spec, ):
 
     def setup(self, *a, **kw):
-        pass
+        super(<pythontestname>, self).setup(*a, **kw)
 
     def test(self):
         <+CURSOR+>pass
