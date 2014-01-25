@@ -20,3 +20,10 @@ let g:unite_source_menu_menus.git.command_candidates = [
     \['▷ git cd           (fugitive)', 'Gcd'],
     \]
 nnoremap <silent> <leader>ug :Unite -silent menu:git<CR>
+
+silent! unmap [u
+silent! unmap [uu
+silent! unmap ]u
+silent! unmap ]uu
+nmap <expr> <silent> ]u ':<c-u>UniteResume<cr>'.v:count.'<Plug>(unite_loop_cursor_down)<Plug>(unite_do_default_action)'
+nmap <expr> <silent> [u ':<c-u>UniteResume<cr>'.v:count.'<Plug>(unite_loop_cursor_up)<Plug>(unite_do_default_action)'
