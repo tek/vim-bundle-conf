@@ -13,25 +13,25 @@ def autoload_path():
 endglobal
 
 snippet fun "function" !b
-function! ${1:function_name}(${2}) "{{{
+function! ${1:function_name}(${2}) abort "{{{
 	${0}
 endfunction "}}}
 endsnippet
 
 snippet fund "dict function" !b
-function! ${1:function_name}(${2}) dict "{{{
+function! ${1:function_name}(${2}) abort dict "{{{
 	${0}
 endfunction "}}}
 endsnippet
 
 snippet funa "autoload function" !b
-function! `!p snip.rv = autoload_path()`#${1:function_name}(${2}) "{{{
+function! `!p snip.rv = autoload_path()`#${1:function_name}(${2}) abort "{{{
 	${0}
 endfunction "}}}
 endsnippet
 
 snippet funs "script-local function" !b
-function! s:${1:function_name}(${2}) "{{{
+function! s:${1:function_name}(${2}) abort "{{{
 	${0}
 endfunction "}}}
 endsnippet
@@ -55,4 +55,8 @@ endsnippet
 snippet desc "vspec example group" !b
 describe '${1:description}'
 end
+endsnippet
+
+snippet s "self" !i
+self.
 endsnippet
