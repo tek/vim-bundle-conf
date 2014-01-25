@@ -34,6 +34,14 @@ def ${1:function}(self):
 	${0:pass}
 endsnippet
 
+snippet defc "classmethod" !
+@classmethod
+def ${1:function}(`!p
+snip.rv = 'self'
+snip.rv += (", " if len(t[2]) else "")`${2:arg1}):
+	${0:pass}
+endsnippet
+
 snippet tli "import logger" !
 from tek import logger
 endsnippet
@@ -55,20 +63,6 @@ endsnippet
 snippet init "init function" !
 def __init__(self`!p
 snip.rv = (', ' if len(t[1]) else '')`${1:arg1}):
-	${0:pass}
-endsnippet
-
-snippet defg "generic function" !
-@generic()
-def ${1:name}(self`!p
-snip.rv = (', ' if len(t[1]) else '')`${2:arg1}):
-	${0:pass}
-endsnippet
-
-snippet defw "when function" !b
-@${1:name}.when(Signature(${2:condition}))
-def ${3:identifier}(self`!p
-snip.rv = (', ' if len(t[1]) else '')`${4:arg1}):
 	${0:pass}
 endsnippet
 
@@ -173,30 +167,11 @@ def randname():
     return ''.join(random.sample(string.ascii_lowercase, 6))
 endglobal
 
-snippet given "freshen given step" !b
-@Given('^${1:regex}$')
-def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
-  ${0:body}
+snippet p "print" !b
+print(${0})
 endsnippet
 
-snippet when "freshen when step" !b
-@When('^${1:regex}$')
-def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
-  ${0:body}
-endsnippet
-
-snippet then "freshen then step" !b
-@Then('^${1:regex}$')
-def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
-  ${0:body}
-endsnippet
-
-snippet trans "freshen transform step" !b
-@Transform('^${1:regex}$')
-def step_`!p if not snip.c: snip.rv += randname()`(${2:args}):
-  ${0:body}
-endsnippet
-
-snippet "foo " "Description" !r
-adf
+snippet with "context" !b
+with ${1:manager}${3: as ${2:identifier}}:
+	${0}
 endsnippet
