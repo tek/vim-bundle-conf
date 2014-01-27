@@ -9,6 +9,7 @@ let g:syntastic_aggregate_errors=0
 let g:syntastic_always_populate_loc_list = 1
 
 let g:syntastic_haml_checkers = []
+let g:syntastic_riml_checkers = []
 let g:syntastic_python_checkers = ['flake8']
 
 map <silent> <f7> :call tek#bundle#syntastic#cycle()<cr>
