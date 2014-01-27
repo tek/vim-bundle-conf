@@ -27,3 +27,4 @@ nnoremap <silent> <leader><f5> :SaveAll<cr>:MaqueToggleTmux main<cr>:MaqueRunCom
 nnoremap <silent> <leader><f6> :SaveAll<cr>:MaqueRunCommand spec<cr>
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
+let g:pymport_package_precedence = ['tests', g:project_name, 'tek_utils', 'tek']
