@@ -1,4 +1,4 @@
-function! tek#bundle#syntastic#cycle() "{{{
+function! tek#bundle#syntastic#cycle() abort "{{{
   if !exists('g:syntastic_checker_index')
     let g:syntastic_checker_index = -1
   endif
@@ -11,8 +11,8 @@ function! tek#bundle#syntastic#cycle() "{{{
   if len(checkers) > 0
     let g:syntastic_checker_index = (g:syntastic_checker_index + 1) % len(checkers)
     let checker = checkers[g:syntastic_checker_index]
-    let g:syntastic_{filetype}_checkers = [checker]
+    let g:syntastic_{filetype}_checkers = [checker._name]
     SyntasticCheck
-    echo 'Using syntax checker "'.checker.'".'
+    echo 'Using syntax checker "'.checker._name .'".'
   endif
 endfunction "}}}
