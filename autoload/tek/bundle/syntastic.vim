@@ -7,12 +7,16 @@ function! tek#bundle#syntastic#cycle() abort "{{{
   else
     let filetype = &filetype
   endif
-  let checkers = g:SyntasticRegistry.Instance().availableCheckersFor(filetype)
-  if len(checkers) > 0
-    let g:syntastic_checker_index = (g:syntastic_checker_index + 1) % len(checkers)
-    let checker = checkers[g:syntastic_checker_index]
-    let g:syntastic_{filetype}_checkers = [checker._name]
-    SyntasticCheck
-    echo 'Using syntax checker "'.checker._name .'".'
+  if exists('g:SyntasticRegistry')
+    let checkers = g:SyntasticRegistry.Instance().availableCheckersFor(filetype)
+    if len(checkers) > 0
+      let g:syntastic_checker_index = (g:syntastic_checker_index + 1) % len(checkers)
+      let checker = checkers[g:syntastic_checker_index]
+      let g:syntastic_{filetype}_checkers = [checker._name]
+      SyntasticCheck
+      echo 'Using syntax checker "'.checker._name .'".'
+    endif
+  else
+    echo 'Syntastic not available.'
   endif
 endfunction "}}}
