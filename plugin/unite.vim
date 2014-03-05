@@ -6,7 +6,7 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 
 autocmd BufEnter,WinEnter * set timeoutlen=1000
 
-nnoremap <silent> <leader>b :Unite -auto-resize buffer<cr>
+nmap <silent> <leader>b <plug>(cleanup):Unite -auto-resize buffer<cr>
 
 "{{{ ag
 if executable('ag')
