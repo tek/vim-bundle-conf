@@ -43,8 +43,9 @@ endfunction "}}}
 let g:template_year = strftime('%Y')
 let g:template_author = 'Torsten Schmits'
 
-augroup tek_global
+augroup tek_template_subst
   " after the template for a new file has been loaded, replace keywords like
   " date and name
+  autocmd!
   autocmd User plugin-template-loaded call s:template_keywords()
 augroup end
