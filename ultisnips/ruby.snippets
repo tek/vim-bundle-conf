@@ -20,6 +20,7 @@ endsnippet
 
 snippet describe "rspec describe block" !b
 describe '${1:description}' do
+
 	$0
 end
 endsnippet
@@ -32,6 +33,99 @@ endsnippet
 
 snippet "\b(de)?f" "def <name>..." !r
 def ${1:name}${2:(${3:*args})}
+	${0:# TODO}
+end
+endsnippet
+
+snippet s "self." !
+self.
+endsnippet
+
+snippet cl "class" !
+class ${1:class_name}
+end
+endsnippet
+
+snippet cs "class << self" !b
+class << self
+	$0
+end
+endsnippet
+
+snippet in "initialize method" !b
+def initialize${1:(${2:*args})}
+	${0:# TODO}
+end
+endsnippet
+
+snippet context "context" !b
+context '${1:description}' do
+
+	$0
+end
+endsnippet
+
+snippet befe "before each" !b
+before(:each) do
+${0}
+end
+endsnippet
+
+snippet module "module" !b
+module ${1:module_name}
+
+	$0
+end
+endsnippet
+
+snippet "(\S+)\.C(ollect)?" ".collect { |<element>| <block> }" r
+`!p snip.rv=match.group(1)`.collect { |${1:`!p
+element_name = match.group(1).lstrip('$@')
+ematch = re.search("([A-Za-z][A-Za-z0-9_]+?)s?[^A-Za-z0-9_]*?$", element_name)
+try:
+	wmatch = re.search("([A-Za-z][A-Za-z0-9_]+)$", ematch.group(1))
+	snip.rv = wmatch.group(1).lower()
+except:
+	snip.rv = 'element'
+`}| ${2:# TODO} }
+endsnippet
+
+snippet "(\S+)\.c(ollect)?" ".collect do |<element>| <block> end" r
+`!p snip.rv=match.group(1)`.collect do |${1:`!p
+element_name = match.group(1).lstrip('$@')
+ematch = re.search("([A-Za-z][A-Za-z0-9_]+?)s?[^A-Za-z0-9_]*?$", element_name)
+try:
+	wmatch = re.search("([A-Za-z][A-Za-z0-9_]+)$", ematch.group(1))
+	snip.rv = wmatch.group(1).lower()
+except:
+	snip.rv = 'element'
+`}|
+	${0:# TODO}
+end
+endsnippet
+
+snippet "(\S+)\.E(ach)?" ".each { |<element>| <block> }" r!
+`!p snip.rv=match.group(1)`.each { |${1:`!p
+element_name = match.group(1).lstrip('$@')
+ematch = re.search("([A-Za-z][A-Za-z0-9_]+?)s?[^A-Za-z0-9_]*?$", element_name)
+try:
+	wmatch = re.search("([A-Za-z][A-Za-z0-9_]+)$", ematch.group(1))
+	snip.rv = wmatch.group(1).lower()
+except:
+	snip.rv = 'element'
+`}| ${2:# TODO} }
+endsnippet
+
+snippet "(\S+)\.e(ach)?" ".each do |<element>| <block> end" r!
+`!p snip.rv=match.group(1)`.each do |${1:`!p
+element_name = match.group(1).lstrip('$@')
+ematch = re.search("([A-Za-z][A-Za-z0-9_]+?)s?[^A-Za-z0-9_]*?$", element_name)
+try:
+	wmatch = re.search("([A-Za-z][A-Za-z0-9_]+)$", ematch.group(1))
+	snip.rv = wmatch.group(1).lower()
+except:
+	snip.rv = 'element'
+`}|
 	${0:# TODO}
 end
 endsnippet
