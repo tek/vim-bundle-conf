@@ -34,6 +34,14 @@ def ${1:function}(self):
 	${0:pass}
 endsnippet
 
+snippet defl "private function" !
+def _${1:function}(`!p
+if snip.indent:
+	snip.rv = 'self'
+	snip.rv += (", " if len(t[2]) else "")`${2:arg1}):
+	${0:pass}
+endsnippet
+
 snippet defc "classmethod" !
 @classmethod
 def ${1:function}(`!p
@@ -169,6 +177,10 @@ endglobal
 
 snippet p "print" !b
 print(${0})
+endsnippet
+
+snippet pr "print repr" !b
+print(repr(${0}))
 endsnippet
 
 snippet with "context" !b
