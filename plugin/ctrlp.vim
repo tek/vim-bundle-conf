@@ -10,3 +10,7 @@ if expand('%:p') =~ $HOME && getcwd() == $HOME
   let dir = substitute(expand('%:p'), $HOME.'/[^/]\+/\zs.*', '', '')
   let g:ctrlp_cmd = 'CtrlP '.dir
 endif
+
+if expand('%:p') =~ '/etc'
+  let g:ctrlp_cmd = 'CtrlP /etc'
+endif
