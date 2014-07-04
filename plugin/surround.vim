@@ -4,7 +4,9 @@ nmap <leader>s csw
 nmap <m-s> csW
 
 function! Subround(char) "{{{
-  execute 'normal ys'.g:subround_text_object.a:char
+  normal! m`
+  keepjumps execute 'normal ys'.g:subround_text_object.a:char
+  call feedkeys("\<c-o>")
 endfunction "}}}
 
 let g:subround_text_object = 'iw'
@@ -21,3 +23,31 @@ call submode#map('surround', 'n', 's', 'iB', ':let g:subround_text_object = "iB"
 call submode#map('surround', 'n', 's', 'aB', ':let g:subround_text_object = "aB"<cr>')
 call submode#map('surround', 'n', 's', "i'", ":let g:subround_text_object = \"i'\"<cr>")
 call submode#map('surround', 'n', 's', 'aB', ':let g:subround_text_object = "aB"<cr>')
+
+nmap <silent> <leader>C viwolB<Plug>VSurround)X
+
+" remove/change function call, cursor on function name, leave args
+nmap dC lbdt("_ds):call repeat#set('dC')<cr>
+nnoremap cC lbct(
+
+function! s:wrap(obj) "{{{
+  exe "normal ysi".a:obj .')'
+  startinsert
+  call tek_misc#repeat_insert('ysi'.a:obj .')')
+endfunction "}}}
+
+" wrap word/WORD with a function call, leaving cursor in insert at the
+" first paren
+nnoremap <leader>ww :call <SID>wrap('w')<cr>
+nnoremap <leader>wW :call <SID>wrap('W')<cr>
+
+function! s:wrap_object(type, ...) abort "{{{
+  silent exe "normal! `[v`]y"
+  execute "normal gv\<Plug>VSurround)"
+  startinsert
+endfunction "}}}
+
+nnoremap <silent> <leader>w :set opfunc=<sid>wrap_object<cr>g@
+
+" same for visual
+vmap <leader>w <leader>s)i
