@@ -18,9 +18,14 @@ class ${1:class_name}
 end
 endsnippet
 
-snippet describe "rspec describe block" !b
+snippet desc "rspec describe block" !b
 describe '${1:description}' do
+	$0
+end
+endsnippet
 
+snippet shex "rspec shared_examples block" !b
+shared_examples '${1:description}' do
 	$0
 end
 endsnippet
@@ -58,9 +63,8 @@ def initialize${1:(${2:*args})}
 end
 endsnippet
 
-snippet context "context" !b
+snippet cont "context" !b
 context '${1:description}' do
-
 	$0
 end
 endsnippet
@@ -73,7 +77,6 @@ endsnippet
 
 snippet m "module" !b
 module ${1:module_name}
-
 	$0
 end
 endsnippet
@@ -90,20 +93,22 @@ block_names = {
 	'c': 'collect',
 	'e': 'each',
 	't': 'tap',
+	's': 'select',
+	'd': 'detect',
 }
 
 def block_name(char):
   return block_names[char.lower()]
 endglobal
 
-snippet "(\S*)\.([CET])" "block inline" r!
+snippet "(\S*)\.([CETSD])" "block inline" r!
 `!p
 snip.rv = match.group(1)`.`!p
 snip.rv = block_name(match.group(2))` { |${1:`!p
 snip.rv = block_item(match.group(1)) `}| ${2} }
 endsnippet
 
-snippet "(\S*)\.([cet])" "block inline" r!
+snippet "(\S*)\.([cetsd])" "block inline" r!
 `!p
 snip.rv = match.group(1)`.`!p
 snip.rv = block_name(match.group(2))` do |${1:`!p
@@ -114,4 +119,14 @@ endsnippet
 
 snippet let "rspec let" b!
 let(:${1:name}) { ${0} }
+endsnippet
+
+snippet "\.ce" "class_exec" r!
+.class_exec do
+  $0
+end
+endsnippet
+
+snippet { "inline block" !
+{ |${1:item}| $0 
 endsnippet
