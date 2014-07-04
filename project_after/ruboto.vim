@@ -29,11 +29,9 @@ augroup END
 
 command! PreMaque SaveAll|MaqueTmuxResetCapture log
 
-nnoremap <silent> <leader><f5> :PreMaque<cr>:MaqueRunCommand install<cr>
-nnoremap <silent> <leader><f6> :PreMaque<cr>:MaqueRunCommand uninstall<cr>
-nnoremap <silent> <leader><f7> :PreMaque<cr>:MaqueRunCommand restart<cr>
-nnoremap <silent> <leader><f8> :PreMaque<cr>:MaqueRunCommand test<cr>
-nnoremap <silent> <f11> :MaqueToggleTmux log<cr>
+nnoremap <silent> <f5> :PreMaque<cr>:MaqueRunCommand install<cr>
+nnoremap <silent> <f6> :PreMaque<cr>:MaqueRunCommand update<cr>
+nnoremap <silent> <f11> :MaqueToggleCommand log<cr>
 
 set path+=src
 

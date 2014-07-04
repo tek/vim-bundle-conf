@@ -24,9 +24,7 @@ if !exists('g:maque_remote')
 endif
 
 nnoremap <silent> <leader><f3> :SaveAll<cr>:MaqueRunCommand install deps<cr>
-nnoremap <silent> <leader><f4> :SaveAll<cr>:MaqueRunCommand ipython<cr>
-nnoremap <silent> <f11> :MaqueToggleTmux ipython<cr>
-nnoremap <silent> <leader><f5> :SaveAll<cr>:MaqueToggleTmux main<cr>:MaqueRunCommand ipython<cr>
+nnoremap <silent> <leader><f4> :SaveAll<cr>:MaqueToggleCommand ipython<cr>
 nnoremap <silent> <leader><f6> :SaveAll<cr>:MaqueRunCommand spec<cr>
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
