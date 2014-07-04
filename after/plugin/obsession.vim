@@ -4,5 +4,6 @@ if exists('g:session_dir') && !argc() && !exists('g:maque_remote')
     execute 'silent! source' s:session_file
     silent! redraw!
     normal! zv
+    silent! iunmap :
   endif
 endif
