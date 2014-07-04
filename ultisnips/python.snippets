@@ -1,3 +1,5 @@
+clearsnippets test
+
 global !p
 import tek_vim_py_test
 endglobal
@@ -135,9 +137,9 @@ for ${1:iterator} in ${2:iterable}:
     ${0:pass}
 endsnippet
 
-snippet "([\([]([^\([.]+)\.\S+\sf)f" "generator for with call on iterator" !r
+snippet "([\([]([^\([.]+)(\.\S+)?\sf)f" "generator for with call on iterator" !r
 `!p
-snip.rv = '{}or {}'.format(match.group(1), match.group(2))` in ${2:iterable}
+snip.rv = '{}or {}'.format(match.group(1), match.group(2))` in ${2:`!p snip.rv = match.group(2)`s}
 endsnippet
 
 snippet "\S\sf" "generator for" !r
@@ -176,7 +178,7 @@ def randname():
 endglobal
 
 snippet p "print" !b
-print(${0})
+print(${1:'${2:text}'})
 endsnippet
 
 snippet pr "print repr" !b
