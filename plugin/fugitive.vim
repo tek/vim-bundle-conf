@@ -1,5 +1,3 @@
-" fugitive diff
-nnoremap <leader>gd :Gdiff<cr>
-nnoremap <leader>1 :Gstatus<cr>
-
-nnoremap <silent> <leader>gc :Git! diff --cached<cr>zR:Gcommit<cr>
+nnoremap <silent> <leader>gd :MaqueTmuxMinimizeLayout make<cr>:Gdiff<cr>
+nnoremap <silent> <leader>1 :call tek_misc#cleanup()<cr>:Git! diff<cr>zR:Gstatus<cr>
+nnoremap <silent> <leader>gc :call tek_misc#cleanup()<cr>:Git! diff --cached<cr>zR:Gcommit<cr>
