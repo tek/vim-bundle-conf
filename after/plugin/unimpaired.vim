@@ -1,3 +1,3 @@
-vmap <up> <Plug>unimpairedMoveUpgv
-vmap <down> <Plug>unimpairedMoveDowngv
+vmap <up> <Plug>unimpairedMoveSelectionUpgv
+vmap <down> <Plug>unimpairedMoveSelectionDowngv
 
