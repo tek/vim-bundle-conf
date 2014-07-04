@@ -35,7 +35,7 @@ endfunction "}}}
 function! s:cursor_diff(dir) abort "{{{
   let cmd = ''
   if index(['up', 'down'], a:dir) != -1
-    let cmd = (a:dir == 'up' ? '[' : ']') . 'c'
+    let cmd = (a:dir == 'up' ? '[' : ']') . 'czz'
   elseif index(['left', 'right'], a:dir) != -1
     let win = tabpagewinnr(tabpagenr())
     let left = a:dir == 'left'
