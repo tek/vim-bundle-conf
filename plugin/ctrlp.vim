@@ -4,7 +4,12 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_open_multiple_files = '1r'
 let g:ctrlp_max_height = 30
-set wildignore+=*.rar,*.tar.gz,*.tar.bz2,*.tar,*.tbz2,*.tgz,*.zip
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](\.(git|hg|svn|)|(profiles|log|doc))$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': '',
+  \ }
+
 
 if expand('%:p') =~ $HOME && getcwd() == $HOME
   let dir = substitute(expand('%:p'), $HOME.'/[^/]\+/\zs.*', '', '')
