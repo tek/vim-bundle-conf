@@ -7,17 +7,21 @@ function! s:setup_maque() abort "{{{
         \ 'autoclose': 1,
         \ 'vertical': 0,
         \ 'minimized_size': 5,
-        \ 'create_minimized': 1,
+        \ 'create_minimized': 0,
         \ 'restore_on_make': 0,
         \ 'manual_termination': 1,
         \ }
         \ )
-  call maque#add_command('emulator', 'ruboto emulator', { 'pane': 'emulator', })
-  call maque#add_command('install', 'rake install', { 'pane': 'main', })
+  call maque#add_command('emulator', 'ruboto emulator',
+        \ { 'pane': 'emulator', })
+  call maque#add_command('install', 'rake install start',
+        \ { 'pane': 'main', 'copy_to_main': 1, })
   call maque#add_command('uninstall', 'rake uninstall', { 'pane': 'main', })
-  call maque#add_command('restart', 'rake update_scripts:restart', { 'pane': 'main', })
-  call maque#add_command('test', 'rake test', { 'pane': 'main', })
-  call maque#add_command('log', 'adb logcat -s '.g:project_name.' RUBOTO:D \*:E', { 'pane': 'log', })
+  call maque#add_command('update', 'rake update_scripts:restart',
+        \ { 'pane': 'main', 'copy_to_main': 1 })
+  call maque#add_command('release', 'rake release', { 'pane': 'main', })
+  call maque#add_command('log', 'adb logcat -s ' . g:project_name .
+        \ ' RUBOTO:D AndroidRuntime:E', { 'pane': 'log', })
   let main_pane = maque#tmux#pane('main')
   let main_pane.capture = 0
 endfunction "}}}
