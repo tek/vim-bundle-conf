@@ -5,5 +5,7 @@ if exists('g:session_dir') && !argc() && !exists('g:maque_remote')
     silent! redraw!
     normal! zv
     silent! iunmap :
+  elseif exists('g:project_name')
+    InitObsession
   endif
 endif
