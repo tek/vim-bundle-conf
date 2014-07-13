@@ -29,12 +29,11 @@ endfunction "}}}
 augroup maque_ruboto_project
   autocmd!
   autocmd User MaqueTmuxPanesCreated call <sid>setup_maque()
+  autocmd User MaqueTmuxMake MaqueTmuxResetCapture log
 augroup END
 
-command! PreMaque SaveAll|MaqueTmuxResetCapture log
-
-nnoremap <silent> <f5> :PreMaque<cr>:MaqueRunCommand install<cr>
-nnoremap <silent> <f6> :PreMaque<cr>:MaqueRunCommand update<cr>
+nnoremap <silent> <f5> :MaqueRunCommand install<cr>
+nnoremap <silent> <f6> :MaqueRunCommand update<cr>
 nnoremap <silent> <f11> :MaqueToggleCommand log<cr>
 
 set path+=src
