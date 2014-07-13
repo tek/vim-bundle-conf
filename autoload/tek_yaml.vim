@@ -1,3 +1,11 @@
+function! tek_yaml#senna_to_yaml() abort "{{{
+  substitute /\S\+\s\+\S\+\s\+\zs\S\+//e
+  substitute /\s\+/ /ge
+  substitute /^\s*//e
+  substitute /\s\zs\w-\ze\S\+/ /ge
+  substitute /\S\+/'&',/ge
+  substitute /\(.*\),$/ - [\1]/e
+endfunction "}}}
 
 function! tek_yaml#format_senna() abort range "{{{
   let range = a:firstline . ',' . a:lastline
