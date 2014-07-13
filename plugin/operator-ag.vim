@@ -1,2 +1,3 @@
 map <space>A <Plug>(operator-agg)
-map gaa <Plug>(operator-agg)iw
+nmap gaa <Plug>(operator-agg)iw
+vmap gaa <Plug>(operator-agg)
