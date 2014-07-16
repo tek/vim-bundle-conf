@@ -4,3 +4,6 @@ let g:rubycomplete_include_objectspace = 1
 let g:rubycomplete_load_gemfile = 0
 let g:rubycomplete_load_rails = 1
 let g:rubycomplete_use_bundler = 1
+
+call maque#tmux#add_pane('puma', { 'capture': 0, })
+call maque#add_command('puma', 'puma', { 'pane': 'puma', })
