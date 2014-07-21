@@ -8,7 +8,7 @@ function! tek#bundle#syntastic#cycle() abort "{{{
     let filetype = &filetype
   endif
   if exists('g:SyntasticRegistry')
-    let checkers = keys(g:SyntasticRegistry.Instance().getCheckersMap(filetype))
+    let checkers = g:SyntasticRegistry.Instance().getNamesOfAvailableCheckers(filetype)
     if len(checkers) > 0
       let g:syntastic_checker_index = (g:syntastic_checker_index + 1) % len(checkers)
       let checker = checkers[g:syntastic_checker_index]
