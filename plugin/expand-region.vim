@@ -15,4 +15,5 @@ call expand_region#custom_text_objects('python', {
       \ 'if' :0,
       \ })
 
-map <bs> <Plug>(expand_region_expand)
+nmap <bs> <Plug>(expand_region_expand)
+xmap <bs> <Plug>(expand_region_expand)
