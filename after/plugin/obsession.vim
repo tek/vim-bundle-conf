@@ -6,6 +6,6 @@ if exists('g:session_dir') && !argc() && !exists('g:maque_remote')
     normal! zv
     silent! iunmap :
   elseif exists('g:project_name')
-    InitObsession
+    silent InitObsession
   endif
 endif
