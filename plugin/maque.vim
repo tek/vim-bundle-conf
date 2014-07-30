@@ -9,4 +9,7 @@ nmap <silent> <leader>mc <Plug>(maque-tmux-close)
 nmap <silent> <leader><f1> <plug>(maque-unite-command)
 nmap <silent> <leader><f2> <plug>(maque-unite-tmux-pane)
 
+nmap <silent> <leader>tf <Plug>(maque-file)
+nmap <silent> <leader>tl <Plug>(maque-line)
+
 autocmd User MaqueTmuxMake SaveAll
