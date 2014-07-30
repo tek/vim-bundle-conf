@@ -1,27 +1,4 @@
 function! s:setup_maque() abort "{{{
-  call maque#tmux#add_pane('emulator', { '_splitter': 'tmux neww -d' })
-  call maque#tmux#add_pane('log', {
-        \ 'eval_splitter': 0,
-        \ '_splitter': 'tmux split-window -v -d -p 40 "zsh -f"', 
-        \ 'capture': 1,
-        \ 'autoclose': 1,
-        \ 'vertical': 0,
-        \ 'minimized_size': 5,
-        \ 'create_minimized': 0,
-        \ 'restore_on_make': 0,
-        \ 'manual_termination': 1,
-        \ }
-        \ )
-  call maque#add_command('emulator', 'ruboto emulator',
-        \ { 'pane': 'emulator', })
-  call maque#add_command('install', 'rake install start',
-        \ { 'pane': 'main', 'copy_to_main': 1, })
-  call maque#add_command('uninstall', 'rake uninstall', { 'pane': 'main', })
-  call maque#add_command('update', 'rake update_scripts:restart',
-        \ { 'pane': 'main', 'copy_to_main': 1 })
-  call maque#add_command('release', 'rake release', { 'pane': 'main', })
-  call maque#add_command('log', 'adb logcat -s ' . g:project_name .
-        \ ' RUBOTO:D AndroidRuntime:E', { 'pane': 'log', })
   let main_pane = maque#tmux#pane('main')
   let main_pane.capture = 0
 endfunction "}}}
@@ -34,7 +11,7 @@ augroup END
 
 nnoremap <silent> <f5> :MaqueRunCommand install<cr>
 nnoremap <silent> <f6> :MaqueRunCommand update<cr>
-nnoremap <silent> <f11> :MaqueToggleCommand log<cr>
+nnoremap <silent> <f7> :MaqueToggleCommand log<cr>
 
 set path+=src
 
@@ -51,3 +28,14 @@ augroup tek_ruboto
 augroup END
 
 let g:maque_tmux_error_pane = 'log'
+
+MaqueAddService 'adb logcat -s ' . g:project_name .
+      \ ' RUBOTO:D AndroidRuntime:E', { 'name': 'log', 'size': 30,
+      \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
+      \ 'start': 1 }
+MaqueAddService 'ruboto emulator', { 'name': 'emulator' }
+MaqueAddCommand 'rake install start', { 'name': 'install', 'copy_to_main': 1 }
+MaqueAddCommand 'rake uninstall', { 'name': 'uninstall' }
+MaqueAddCommand 'rake update_scripts:restart', { 'name': 'update',
+      \ 'copy_to_main': 1 }
+MaqueAddCommand 'rake release', { 'name': 'release' }

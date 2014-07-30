@@ -19,23 +19,21 @@ function! s:setup_maque() abort "{{{
 
   let pry = {
         \ 'eval_splitter': 0,
-        \ '_splitter': 'tmux split-window -v -d -p 50', 
         \ 'capture': 0,
         \ 'autoclose': 0,
-        \ 'vertical': 0,
-        \ 'size': 15,
-        \ 'minimized_size': 2,
+        \ 'size': 20,
+        \ 'minimized_size': 5,
         \ 'create_minimized': 0,
         \ 'restore_on_make': 0,
         \ 'focus_on_restore': 1,
         \ 'focus_on_make': 1,
         \ }
   let log = {
-        \ '_splitter': 'tmux split-window -v -d -p 50', 
         \ 'capture': 0,
-        \ 'vertical': 0,
-        \ 'size': 10,
-        \ 'minimized_size': 2,
+        \ 'size': 20,
+        \ 'minimized_size': 5,
+        \ 'create_minimized': 1,
+        \ 'restore_on_make': 0,
         \ }
   call maque#tmux#add_pane_in_layout('pry', 'make', pry)
   call maque#tmux#add_pane_in_layout('log', 'make', log)
@@ -46,9 +44,9 @@ function! s:setup_maque() abort "{{{
   call maque#add_command('log', 'tail -n 1000 -f log/development.log', {
         \ 'pane': 'log', })
 
-  nnoremap <silent> <leader><f3> :SaveAll<cr>:MaqueRunCommand bundle<cr>
-  nnoremap <silent> <leader><f4> :SaveAll<cr>:MaqueToggleCommand pry<cr>
-  nnoremap <silent> <leader><f7> :SaveAll<cr>:MaqueToggleCommand log<cr>
+  nnoremap <silent> <s-f1> :MaqueRunCommand bundle<cr>
+  nnoremap <silent> <s-f2> :MaqueToggleCommand pry<cr>
+  nnoremap <silent> <s-f3> :MaqueToggleCommand log<cr>
 endfunction
 
 augroup maque_ruby_project
