@@ -17,3 +17,4 @@ let g:syntastic_filetype_map = {
   \ 'rspec': 'ruby',
   \ 'gentoo-metadata': 'xml',
   \ }
+let g:syntastic_bash_hack = 0
