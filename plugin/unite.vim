@@ -20,6 +20,7 @@ endif
 
 nnoremap <silent> <leader>aa :Unite -auto-resize -no-quit grep:.::<cr>
 nnoremap <silent> <leader>ai :Unite -auto-resize -no-quit grep:.:-i:<cr>
+nnoremap <silent> <leader>ad :Unite -auto-resize -no-quit grep<cr>
 "}}}
 
 nnoremap <silent> <m-u> :UniteResume<cr>
