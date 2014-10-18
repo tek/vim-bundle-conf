@@ -13,14 +13,15 @@ command! -bar -nargs=1 UniteAg Unite -auto-resize -no-quit grep:.::<args>
 "{{{ ag
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--nocolor --nogroup'
+  let g:unite_source_grep_default_opts = '--nocolor --nogroup --skip-vcs-ignores'
   let g:unite_source_grep_recursive_opt = ''
   let g:unite_source_rec_async_command = "ag --nocolor --nogroup --skip-vcs-ignores --ignore '.hg' --ignore '.svn' --ignore '.git' --ignore '.bzr' --ignore '_darcs' -g ''"
 endif
 
-nnoremap <silent> <leader>aa :Unite -auto-resize -no-quit grep:.::<cr>
+nnoremap <silent> <leader>aa :Unite -auto-resize -no-quit grep:.:-s:<cr>
 nnoremap <silent> <leader>ai :Unite -auto-resize -no-quit grep:.:-i:<cr>
 nnoremap <silent> <leader>ad :Unite -auto-resize -no-quit grep<cr>
+nnoremap <silent> <leader>aA :Unite -auto-resize -no-quit grep:.:-t:<cr>
 "}}}
 
 nnoremap <silent> <m-u> :UniteResume<cr>
