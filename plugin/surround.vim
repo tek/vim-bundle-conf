@@ -50,4 +50,6 @@ endfunction "}}}
 nnoremap <silent> <leader>w :set opfunc=<sid>wrap_object<cr>g@
 
 " same for visual
-vmap <leader>w <leader>s)i
+xmap <leader>w <leader>s)i
+
+let g:surround_105 = "#{\r}"
