@@ -17,3 +17,4 @@ call expand_region#custom_text_objects('python', {
 
 nmap <bs> <Plug>(expand_region_expand)
 xmap <bs> <Plug>(expand_region_expand)
+xmap <leader><bs> <Plug>(expand_region_shrink)
