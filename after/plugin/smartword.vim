@@ -1,6 +1,3 @@
-let g:smartword_allow_remap = 1
-let g:smartword_commands = {
-      \ 'w': "\<plug>w",
-      \ 'e': "\<plug>e",
-      \ 'b': "\<plug>b",
-      \ }
+map <silent> <Plug>(smartword-basic-w) <plug>w
+map <silent> <Plug>(smartword-basic-b) <plug>b
+map <silent> <Plug>(smartword-basic-e) <plug>e
