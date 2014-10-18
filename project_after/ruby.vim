@@ -14,42 +14,22 @@ endfunction "}}}
 
 command -bar TB call Toggle_backtrace()
 
-function! s:setup_maque() abort "{{{
-  call maque#add_command('bundle', 'bundle install', { 'pane': 'main', })
+let g:pry_command = get(g:, 'pry_command', 'pry')
 
-  let pry = {
-        \ 'eval_splitter': 0,
-        \ 'capture': 0,
-        \ 'autoclose': 0,
-        \ 'size': 20,
-        \ 'minimized_size': 5,
-        \ 'create_minimized': 0,
-        \ 'restore_on_make': 0,
-        \ 'focus_on_restore': 1,
-        \ 'focus_on_make': 1,
-        \ }
-  let log = {
-        \ 'capture': 0,
-        \ 'size': 20,
-        \ 'minimized_size': 5,
-        \ 'create_minimized': 1,
-        \ 'restore_on_make': 0,
-        \ }
-  call maque#tmux#add_pane_in_layout('pry', 'make', pry)
-  call maque#tmux#add_pane_in_layout('log', 'make', log)
+MaqueAddCommand 'bundle install', { 'pane': 'main' }
+" MaqueAddCommand 'yard'
+MaqueAddCapturedService 'tail -n 1000 -f log/development.log',
+      \ { 'name': 'log', 'compiler': 'rspec', 'create_minimized': 0 }
+MaqueAddService g:pry_command, {
+      \ 'name': 'pry',
+      \ 'autoclose': 0,
+      \ 'size': 20,
+      \ 'minimized_size': 5,
+      \ 'create_minimized': 0,
+      \ 'focus_on_restore': 1,
+      \ 'focus_on_make': 1,
+      \ }
 
-  call maque#add_command('pry', 'pry', { 'pane': 'pry', })
-  call maque#add_command('rspec', 'rspec', { 'pane': 'main', })
-  call maque#add_command('yard', 'yard', { 'pane': 'main', })
-  call maque#add_command('log', 'tail -n 1000 -f log/development.log', {
-        \ 'pane': 'log', })
-
-  nnoremap <silent> <s-f1> :MaqueRunCommand bundle<cr>
-  nnoremap <silent> <s-f2> :MaqueToggleCommand pry<cr>
-  nnoremap <silent> <s-f3> :MaqueToggleCommand log<cr>
-endfunction
-
-augroup maque_ruby_project
-  autocmd!
-  autocmd User MaqueTmuxPanesCreated call <sid>setup_maque()
-augroup END
+nnoremap <silent> <s-f1> :MaqueRunCommand bundle<cr>
+nnoremap <silent> <s-f2> :MaqueToggleCommand pry<cr>
+nnoremap <silent> <s-f3> :MaqueToggleCommand log<cr>
