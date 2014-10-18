@@ -27,9 +27,9 @@ augroup maque_python_project
   autocmd User MaqueTmuxPanesCreated call <sid>setup_maque()
 augroup END
 
-nnoremap <silent> <leader><f3> :SaveAll<cr>:MaqueRunCommand install deps<cr>
-nnoremap <silent> <leader><f4> :SaveAll<cr>:MaqueToggleCommand ipython<cr>
-nnoremap <silent> <leader><f6> :SaveAll<cr>:MaqueRunCommand spec<cr>
+nnoremap <silent> <s-f1> :SaveAll<cr>:MaqueRunCommand install deps<cr>
+nnoremap <silent> <s-f2> :SaveAll<cr>:MaqueToggleCommand ipython<cr>
+nnoremap <silent> <s-f3> :SaveAll<cr>:MaqueRunCommand spec<cr>
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
 let g:pymport_package_precedence = ['tests', g:project_name, 'tek_utils', 'tek']
