@@ -36,6 +36,12 @@ it '${1:description}' do
 end
 endsnippet
 
+snippet ex "rspec example" !b
+example '${1:description}' do
+  $0
+end
+endsnippet
+
 snippet "\b(de)?f" "def <name>..." !r
 def ${1:name}${2:(${3:*args})}
 	${0}
@@ -128,5 +134,11 @@ end
 endsnippet
 
 snippet { "inline block" !
-{ |${1:item}| $0 
+{ |${1:item}| $0
+endsnippet
+
+snippet sex "shared examples" !b
+shared_examples '${1:description}' do
+	${0}
+end
 endsnippet
