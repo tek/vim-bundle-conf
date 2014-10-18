@@ -12,6 +12,8 @@ augroup END
 nnoremap <silent> <f5> :MaqueRunCommand install<cr>
 nnoremap <silent> <f6> :MaqueRunCommand update<cr>
 nnoremap <silent> <f7> :MaqueToggleCommand log<cr>
+nnoremap <silent> <f8> :MaqueRunCommand test<cr>
+nnoremap <silent> <s-f4> :MaqueRunCommand update bundle<cr>
 
 set path+=src
 
@@ -20,6 +22,7 @@ set errorformat=
     \%.%#at\ %m(%.%#apk!/%f:%l),
     \%-G%.%#
 let g:errorformat = &errorformat
+let g:maque_qf_path_ignore += ['src/ruboto']
 
 augroup tek_ruboto
   autocmd!
@@ -29,13 +32,15 @@ augroup END
 
 let g:maque_tmux_error_pane = 'log'
 
-MaqueAddService 'adb logcat -s ' . g:project_name .
-      \ ' RUBOTO:D AndroidRuntime:E', { 'name': 'log', 'size': 30,
+MaqueAddService 'while true; do adb logcat -s ' . g:project_name .
+      \ ' RUBOTO:D AndroidRuntime:E; done', { 'name': 'log', 'size': 30,
       \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
       \ 'start': 1 }
 MaqueAddService 'ruboto emulator', { 'name': 'emulator' }
 MaqueAddCommand 'rake install start', { 'name': 'install', 'copy_to_main': 1 }
 MaqueAddCommand 'rake uninstall', { 'name': 'uninstall' }
-MaqueAddCommand 'rake update_scripts:restart', { 'name': 'update',
-      \ 'copy_to_main': 1 }
+MaqueAddCommand 'rake boing', { 'name': 'update', 'copy_to_main': 1 }
 MaqueAddCommand 'rake release', { 'name': 'release' }
+MaqueAddCommand 'rake test', { 'name': 'test' }
+MaqueAddCommand 'rm libs/bundle.jar Gemfile.apk.lock; rake bundle',
+      \ { 'name': 'update bundle' }
