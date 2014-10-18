@@ -4,7 +4,8 @@ let s:switch_definitions =
     \   '\k\+ = ': 'return ',
     \   'return ': 'value = ', 
     \ },
-    \ ['yes', 'no']
+    \ ['yes', 'no'],
+    \ ['horizontal', 'vertical'],
     \ ]
 
 if !exists('g:switch_definitions')
