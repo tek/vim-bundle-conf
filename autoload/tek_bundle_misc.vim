@@ -8,7 +8,7 @@ EOP
 
 function! tek_bundle_misc#ulti_snips_jump_or_expand() abort "{{{
   if pumvisible()
-      py3 UltiSnips_Manager._cursor_moved()
+    py3 UltiSnips_Manager._cursor_moved()
   endif
   py3 jump_or_expand(UltiSnips_Manager)
   return g:ulti_jumped || g:ulti_expand_res ? '' : "\<tab>"
@@ -28,4 +28,12 @@ function! tek_bundle_misc#init_session_dir() abort "{{{
   let s:session_dir = join([g:sessions_dir, g:project_type, g:project_name], '/')
   silent! call mkdir(s:session_dir, 'p')
   let g:session_dir = get(g:, 'session_dir', s:session_dir)
+endfunction "}}}
+
+function! tek_bundle_misc#textobj_function_map() abort "{{{
+  omap <buffer> af <Plug>(textobj-function-a)
+  omap <buffer> if <Plug>(textobj-function-i)
+
+  xmap <buffer> af <Plug>(textobj-function-a)
+  xmap <buffer> if <Plug>(textobj-function-i)
 endfunction "}}}
