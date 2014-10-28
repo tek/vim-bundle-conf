@@ -11,7 +11,6 @@ augroup END
 
 nnoremap <silent> <f5> :MaqueRunCommand install<cr>
 nnoremap <silent> <f6> :MaqueRunCommand update<cr>
-nnoremap <silent> <f7> :MaqueToggleCommand log<cr>
 nnoremap <silent> <f8> :MaqueRunCommand test<cr>
 nnoremap <silent> <s-f4> :MaqueRunCommand update bundle<cr>
 
