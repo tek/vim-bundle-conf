@@ -30,6 +30,7 @@ augroup END
 nnoremap <silent> <s-f1> :SaveAll<cr>:MaqueRunCommand install deps<cr>
 nnoremap <silent> <s-f2> :SaveAll<cr>:MaqueToggleCommand ipython<cr>
 nnoremap <silent> <s-f3> :SaveAll<cr>:MaqueRunCommand spec<cr>
+nnoremap <silent> <f8> :MaqueTmuxFocus ipython<cr>
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
 let g:pymport_package_precedence = ['tests', g:project_name, 'tek_utils', 'tek']
