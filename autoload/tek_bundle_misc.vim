@@ -37,3 +37,26 @@ function! tek_bundle_misc#textobj_function_map() abort "{{{
   xmap <buffer> af <Plug>(textobj-function-a)
   xmap <buffer> if <Plug>(textobj-function-i)
 endfunction "}}}
+
+function! tek_bundle_misc#activate_root(index, ...) abort "{{{
+  let root_dir = g:root_dirs[a:index]
+  " let g:ctrlp_cmd = 'CtrlP ' . root_dir
+  let relative = root_dir[0] != '/'
+  let target = relative ? $PWD . '/' . root_dir : root_dir
+  execute 'cd ' . target
+  if get(a:000, 0)
+    if root_dir == $PWD
+      let root_dir = '.'
+    endif
+    echo 'New root: ' . root_dir
+  endif
+endfunction
+
+function! tek_bundle_misc#cycle_root_dir() abort "{{{
+  let g:root_dir = (g:root_dir + 1) % len(g:root_dirs)
+  call tek_bundle_misc#activate_root(g:root_dir, 1)
+endfunction "}}}
+
+function! tek_bundle_misc#ctrlp() abort "{{{
+  execute g:ctrlp_cmd
+endfunction "}}}
