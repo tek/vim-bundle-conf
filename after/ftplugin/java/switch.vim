@@ -1,5 +1,5 @@
-let s:switch_definitions = 
-    \ [ 
+let s:switch_definitions =
+    \ [
     \ ['public', 'protected', 'private'],
     \ ]
 
