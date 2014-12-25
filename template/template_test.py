@@ -1,6 +1,6 @@
 import sure  # NOQA
 from flexmock import flexmock  # NOQA
-from tek import Configurations  # NOQA
+from tek import Config  # NOQA
 from tek.test import Spec
 import tests  # NOQA
 
