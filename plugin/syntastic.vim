@@ -18,3 +18,6 @@ let g:syntastic_filetype_map = {
   \ 'gentoo-metadata': 'xml',
   \ }
 let g:syntastic_bash_hack = 0
+
+let g:syntastic_mode_map = { "mode": "active",
+      \ "passive_filetypes": ["scala"] }
