@@ -1,5 +1,6 @@
-if has('python3')
-python3 << EOF
+try
+  if has('python3')
+    python3 << EOF
 try:
     from sys import path
     import vim
@@ -9,7 +10,9 @@ except ImportError as e:
 except Exception as e:
     print(e)
 EOF
-endif
+  endif
+catch
+endtry
 
 if has('python')
 python << EOF
