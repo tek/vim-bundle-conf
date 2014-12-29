@@ -7,6 +7,4 @@ if !s:override
         \ 'start': 1 }
 
   let g:root_dirs += ['../../scala/droid/src', 'app/src']
-
-  nnoremap <silent> <s-f2> :MaqueRunCommand integration<cr>
 endif

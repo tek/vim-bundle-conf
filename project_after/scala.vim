@@ -19,17 +19,12 @@ endfunction "}}}
 
 for params in [
       \ ['run', 'g:sbt_run', 1],
-      \ ['test', 'g:sbt_test', 1],
       \ ['compile', 'g:sbt_compile', 1],
       \ ['clean', 'clean', 0],
       \ ['reload', 'reload', 0],
       \ ]
   call call('s:sbt', params)
 endfor
-
-if exists('g:project_android')
-  call s:sbt('integration',  'integration/android:test', 0)
-endif
 
 MaqueAddCommand 'g:sbt_command', {
       \ 'name': 'sbt command',
@@ -63,7 +58,6 @@ nnoremap <silent> <leader><f6>
 nnoremap <silent> <f7> :MaqueToggleCommand log<cr>
 nnoremap <silent> <leader><f7> :call Sbt_command('; reload ; compile')<cr>
 nnoremap <silent> <f8> :MaqueTmuxFocus sbt<cr>
-nnoremap <silent> <s-f1> :MaqueRunCommand test<cr>
 nnoremap <silent> <f11> :MaqueRunCommand reload<cr>
 
 let g:ctrlp_custom_ignore['dir'] .= '|/%(project/target|project/project/target|target|bin|gen)'
@@ -71,9 +65,9 @@ let g:maque_tmux_error_pane = 'sbt'
 let g:sbt_command = 'compile'
 
 function! s:hook() abort "{{{
-  if maque#making('run', 'integration')
+  if maque#making('run')
     MaqueTmuxClearLog log
-  elseif maque#making('compile', 'reload', 'test')
+  elseif maque#making('compile', 'reload')
     MaqueTmuxMinimizePane log
   endif
 endfunction "}}}
