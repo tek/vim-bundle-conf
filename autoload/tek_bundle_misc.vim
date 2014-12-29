@@ -1,3 +1,4 @@
+try
 python3 <<EOP
 def jump_or_expand(manager):
   jumped = manager._jump()
@@ -5,6 +6,8 @@ def jump_or_expand(manager):
   if not jumped:
     manager.expand()
 EOP
+catch
+endtry
 
 function! tek_bundle_misc#ulti_snips_jump_or_expand() abort "{{{
   if pumvisible()
