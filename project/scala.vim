@@ -5,6 +5,3 @@ if !exists('g:project_android')
   let g:sbt_run = 'run'
   let g:sbt_test = 'test'
 endif
-
-let g:surround_105 = "${\r}"
-
