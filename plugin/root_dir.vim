@@ -5,9 +5,11 @@ command! CPR call tek_bundle_misc#cycle_root_dir()
 
 nnoremap <insert> :CPR<cr>
 
-if expand('%:p') =~ $HOME && getcwd() == $HOME
-  let dir = substitute(expand('%:p'), $HOME.'/[^/]\+/\zs.*', '', '')
-  let g:root_dirs += [dir]
+let s:fdir = expand('%:p:h')
+
+if s:fdir =~ $HOME . '/' && getcwd() == $HOME
+  let s:dir = substitute(s:fdir, $HOME.'/[^/]\+/\zs.*', '', '')
+  let g:root_dirs += [s:dir]
   call tek_bundle_misc#activate_root(-1)
 endif
 
