@@ -13,4 +13,4 @@ command! -bar CycleProjects call tek#bundle#scala#cycle_projects()
 
 nnoremap <silent> <home> :CycleProjects<cr>
 
-call tek#bundle#scala#set_project()
+silent call tek#bundle#scala#set_project()
