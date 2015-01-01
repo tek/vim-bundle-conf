@@ -6,7 +6,7 @@ let g:ctrlp_open_multiple_files = '1r'
 let g:ctrlp_max_height = 30
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v/(\.(git|hg|svn|))$',
-  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'file': '\v\.(exe|so|dll|png)$',
   \ 'link': '',
   \ }
 
