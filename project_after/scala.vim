@@ -36,6 +36,18 @@ MaqueAddCommand 'g:sbt_command', {
       \ 'quit_copy_mode': 0,
       \ }
 
+MaqueAddCommand 'g:sbt_prefix . ''/test-only '' . g:scalatest_class', {
+      \ 'name': 'sbt test',
+      \ 'pane_name': 'sbt',
+      \ 'cmd_type': 'eval',
+      \ 'nested': 1,
+      \ 'depend': ['sbt'],
+      \ 'compiler': 'sbt_scala',
+      \ 'quit_copy_mode': 0,
+      \ }
+
+let g:maque_auto_command = 'sbt test'
+
 function! Sbt_command(cmd) abort "{{{
   let g:sbt_command = a:cmd
   MaqueRunCommand sbt command
