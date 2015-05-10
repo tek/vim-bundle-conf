@@ -1,5 +1,5 @@
 snippet i "import" b
-import ${1:package}
+import ${1:package}.${2:_}
 endsnippet
 
 snippet il "import Log" b
@@ -44,4 +44,28 @@ endsnippet
 
 snippet matchh "match_parent height arrow" !i
 ↕
+endsnippet
+
+snippet o "Option" !i
+Option[${1}]
+endsnippet
+
+snippet ar "right double arrow" !
+⇒
+endsnippet
+
+snippet qq "quasiquotes block" !
+q"""
+${1}
+"""
+endsnippet
+
+snippet dws "db withSession" !b
+db withSession { implicit s ⇒
+	${1}
+}
+endsnippet
+
+snippet iec "global execution context" !b
+import scala.concurrent.ExecutionContext.Implicits.global
 endsnippet
