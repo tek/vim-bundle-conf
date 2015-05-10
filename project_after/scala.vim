@@ -1,8 +1,11 @@
 MaqueAddCapturedService 'sbt', {
       \ 'start': 1,
-      \ 'create_minimized': 0,
+      \ 'create_minimized': 1,
+      \ 'minimized_size': 25,
+      \ 'size': 48,
       \ 'compiler': 'sbt_scala',
       \ 'quit_copy_mode': 0,
+      \ 'layout': s:sbt_layout,
       \ }
 
 function! s:sbt(name, cmd, do_eval) abort "{{{
@@ -12,7 +15,6 @@ function! s:sbt(name, cmd, do_eval) abort "{{{
         \ 'nested': 1,
         \ 'depend': ['sbt'],
         \ 'compiler': 'sbt_scala',
-        \ 'copy_to_main': 1,
         \ }
         \ )
 endfunction "}}}
