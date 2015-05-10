@@ -38,7 +38,7 @@ MaqueAddCommand 'g:sbt_command', {
       \ 'quit_copy_mode': 0,
       \ }
 
-MaqueAddCommand 'g:sbt_prefix . ''/test-only '' . g:scalatest_class', {
+MaqueAddCommand 'g:maqueprg', {
       \ 'name': 'sbt test',
       \ 'pane_name': 'sbt',
       \ 'cmd_type': 'eval',
@@ -50,18 +50,13 @@ MaqueAddCommand 'g:sbt_prefix . ''/test-only '' . g:scalatest_class', {
 
 let g:maque_auto_command = 'sbt test'
 
-function! Sbt_command(cmd) abort "{{{
-  let g:sbt_command = a:cmd
-  MaqueRunCommand sbt command
-endfunction "}}}
-
-command! -nargs=+ Sbt call Sbt_command(<q-args>)
+command! -nargs=+ Sbt call tek#bundle#scala#sbt(<q-args>)
 map <leader>j :Sbt<space>
 
 function! Clean_current() abort "{{{
-  if exists('g:sbt_prefix')
-    call Sbt_command(g:sbt_prefix . '/clean')
-  endif
+  let pre = exists('g:sbt_prefix') && len(g:sbt_prefix) ? g:sbt_prefix . '/'
+          \ : ''
+  call tek#bundle#scala#sbt(pre . 'clean')
 endfunction "}}}
 
 nnoremap <silent> <f5> :MaqueRunCommand run<cr>
@@ -70,11 +65,11 @@ nnoremap <silent> <f6> :MaqueRunCommand compile<cr>
 nnoremap <silent> <leader><f6>
       \ :MaqueRunCommand clean<cr>:MaqueRunCommand compile<cr>
 nnoremap <silent> <f7> :MaqueToggleCommand log<cr>
-nnoremap <silent> <leader><f7> :call Sbt_command('; reload ; compile')<cr>
-nnoremap <silent> <f8> :MaqueTmuxFocus sbt<cr>
+nnoremap <silent> <f8> :MaqueTmuxFocus sbt<cr>:call maque#tmux#command('resize-pane -Z')<cr>
+nnoremap <silent> <s-f8> :MaqueToggleCommand sbt<cr>
 nnoremap <silent> <f11> :MaqueRunCommand reload<cr>
 
-let g:ctrlp_custom_ignore['dir'] .= '|/%(project/target|project/project/target|target|bin|gen)'
+let g:ctrlp_custom_ignore['dir'] .= '|<%(project/target|project/project/target|target|bin|gen)>'
 let g:maque_tmux_error_pane = 'sbt'
 let g:sbt_command = 'compile'
 
@@ -90,3 +85,11 @@ augroup tek_scala
   autocmd!
   autocmd User MaqueTmuxMake call s:hook()
 augroup END
+
+let s:override = exists("g:override_project_scala")
+
+if !s:override
+  let g:root_dirs += ['../../scala/core/src']
+endif
+
+silent call tek#bundle#scala#set_project()
