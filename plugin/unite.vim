@@ -4,7 +4,7 @@ let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 
-autocmd BufEnter,WinEnter * set timeoutlen=1000
+" autocmd BufEnter,WinEnter * set timeoutlen=1000
 
 nmap <silent> <leader>b :Unite -auto-resize buffer<cr>
 
