@@ -34,4 +34,4 @@ nnoremap <silent> <s-f1> :MaqueRunCommand bundle<cr>
 nnoremap <silent> <s-f2> :MaqueToggleCommand pry<cr>
 nnoremap <silent> <s-f3> :MaqueToggleCommand log<cr>
 
-let g:ctrlp_custom_ignore['dir'] .= '|/%(profiles|log|doc|vendor/assets|tmp|coverage)'
+let g:ctrlp_custom_ignore['dir'] .= '|<%(profiles|log|doc|vendor/assets|tmp|coverage)>'
