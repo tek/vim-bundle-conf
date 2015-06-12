@@ -6,7 +6,7 @@ set tags+=~/code/scala/macroid/.tags
 
 let g:scala_projects = [
       \ ['debugf', 'android:run'],
-      \ ['unitf', 'test'],
+      \ ['unitf', 'test', 'test:compile'],
       \ ['integrationf', 'android:install'],
       \ ['releasef', 'android:run'],
       \ ]
