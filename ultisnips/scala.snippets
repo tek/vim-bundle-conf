@@ -10,8 +10,10 @@ snippet l "log" b
 Log.d($0)
 endsnippet
 
-snippet def "method" !b
-def ${1:name}${2:(${3})} ${4:= }
+snippet d "method" !b
+def ${1:name}(${2}) ${3:= }{
+	$0
+}
 endsnippet
 
 snippet a "function arg" !
