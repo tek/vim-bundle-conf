@@ -1,5 +1,5 @@
 let g:scala_projects = [
-      \ ['unit', 'test'],
+      \ ['unit', 'test', 'test:compile'],
       \ ['debug'],
       \ ['mobile_test', 're-start'],
       \ ]
