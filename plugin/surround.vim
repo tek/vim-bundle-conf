@@ -1,6 +1,5 @@
 " shortcut for surrounding inner word/WORD
 nmap <leader>s csw
-" nmap <leader>S csW
 nmap <m-s> csW
 
 function! Subround(char) "{{{
@@ -13,7 +12,7 @@ runtime autoload/submode.vim
 
 if exists("*submode#map")
   let g:subround_text_object = 'iw'
-  call submode#enter_with('surround', 'n', 's', '<leader>S', ':let g:subround_text_object = "iw"<cr>')
+  " call submode#enter_with('surround', 'n', 's', '<leader>S', ':let g:subround_text_object = "iw"<cr>')
   call submode#map('surround', 'n', 'rs', "'", ":call Subround(\"'\")<cr>")
   call submode#map('surround', 'n', 'rs', '"', ":call Subround(\'\"\')<cr>")
   call submode#map('surround', 'n', 'rs', 'b', ":call Subround(\'b\')<cr>")
