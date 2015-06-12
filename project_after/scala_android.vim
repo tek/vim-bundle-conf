@@ -6,7 +6,13 @@ if !s:override
         \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
         \ 'start': 1 }
 
-  let g:root_dirs += ['../../scala/droid/src', 'app/src']
+  let g:root_dirs += ['../../scala/droid']
 endif
 
+MaqueAddCommand 'rm **/proguard-cache*.jar', {
+        \ 'name': 'delete proguard cache',
+        \ }
+
 let g:ctrlp_custom_ignore['dir'] .= '|<free/unit/util>'
+
+nnoremap <silent> <f5> :MaqueRunCommand delete proguard cache<cr>:MaqueRunCommand run<cr>
