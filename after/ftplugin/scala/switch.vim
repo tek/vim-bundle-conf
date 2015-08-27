@@ -1,6 +1,6 @@
-let s:switch_definitions = 
-    \ [ 
-    \   ['def', 'val', 'var'],
+let s:switch_definitions =
+    \ [
+    \   ['def', 'val', 'lazy val'],
     \ ]
 
 if !exists('b:switch_custom_definitions')
