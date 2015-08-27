@@ -2,16 +2,12 @@ snippet i "import" b
 import ${1:package}.${2:_}
 endsnippet
 
-snippet il "import Log" b
-import tryp.tick.util.Log
-endsnippet
-
 snippet l "log" b
 Log.d($0)
 endsnippet
 
 snippet d "method" !b
-def ${1:name}(${2}) ${3:= }{
+def ${1:name}(${2}) = {
 	$0
 }
 endsnippet
@@ -48,16 +44,26 @@ snippet matchh "match_parent height arrow" !i
 ↕
 endsnippet
 
-snippet o "Option" !i
+snippet o "Option" !
 Option[${1}]
 endsnippet
 
-snippet ar "right double arrow" !
+snippet -> "right double arrow" !
+→
+endsnippet
+
+snippet => "right double arrow" !
 ⇒
 endsnippet
 
 snippet qq "quasiquotes block" !
 q"""
+${1}
+"""
+endsnippet
+
+snippet s2 "specs2 is block" !
+def is = s2"""
 ${1}
 """
 endsnippet
@@ -69,5 +75,39 @@ db withSession { implicit s ⇒
 endsnippet
 
 snippet iec "global execution context" !b
-import scala.concurrent.ExecutionContext.Implicits.global
+import concurrent.ExecutionContext.Implicits.global
+endsnippet
+
+snippet |+| "scalaz monoid append" !i
+⊹
+endsnippet
+
+snippet im "implicit" !
+implicit
+endsnippet
+
+snippet ob "object def" !b
+object $1 ${2:
+extends $3}
+{
+	$0
+}
+endsnippet
+
+snippet ps "print interpolation string" !b
+p(s"$0")
+endsnippet
+
+snippet case "case" !
+case ${1:_} ⇒ $0
+endsnippet
+
+snippet c "case" !
+case ${1:_} ⇒ $0
+endsnippet
+
+snippet ic "implicit class" !b
+implicit class ${1}(${2:v}: $3) {
+	$0
+}
 endsnippet
