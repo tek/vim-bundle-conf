@@ -1,7 +1,3 @@
-if g:project_name != 'core'
-  set tags+=~/code/scala/core/.tags
-endif
-
 let g:scala_use_default_keymappings = 0
 
 if !exists('g:project_android')
@@ -10,12 +6,22 @@ if !exists('g:project_android')
   let g:sbt_test = 'test'
 endif
 
-if !exists('g:scala_projects')
-  let g:scala_projects = []
+if !exists('g:sbt_projects')
+  let g:sbt_projects = []
 endif
 
-let g:scala_current_project = 0
+let g:sbt_current_project = 0
+
+let g:scala_project_dir = $HOME . '/code/scala'
+
+function! AddScalaProjects(...) abort "{{{
+  for n in a:000
+    call tek#bundle#scala#add_project(n)
+  endfor
+endfunction "}}}
 
 command! -bar CycleProjects call tek#bundle#scala#cycle_projects()
+command! -bar -nargs=+ AddSbtProject call
+      \ tek#bundle#scala#add_sbt_project(<f-args>)
 
 nnoremap <silent> <home> :CycleProjects<cr>

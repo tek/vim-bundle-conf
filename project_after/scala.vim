@@ -85,7 +85,7 @@ augroup END
 let s:override = exists("g:override_project_scala")
 
 if !s:override
-  let g:root_dirs += ['../../scala/core']
+  call AddScalaProjects('pulsar')
 endif
 
 silent call tek#bundle#scala#set_project()

@@ -6,8 +6,10 @@ if !s:override
         \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
         \ 'start': 1 }
 
-  let g:root_dirs += ['../../scala/droid']
+  call AddScalaProjects('droid')
 endif
+
+call AddScalaProjects('macroid')
 
 MaqueAddCommand 'rm **/proguard-cache*.jar', {
         \ 'name': 'delete proguard cache',
