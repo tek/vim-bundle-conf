@@ -19,7 +19,7 @@ endfunction
 
 function! tek_bundle_misc#kill_session() abort "{{{
   if exists('g:session_dir') && isdirectory(g:session_dir)
-    execute 'silent !rm -rf ' . g:session_dir 
+    execute 'silent !rm -rf ' . g:session_dir
     redraw!
   else
     call tek_misc#warn('g:session_dir not a directory!')
@@ -55,6 +55,10 @@ function! tek_bundle_misc#activate_root(index, ...) abort "{{{
   endif
 endfunction
 
+function! tek_bundle_misc#home_root() abort "{{{
+  return tek_bundle_misc#activate_root(0)
+endfunction "}}}
+
 function! tek_bundle_misc#cycle_root_dir() abort "{{{
   let g:root_dir = (g:root_dir + 1) % len(g:root_dirs)
   call tek_bundle_misc#activate_root(g:root_dir, 1)
@@ -62,4 +66,15 @@ endfunction "}}}
 
 function! tek_bundle_misc#ctrlp() abort "{{{
   execute g:ctrlp_cmd
+endfunction "}}}
+
+function! tek_bundle_misc#abspath(rel) abort "{{{
+  return fnamemodify(a:rel, ':p')
+endfunction "}}}
+
+function! tek_bundle_misc#add_root_project(path) abort "{{{
+  let abs = tek_bundle_misc#abspath(a:path)
+  let g:root_dirs += [a:path]
+  let g:ctags_dirs += [abs]
+  let &tags .= ',' . abs . '.tags'
 endfunction "}}}
