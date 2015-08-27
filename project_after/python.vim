@@ -5,7 +5,7 @@ let g:maque_jump_to_error = 'last'
 function! s:setup_maque() abort "{{{
   let ipy = {
         \ 'eval_splitter': 0,
-        \ '_splitter': 'tmux split-window -v -d -p 50', 
+        \ '_splitter': 'tmux split-window -v -d -p 50',
         \ 'capture': 0,
         \ 'autoclose': 0,
         \ 'vertical': 0,
@@ -17,9 +17,9 @@ function! s:setup_maque() abort "{{{
         \ 'focus_on_make': 1,
         \ }
   call maque#tmux#add_pane_in_layout('ipython', 'make', ipy)
-  call maque#add_command('install deps', 'pip install -r requirements.txt')
-  call maque#add_command('ipython', 'ipython3', { 'pane': 'ipython', })
-  call maque#add_command('spec', 'spec', { 'pane': 'main', })
+  call maque#create_command('install deps', 'pip install -r requirements.txt')
+  call maque#create_command('ipython', 'ipython3', { 'pane': 'ipython', })
+  call maque#create_command('spec', 'spec', { 'pane': 'main', })
 endfunction "}}}
 
 augroup maque_python_project

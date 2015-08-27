@@ -36,9 +36,9 @@ MaqueAddService 'while true; do adb logcat -s ' . g:project_name .
       \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
       \ 'start': 1 }
 MaqueAddService 'ruboto emulator', { 'name': 'emulator' }
-MaqueAddCommand 'rake install start', { 'name': 'install', 'copy_to_main': 1 }
+MaqueAddCommand 'rake install start', { 'name': 'install', 'remember': 1 }
 MaqueAddCommand 'rake uninstall', { 'name': 'uninstall' }
-MaqueAddCommand 'rake boing', { 'name': 'update', 'copy_to_main': 1 }
+MaqueAddCommand 'rake boing', { 'name': 'update', 'remember': 1 }
 MaqueAddCommand 'rake release', { 'name': 'release' }
 MaqueAddCommand 'rake test', { 'name': 'test' }
 MaqueAddCommand 'rm libs/bundle.jar Gemfile.apk.lock; rake bundle',

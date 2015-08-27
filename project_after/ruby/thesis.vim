@@ -1,11 +1,11 @@
 function! s:setup_maque() abort "{{{
-  call maque#add_command('verbose', '''THESIS_VERBOSE=1 '' . maque#prg()', {
+  call maque#create_command('verbose', '''THESIS_VERBOSE=1 '' . maque#prg()', {
         \ 'cmd_type': 'eval',
         \ 'pane_type': 'eval',
         \ 'pane_name': 'maque#current_pane()',
         \ }
         \ )
-  call maque#add_command('profile', '''RSPEC_PROFILE=each '' . maque#prg()', {
+  call maque#create_command('profile', '''RSPEC_PROFILE=each '' . maque#prg()', {
         \ 'cmd_type': 'eval',
         \ 'pane_type': 'eval',
         \ 'pane_name': 'maque#current_pane()',
