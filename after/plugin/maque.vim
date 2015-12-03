@@ -9,3 +9,21 @@ function! s:set_make_size() abort "{{{
 endfunction "}}}
 
 autocmd User MaqueTmuxDefaultPanesCreated call <sid>set_make_size()
+
+if exists('g:project_bootstrapped') && g:project_detected
+  MaqueAddService 'tig status', {
+        \ 'name': 'tig',
+        \ 'pane': 'main',
+        \ 'capture': 0,
+        \ }
+endif
+
+function! s:tig() abort "{{{
+  MaqueTmuxZoom main
+  MaqueRunCommand tig
+  return ''
+endfunction "}}}
+
+nnoremap <expr> <silent> <c-f1> <sid>tig()
+
+command! Tig call <sid>tig()
