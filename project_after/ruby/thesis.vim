@@ -17,5 +17,5 @@ endfunction "}}}
 
 augroup maque_ruby_project_thesis
   autocmd!
-  autocmd User MaqueTmuxPanesCreated call <sid>setup_maque()
+  autocmd User MaqueTmuxDefaultPanesCreated call <sid>setup_maque()
 augroup END

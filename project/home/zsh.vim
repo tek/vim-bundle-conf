@@ -5,5 +5,5 @@ endfunction "}}}
 
 augroup maque_zsh_project
   autocmd!
-  autocmd User MaqueTmuxPanesCreated call <sid>setup_maque()
+  autocmd User MaqueTmuxDefaultPanesCreated call <sid>setup_maque()
 augroup END

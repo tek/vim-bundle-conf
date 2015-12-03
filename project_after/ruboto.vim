@@ -5,7 +5,7 @@ endfunction "}}}
 
 augroup maque_ruboto_project
   autocmd!
-  autocmd User MaqueTmuxPanesCreated call <sid>setup_maque()
+  autocmd User MaqueTmuxDefaultPanesCreated call <sid>setup_maque()
   autocmd User MaqueTmuxMake MaqueTmuxResetCapture log
 augroup END
 

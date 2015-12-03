@@ -24,7 +24,7 @@ endfunction "}}}
 
 augroup maque_python_project
   autocmd!
-  autocmd User MaqueTmuxPanesCreated call <sid>setup_maque()
+  autocmd User MaqueTmuxDefaultPanesCreated call <sid>setup_maque()
 augroup END
 
 nnoremap <silent> <s-f1> :SaveAll<cr>:MaqueRunCommand install deps<cr>

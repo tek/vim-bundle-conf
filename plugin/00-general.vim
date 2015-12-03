@@ -8,7 +8,7 @@ function! CreateBgLayout() abort "{{{
 endfunction "}}}
 
 if exists('$kaon')
-  autocmd User MaqueTmuxPanesCreated call CreateBgLayout()
+  autocmd User MaqueTmuxDefaultPanesCreated call CreateBgLayout()
 endif
 
 " }}}
