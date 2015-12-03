@@ -33,7 +33,7 @@ let s:home_pre = '^' . $HOME
 let g:tek_airline_file_truncations = [
       \ ['scala', s:home_pre . '/code/scala/'],
       \ [s:any, s:home_pre . '/code/'],
-      \ ['scala', 'src/'],
+      \ ['scala', '/\@<=\zssrc/'],
       \ ['', getcwd() . '/', ''],
       \ ['', s:home_pre, '~'],
       \ ]
