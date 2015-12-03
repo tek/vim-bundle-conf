@@ -1,6 +1,9 @@
 let s:switch_definitions =
     \ [
-    \   ['def', 'val', 'lazy val'],
+    \   ['def', 'lazy val', 'val'],
+    \   ['map', 'flatMap'],
+    \   ['extends', 'with'],
+    \   ['trait', 'object', 'class', 'abstract class'],
     \ ]
 
 if !exists('b:switch_custom_definitions')
