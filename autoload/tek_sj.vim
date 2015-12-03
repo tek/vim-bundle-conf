@@ -33,12 +33,12 @@ endfunction "}}}
 function! tek_sj#split_scala_function() abort "{{{
   let line = getline('.')
   let pattern =
-        \ '\v<' . s:func_keywords . ' ' . 
-        \ '\w+%(\[.{-}\])?%(\(.{-}\))?' . 
-        \ '%(\s*:\s*\w[^={]*)?' . 
+        \ '\v<' . s:func_keywords . ' ' .
+        \ '\w+%(\[.{-}\])?%(\(.{-}\))?' .
+        \ '%(\s*:\s*\w[^={]*)?' .
         \ '%(\s*\=)?' .
         \ '\zs' .
-        \ '%(\s*\{\s*)?' . 
+        \ '%(\s*\{\s*)?' .
         \ '([^{].{-})' .
         \ '(\s*\}\s*)?$'
 
@@ -60,10 +60,43 @@ endfunction "}}}
 
 function! tek_sj#split_scala_block() abort "{{{
   let line = getline('.')
-  let pattern = '\v<if\s*%(\(.*\))\s*\zs([^{].*)'
-
+  let pattern = '\v\{\zs.*\ze\}'
   if line =~ pattern
-    call sj#ReplaceMotion('V', substitute(line, pattern, '{\n\1\n}', ''))
+    call sj#ReplaceMotion('V', substitute(line, pattern, '\n&\n', ''))
+    return 1
+  endif
+endfunction "}}}
+
+function! tek_sj#split_scala_package() abort "{{{
+  let line = getline('.')
+  let pattern = '\v^package %(\w|\.)*\zs\.(\w+)$'
+  if line =~ pattern
+    call sj#ReplaceMotion('V', substitute(line, pattern, '\npackage \1', ''))
+    return 1
+  endif
+endfunction "}}}
+
+function! tek_sj#join_scala_package_import() abort "{{{
+  let pattern = '\v^(package|import) ((%(\w|\.){-1,})%(\._)?)$'
+  let this_line_no = line('.')
+  let next_line_no = this_line_no + 1
+  let this_line = getline(this_line_no)
+  let next_line = getline(next_line_no)
+  if this_line !~ pattern || next_line !~ pattern
+    return 0
+  endif
+  let new_line = 
+        \ substitute(this_line, pattern, '\1 \3', '') .
+        \ substitute(next_line, pattern, '.\2', '')
+  call sj#ReplaceLines(this_line_no, next_line_no, new_line)
+  return 1
+endfunction "}}}
+
+function! tek_sj#split_scala_import() abort "{{{
+  let line = getline('.')
+  let pattern = '\v^import %(\w|\.){}\zs\.(_@!\w+%(\._)?)$'
+  if line =~ pattern
+    call sj#ReplaceMotion('V', substitute(line, pattern, '._\nimport \1', ''))
     return 1
   endif
 endfunction "}}}
