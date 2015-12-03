@@ -1,6 +1,6 @@
 function! tek#bundle#scala#set_project() abort "{{{
   let data = get(g:sbt_projects, g:sbt_current_project, [])
-  let g:sbt_prefix = get(data, 0, '')
+  let g:sbt_prefix = get(data, 0, 'root')
   let runner = get(data, 1, 'run')
   let p_compiler = get(data, 2, 'compile')
   let prefix = g:sbt_prefix == '' ? g:sbt_prefix : g:sbt_prefix . '/'
