@@ -68,22 +68,20 @@ ${1}
 """
 endsnippet
 
-snippet dws "db withSession" !b
-db withSession { implicit s ⇒
-	${1}
-}
-endsnippet
-
-snippet iec "global execution context" !b
+snippet gec "global execution context" !b
 import concurrent.ExecutionContext.Implicits.global
 endsnippet
 
-snippet |+| "scalaz monoid append" !i
+snippet iec "implicit execution context" !i
+implicit ec: EC
+endsnippet
+
+snippet |+| "scalaz.Monoid append" !i
 ⊹
 endsnippet
 
-snippet im "implicit" !
-implicit
+snippet |@| "scalaz.Applicative append" b
+⊛
 endsnippet
 
 snippet ob "object def" !b
@@ -106,8 +104,32 @@ snippet c "case" !
 case ${1:_} ⇒ $0
 endsnippet
 
+snippet id "implicit def" !b
+implicit def ${1}(${2:v}: $3) = {
+	$0
+}
+endsnippet
+
 snippet ic "implicit class" !b
 implicit class ${1}(${2:v}: $3) {
 	$0
+}
+endsnippet
+
+snippet iz "import scalaz" !b
+import scalaz._, Scalaz._
+endsnippet
+
+snippet im "implicit" !
+implicit $0
+endsnippet
+
+snippet cc "case class definition" !b
+case class $1($2)
+endsnippet
+
+snippet vt "view transition" !b
+def $1: ViewTransition = {
+	case $2 ⇒ $3
 }
 endsnippet
