@@ -6,6 +6,8 @@ function! tek_airline#init() abort "{{{
   call airline#parts#define_function('modifiable', 'tek_airline#modifiable')
   call airline#parts#define_accent('modified', 'red')
   call airline#parts#define_accent('modifiable', 'red')
+  call airline#parts#define_raw('linenr',
+        \ '%{g:airline_symbols.linenr} %#__accent_bold#%l%#__restore__#')
   let g:airline_section_x = ''
   let g:airline_section_c =
         \ airline#section#create(['trunc_file', ' ', 'modified', 'modifiable']
