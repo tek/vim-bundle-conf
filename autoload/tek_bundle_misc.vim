@@ -42,26 +42,29 @@ function! tek_bundle_misc#textobj_function_map() abort "{{{
 endfunction "}}}
 
 function! tek_bundle_misc#activate_root(index, ...) abort "{{{
-  let root_dir = g:root_dirs[a:index]
+  let g:root_dir = a:index % len(g:root_dirs)
+  let root_dir = g:root_dirs[g:root_dir]
   " let g:ctrlp_cmd = 'CtrlP ' . root_dir
   let relative = root_dir[0] != '/'
   let target = relative ? $PWD . '/' . root_dir : root_dir
   execute 'cd ' . target
   if get(a:000, 0)
     if root_dir == $PWD
+      let g:root_dir_name = ''
       let root_dir = '.'
+    else
+      let g:root_dir_name = fnamemodify(root_dir, ':t')
     endif
     echo 'New root: ' . root_dir
   endif
 endfunction
 
 function! tek_bundle_misc#home_root() abort "{{{
-  return tek_bundle_misc#activate_root(0)
+  return tek_bundle_misc#activate_root(0, 1)
 endfunction "}}}
 
 function! tek_bundle_misc#cycle_root_dir() abort "{{{
-  let g:root_dir = (g:root_dir + 1) % len(g:root_dirs)
-  call tek_bundle_misc#activate_root(g:root_dir, 1)
+  call tek_bundle_misc#activate_root(g:root_dir + 1, 1)
 endfunction "}}}
 
 function! tek_bundle_misc#ctrlp() abort "{{{
@@ -69,12 +72,17 @@ function! tek_bundle_misc#ctrlp() abort "{{{
 endfunction "}}}
 
 function! tek_bundle_misc#abspath(rel) abort "{{{
-  return fnamemodify(a:rel, ':p')
+  return substitute(fnamemodify(a:rel, ':p'), '/$', '', '')
 endfunction "}}}
 
 function! tek_bundle_misc#add_root_project(path) abort "{{{
   let abs = tek_bundle_misc#abspath(a:path)
-  let g:root_dirs += [a:path]
+  let g:root_dirs += [abs]
+  call tek_bundle_misc#add_ctags_source(abs)
+endfunction "}}}
+
+function! tek_bundle_misc#add_ctags_source(path) abort "{{{
+  let abs = tek_bundle_misc#abspath(a:path)
   let g:ctags_dirs += [abs]
-  let &tags .= ',' . abs . '.tags'
+  let &tags .= ',' . abs . '/.tags'
 endfunction "}}}
