@@ -8,12 +8,15 @@ function! tek_airline#init() abort "{{{
   call airline#parts#define_accent('modifiable', 'red')
   call airline#parts#define_raw('linenr',
         \ '%{g:airline_symbols.linenr} %#__accent_bold#%l%#__restore__#')
+
   let g:airline_section_x = ''
   let g:airline_section_c =
         \ airline#section#create(['trunc_file', ' ', 'modified', 'modifiable']
         \ )
   let g:airline_section_y =
-        \ airline#section#create_left(['sbt_project', 'root_dir'])
+        \ airline#section#create_right(['root_dir', 'sbt_project'])
+  let g:airline_section_z =
+        \ airline#section#create(['windowswap', ' %3p%% ', 'linenr', ':%v'])
 endfunction "}}}
 
 function! tek_airline#root_dir() abort "{{{
