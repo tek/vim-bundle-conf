@@ -47,11 +47,9 @@ MaqueAddCommand 'g:maqueprg', {
       \ 'quit_copy_mode': 0,
       \ }
 
-function! s:setup_maque() abort "{{{
-  let g:maque_auto.shell = 'sbt'
-  let g:sbt = maque#command('sbt')
-  let g:sbt_pane = maque#tmux#pane('sbt')
-endfunction "}}}
+let g:maque_auto.shell = 'sbt'
+let g:sbt = maque#command('sbt')
+let g:sbt_pane = maque#tmux#pane('sbt')
 
 autocmd User MaqueInitialized call <sid>setup_maque()
 
