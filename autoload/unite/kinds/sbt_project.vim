@@ -3,8 +3,8 @@ function! unite#kinds#sbt_project#define() abort "{{{
 endfunction "}}}
 
 function! unite#kinds#sbt_project#add_root(candidate) abort "{{{
-  call tek_bundle_misc#add_root_project(a:candidate.action__path)
-  call tek_bundle_misc#activate_root(-1, 1)
+  execute 'ProAdd scala/' . a:candidate.word
+  execute 'ProTo scala/' . a:candidate.word
 endfunction "}}}
 
 let g:unite_kind_sbt_project = {

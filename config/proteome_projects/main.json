@@ -1,0 +1,34 @@
+[
+  {
+    "name": "tek",
+    "type": "vim",
+    "langs": ["vim"],
+    "root": "~/.config/nvim/tek"
+  },
+  {
+    "name": "zsh",
+    "type": "zsh",
+    "langs": ["zsh"],
+    "root": "~/.zsh"
+  },
+  {
+    "name": "loki_droid",
+    "type": "scala",
+    "types": ["scala_android"]
+  },
+  {
+    "name": "sbt-tryp",
+    "type": "scala",
+    "types": ["sbt_plugin"]
+  },
+  {
+    "name": "sbt-tek",
+    "type": "scala",
+    "types": ["sbt_plugin"]
+  },
+  {
+    "name": "tryplug",
+    "type": "scala",
+    "types": ["sbt_plugin"]
+  }
+]

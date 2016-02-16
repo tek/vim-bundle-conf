@@ -101,13 +101,6 @@ augroup tek_scala
   autocmd User MaqueTmuxMake call s:hook()
 augroup END
 
-let s:override = exists("g:override_project_scala")
-
-if !s:override
-  call AddScalaProjects('pulsar')
-  call AddScalaCtags('sbt-tryp', 'tryplug', 'android-sdk-plugin')
-endif
-
 silent call tek#bundle#scala#set_project()
 
 function! s:impl(state, ...) abort "{{{

@@ -7,17 +7,11 @@ if !s:override
         \ ' AndroidRuntime:E; done', { 'name': 'log', 'size': 30,
         \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
         \ 'start': 1, 'position': 0.5 }
-
-  call AddScalaProjects('droid')
 endif
-
-call AddScalaCtags('macroid')
 
 MaqueAddCommand 'rm **/proguard-cache*.jar', {
         \ 'name': 'delete proguard cache',
         \ }
-
-let g:ctrlp_custom_ignore['dir'] .= '|<free/unit/libRes>'
 
 augroup maque_scala_android_project
   autocmd!

@@ -16,22 +16,21 @@ let g:scala_project_dir = $HOME . '/code/scala'
 
 function! AddScalaProjects(...) abort "{{{
   for n in a:000
-    call tek#bundle#scala#add_project(n)
-  endfor
-endfunction "}}}
-
-function! AddScalaCtags(...) abort "{{{
-  for n in a:000
-    call tek_bundle_misc#add_ctags_source(g:scala_project_dir . '/' . n)
+    execute 'ProAdd scala/' . n
   endfor
 endfunction "}}}
 
 command! -bar CycleProjects call tek#bundle#scala#cycle_projects()
 command! -bar -nargs=+ AddSbtProject call
       \ tek#bundle#scala#add_sbt_project(<f-args>)
-command! -bar -nargs=+ AddSbtRoot call
-      \ tek#bundle#scala#add_project(<f-args>)
+command! -bar -nargs=+ AddSbtRoot call AddScalaProjects(<f-args>)
 
 nnoremap <silent> <home> :CycleProjects<cr>
 
 nnoremap <silent> <leader>2 :Unite sbt_project -start-insert -auto-resize<cr>
+
+let s:override = exists("g:override_project_scala")
+
+if !s:override
+  " ProAdd scala/pulsar
+endif
