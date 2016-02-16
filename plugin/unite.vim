@@ -24,10 +24,9 @@ nnoremap <silent> <leader>ad :Unite -auto-resize -no-quit grep<cr>
 nnoremap <silent> <leader>aA :Unite -auto-resize -no-quit grep:.:-t:<cr>
 "}}}
 
-nnoremap <silent> <m-u> :UniteResume<cr>
 nnoremap <silent> <leader>uu :Unite -auto-resize source<cr>
 nnoremap <silent> <leader>u/ :Unite -auto-resize line -start-insert -no-quit<cr>
 nnoremap <silent> <m-e> :Unite -auto-resize file_rec/async -start-insert<cr>
 nnoremap <silent> <leader>ur :Unite -auto-resize register<cr>
-nnoremap <silent> <c-y> :Unite -auto-resize history/yank<cr>
-nnoremap <silent> <leader>ut :Unite -auto-resize -start-insert tag/include<cr>
+nnoremap <silent> <m-y> :Unite -auto-resize history/yank<cr>
+nnoremap <silent> <leader>ut :Unite -auto-resize -start-insert tag<cr>
