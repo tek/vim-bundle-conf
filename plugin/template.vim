@@ -12,7 +12,7 @@ try:
 except:
     pass
 try:
-    match = re.search(r'/([^/]+)_test.py$', vim.current.buffer.name)
+    match = re.search(r'/([^/]+)_(test|spec).py$', vim.current.buffer.name)
     if match:
       name = camelcaseify(match.group(1))
       vim.command('let l:pytestname="{}_"'.format(name))
