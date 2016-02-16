@@ -1,2 +1,2 @@
-nmap <silent> <leader>8 :NERDTreeToggle<cr>
+nmap <silent> <leader>8 :NERDTreeCWD<cr>
 command! NTF execute 'NERDTree' expand('%:h')
