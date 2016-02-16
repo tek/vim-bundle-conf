@@ -18,38 +18,50 @@ self._
 endsnippet
 
 snippet def "function" !
-def ${1:function}(`!p
+def ${1}(`!p
 if snip.indent:
 	snip.rv = 'self'
-	snip.rv += (", " if len(t[2]) else "")`${2:arg1}):
-	${0:pass}
+	snip.rv += (", " if len(t[2]) else "")`${2}):
+	${0}
 endsnippet
 
 snippet deff "explicit free function" !
 def ${1:function}(${2:arg1}):
-	${0:pass}
+	${0}
 endsnippet
 
 snippet defp "property" !
 @property
-def ${1:function}(self):
-	${0:pass}
+def ${1}(self):
+	${0}
+endsnippet
+
+snippet defz "lazy property" !b
+@lazy
+def ${1}(self):
+	${0}
 endsnippet
 
 snippet defl "private function" !
-def _${1:function}(`!p
+def _${1}(`!p
 if snip.indent:
 	snip.rv = 'self'
-	snip.rv += (", " if len(t[2]) else "")`${2:arg1}):
-	${0:pass}
+	snip.rv += (", " if len(t[2]) else "")`${2}):
+	${0}
 endsnippet
 
 snippet defc "classmethod" !
 @classmethod
-def ${1:function}(`!p
+def ${1}(`!p
 snip.rv = 'self'
-snip.rv += (", " if len(t[2]) else "")`${2:arg1}):
-	${0:pass}
+snip.rv += (", " if len(t[2]) else "")`${2}):
+	${0}
+endsnippet
+
+snippet defst "staticmethod" !
+@staticmethod
+def ${1}(${2}):
+	${0}
 endsnippet
 
 snippet tli "import logger" !
@@ -65,14 +77,14 @@ logger.info(${0})
 endsnippet
 
 snippet defs "special function" !
-def __${1:function}__(self`!p
-snip.rv = (', ' if len(t[2]) else '')`${2:arg1}):
+def __${1}__(self`!p
+snip.rv = (', ' if len(t[2]) else '')`${2}):
 	${0:pass}
 endsnippet
 
-snippet init "init function" !
+snippet init "init function" !b
 def __init__(self`!p
-snip.rv = (', ' if len(t[1]) else '')`${1:arg1}):
+snip.rv = (', ' if len(t[1]) else '')`${1}):
 	${0:pass}
 endsnippet
 
@@ -85,19 +97,15 @@ snippet i "import" !b
 import ${0:module}
 endsnippet
 
-snippet d "debug()" !b
-debug(${0})
-endsnippet
-
 ##########################
 # Try / Except / Finally #
 ##########################
 snippet try "Try / Except" !b
 try:
-	${1:pass}
+	${1}
 except ${2:Exception}`!p
 snip.rv = (' as ' if len(t[3]) else '')`${3:e}:
-	${4:raise $3}
+	${4}
 endsnippet
 
 snippet try "Try / Except / Else" b
@@ -132,7 +140,7 @@ finally:
 	${7:pass}
 endsnippet
 
-snippet f "regular for loop" !b
+snippet for "regular for loop" !b
 for ${1:iterator} in ${2:iterable}:
     ${0:pass}
 endsnippet
@@ -147,10 +155,9 @@ snippet "\S\sf" "generator for" !r
 snip.rv = '{}or'.format(match.group(0))` ${1:iterator} in ${2:iterable}
 endsnippet
 
-snippet super "super" !
-super(${1:`!p
-snip.rv = tek_vim_py_test.current_class_name()`}, self).${2:`!p
-snip.rv = tek_vim_py_test.current_function_name()`}(${0:*a, **kw})
+snippet sup "super" !
+super().${1:`!p
+snip.rv = tek_vim_py_test.current_function_name()`}($2)
 endsnippet
 
 snippet aa "private attribute assignment" !b
@@ -188,4 +195,24 @@ endsnippet
 snippet with "context" !b
 with ${1:manager}${3: as ${2:identifier}}:
 	${0}
+endsnippet
+
+snippet from "from import" !b
+from $1 import $2
+endsnippet
+
+snippet f "from import" !b
+from $1 import $2
+endsnippet
+
+snippet typi "mypy ignore" !
+ # type: ignore
+endsnippet
+
+snippet l "self.log" !b
+self.log.$1
+endsnippet
+
+snippet d "self.log.verbose" !b
+self.log.verbose($1)
 endsnippet

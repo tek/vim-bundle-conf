@@ -116,12 +116,23 @@ implicit class ${1}(${2:v}: $3) {
 }
 endsnippet
 
+snippet ilv "implicit lazy val" !b
+implicit lazy val $0
+endsnippet
+
 snippet iz "import scalaz" !b
 import scalaz._, Scalaz._
 endsnippet
 
 snippet im "implicit" !
 implicit $0
+endsnippet
+
+snippet cl "class" !b
+class $1($2)
+{
+	$0
+}
 endsnippet
 
 snippet cc "case class definition" !b
@@ -131,5 +142,11 @@ endsnippet
 snippet vt "view transition" !b
 def $1: ViewTransition = {
 	case $2 ⇒ $3
+}
+endsnippet
+
+snippet pdd "protected def" !b
+protected def ${1}(${2:v}: $3) = {
+	$0
 }
 endsnippet
