@@ -86,3 +86,7 @@ function! tek_bundle_misc#add_ctags_source(path) abort "{{{
   let g:ctags_dirs += [abs]
   let &tags .= ',' . abs . '/.tags'
 endfunction "}}}
+
+function! tek_bundle_misc#post_save() abort "{{{
+  ProSave
+endfunction "}}}
