@@ -10,4 +10,4 @@ let g:ctrlp_custom_ignore = {
   \ 'link': '',
   \ }
 
-" nnoremap <silent> <leader>e :call tek_bundle_misc#ctrlp()<cr>
+nnoremap <silent> <leader>e :call tek_bundle_misc#ctrlp()<cr>
