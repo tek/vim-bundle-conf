@@ -20,7 +20,7 @@ function! tek_airline#init() abort "{{{
 endfunction "}}}
 
 function! tek_airline#root_dir() abort "{{{
-  return get(g:, 'proteome_root_name', '')
+  return get(get(g:, 'proteome_active', {}), 'name', '')
 endfunction "}}}
 
 function! tek_airline#sbt_project() abort "{{{
