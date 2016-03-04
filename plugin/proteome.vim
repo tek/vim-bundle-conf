@@ -4,8 +4,9 @@ let g:proteome_plugins = [
       \ 'proteome.plugins.ctags',
       \ 'proteome.plugins.history',
       \ 'proteome.plugins.config',
+      \ 'proteome.plugins.unite',
       \ ]
-let g:proteome_history_base = '~/usr/var/tmp/vim/history_prot'
+let g:proteome_history_base = '~/usr/var/tmp/vim/history'
 let g:proteome_base_dirs = ['~/code', '/var/tek/lib/repos']
 let g:proteome_type_base_dirs = {
       \ $VIMBUNDLES: ['vim'],
