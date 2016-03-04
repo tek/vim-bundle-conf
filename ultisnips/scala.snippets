@@ -48,14 +48,6 @@ snippet o "Option" !
 Option[${1}]
 endsnippet
 
-snippet -> "right double arrow" !
-→
-endsnippet
-
-snippet => "right double arrow" !
-⇒
-endsnippet
-
 snippet qq "quasiquotes block" !
 q"""
 ${1}
@@ -97,11 +89,11 @@ p(s"$0")
 endsnippet
 
 snippet case "case" !
-case ${1:_} ⇒ $0
+case ${1:_} => $0
 endsnippet
 
 snippet c "case" !
-case ${1:_} ⇒ $0
+case ${1:_} => $0
 endsnippet
 
 snippet id "implicit def" !b
@@ -141,12 +133,23 @@ endsnippet
 
 snippet vt "view transition" !b
 def $1: ViewTransition = {
-	case $2 ⇒ $3
+	case $2 => $3
 }
 endsnippet
 
 snippet pdd "protected def" !b
 protected def ${1}(${2:v}: $3) = {
 	$0
+}
+endsnippet
+
+snippet ext "implicit extension class" !b
+final class ${1}Ops(self: $1)
+{
+}
+
+trait To$1Ops
+{
+  implicit def To$1Ops(self: $1): $1Ops = new $1Ops(self)
 }
 endsnippet
