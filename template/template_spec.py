@@ -10,4 +10,4 @@ class <pythontestname>(Spec):
     def test(self):
         <+CURSOR+>pass
 
-__all__ = ('<pythontestname>')
+__all__ = ('<pythontestname>',)
