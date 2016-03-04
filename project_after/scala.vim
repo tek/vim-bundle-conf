@@ -109,3 +109,6 @@ endfunction "}}}
 
 command! -nargs=? ImplOn call <sid>impl(1, <f-args>)
 command! -nargs=? ImplOff call <sid>impl(0, <f-args>)
+
+highlight clear EnErrorStyle
+highlight EnErrorStyle ctermbg=0
