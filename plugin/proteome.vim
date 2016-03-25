@@ -21,4 +21,5 @@ nnoremap <silent> <del> :ProPrev<cr>
 nnoremap <silent> <c-insert> :ProTo 0<cr>
 nnoremap <silent> <c-PageUp> :ProHistoryNext<cr>
 nnoremap <silent> <c-PageDown> :ProHistoryPrev<cr>
-nnoremap <silent> <leader>2 :ProSelectAdd<cr>
+nnoremap <silent> <leader>1 :Projects<cr>
+nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
