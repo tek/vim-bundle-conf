@@ -1,7 +1,7 @@
 let g:neomake_python_enabled_makers = ['flake8', 'mypy']
 
 let g:neomake_python_mypy_maker = {
-    \ 'args': ['--use-python-path'],
+    \ 'args': ['--use-python-path', '--silent-imports'],
     \ 'errorformat': '%f:%l: %m',
     \ }
 
