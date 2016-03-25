@@ -1,1 +1,1 @@
-call AddScalaProjects('loki_core')
+ProAdd loki_core

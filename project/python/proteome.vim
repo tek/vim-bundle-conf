@@ -1,2 +1,2 @@
-ProAdd python/tryp-nvim
+ProAdd python/trypnv
 ProAdd python/tryp
