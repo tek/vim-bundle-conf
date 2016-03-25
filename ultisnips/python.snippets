@@ -155,7 +155,7 @@ snippet "\S\sf" "generator for" !r
 snip.rv = '{}or'.format(match.group(0))` ${1:iterator} in ${2:iterable}
 endsnippet
 
-snippet sup "super" !
+snippet sup "super" !i
 super().${1:`!p
 snip.rv = tek_vim_py_test.current_function_name()`}($2)
 endsnippet
@@ -215,4 +215,8 @@ endsnippet
 
 snippet d "self.log.verbose" !b
 self.log.verbose($1)
+endsnippet
+
+snippet mes "trypnv message" !b
+$1 = message('$1')
 endsnippet

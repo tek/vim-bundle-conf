@@ -1,5 +1,5 @@
 snippet i "import" b
-import ${1:package}.${2:_}
+import ${1}${3:.${2:_}}
 endsnippet
 
 snippet l "log" b
@@ -151,5 +151,11 @@ final class ${1}Ops(self: $1)
 trait To$1Ops
 {
   implicit def To$1Ops(self: $1): $1Ops = new $1Ops(self)
+}
+endsnippet
+
+snippet trans "machine transition partial function" !b
+def $1($2): Transit = {
+	case ${3:s} => ${4:s}
 }
 endsnippet
