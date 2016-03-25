@@ -33,7 +33,7 @@ function! s:project_added() abort "{{{
   endif
 endfunction "}}}
 
-augroup proteome_python_project
+augroup tek_bundle_python_project
   autocmd!
   autocmd User ProteomeAdded call <sid>project_added()
 augroup END
