@@ -15,7 +15,7 @@ try:
     match = re.search(r'/([^/]+)_(test|spec).py$', vim.current.buffer.name)
     if match:
       name = camelcaseify(match.group(1))
-      vim.command('let l:pytestname="{}_"'.format(name))
+      vim.command('let l:pytestname="{}Spec"'.format(name))
 except Exception as e:
     print('Error while creating python test class name: {}'.format(e))
 try:
