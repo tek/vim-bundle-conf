@@ -8,3 +8,5 @@ if current_path =~ '/integration/'
 elseif current_path =~ '/unit/'
   call maque#util#scala#set_scalatest()
 endif
+
+setlocal makeprg=make
