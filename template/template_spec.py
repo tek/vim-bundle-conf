@@ -1,11 +1,7 @@
-import sure  # NOQA
-from flexmock import flexmock  # NOQA
-
-
 class <pythontestname>(Spec):
 
-    def setup(self, *a, **kw):
-        super().setup(*a, **kw)
+    def setup(self):
+        super().setup()
 
     def test(self):
         <+CURSOR+>pass
