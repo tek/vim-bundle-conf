@@ -19,7 +19,8 @@ let tek_misc#postsave_functions += ['tek_bundle_misc#post_save']
 nnoremap <silent> <insert> :ProNext<cr>
 nnoremap <silent> <del> :ProPrev<cr>
 nnoremap <silent> <c-insert> :ProTo 0<cr>
-nnoremap <silent> <c-PageUp> :ProHistoryNext<cr>
-nnoremap <silent> <c-PageDown> :ProHistoryPrev<cr>
+" nnoremap <silent> <c-PageUp> :ProHistoryNext<cr>
+" nnoremap <silent> <c-PageDown> :ProHistoryPrev<cr>
 nnoremap <silent> <leader>1 :Projects<cr>
 nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
+nnoremap <silent> <leader>@ :ProHistoryFileBrowse<cr>
