@@ -15,8 +15,9 @@ function! tek#bundle#scala#set_project() abort "{{{
   endif
 endfunction "}}}
 
-function! tek#bundle#scala#cycle_projects() abort "{{{
-  let g:sbt_current_project = (g:sbt_current_project + 1) %
+function! tek#bundle#scala#cycle_projects(...) abort "{{{
+  let diff = get(a:, 0, 1)
+  let g:sbt_current_project = (g:sbt_current_project + diff) %
         \ len(g:sbt_projects)
   call tek#bundle#scala#set_project()
 endfunction "}}}
@@ -44,4 +45,9 @@ function! tek#bundle#scala#add_sbt_project(path, ...) abort "{{{
   let g:sbt_projects += [[a:path] + params]
   let g:sbt_current_project = -1
   call tek#bundle#scala#set_project()
+endfunction "}}}
+
+function! tek#bundle#scala#activate_sbt_project(name) abort "{{{
+  let cmd = 'project {file:' . g:scala_project_dir . '/' . a:name . '}'
+  call tek#bundle#scala#sbt(cmd)
 endfunction "}}}
