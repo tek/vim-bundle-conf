@@ -8,7 +8,7 @@ endsnippet
 
 snippet d "method" !b
 def ${1:name}(${2}) = {
-	$0
+  $0
 }
 endsnippet
 
@@ -80,7 +80,7 @@ snippet ob "object def" !b
 object $1 ${2:
 extends $3}
 {
-	$0
+  $0
 }
 endsnippet
 
@@ -98,13 +98,13 @@ endsnippet
 
 snippet id "implicit def" !b
 implicit def ${1}(${2:v}: $3) = {
-	$0
+  $0
 }
 endsnippet
 
 snippet ic "implicit class" !b
 implicit class ${1}(${2:v}: $3) {
-	$0
+  $0
 }
 endsnippet
 
@@ -121,9 +121,9 @@ implicit $0
 endsnippet
 
 snippet cl "class" !b
-class $1($2)
+class $1
 {
-	$0
+  $0
 }
 endsnippet
 
@@ -131,31 +131,66 @@ snippet cc "case class definition" !b
 case class $1($2)
 endsnippet
 
-snippet vt "view transition" !b
-def $1: ViewTransition = {
-	case $2 => $3
-}
-endsnippet
-
 snippet pdd "protected def" !b
 protected def ${1}(${2:v}: $3) = {
-	$0
+  $0
 }
 endsnippet
 
 snippet ext "implicit extension class" !b
-final class ${1}Ops(self: $1)
+final class ${1}Ops(val self: $1)
+extends AnyVal
 {
 }
 
 trait To$1Ops
 {
-  implicit def To$1Ops(self: $1): $1Ops = new $1Ops(self)
+  implicit def To$1Ops(x: $1): $1Ops = new $1Ops(x)
 }
 endsnippet
 
 snippet trans "machine transition partial function" !b
 def $1($2): Transit = {
-	case ${3:s} => ${4:s}
+  case ${3:s} => ${4:s}
+}
+endsnippet
+
+snippet p "package" !b
+package $0
+endsnippet
+
+snippet "package .*" "package continuation" !r
+`!p snip.rv = match.group(0)`
+package $0
+endsnippet
+
+snippet ".*\b(class|trait|object) .*" "class extends" !r
+`!p snip.rv = match.group(0)`
+extends $0
+endsnippet
+
+snippet "(extends|with) .*" "extends continuation" !r
+`!p snip.rv = match.group(0)`
+with $0
+endsnippet
+
+snippet inst "typeclass instance" !b
+implicit def instance_$1_$2: $1[$2] =
+  new $1[$2] {
+    def $3(a: $2) = $0
+  }
+endsnippet
+
+snippet instK "effect typeclass instance" !b
+implicit def instance_$1_$2: $1[$2] =
+  new $1[$2] {
+    def $3[A](fa: $2[A]) = $0
+  }
+endsnippet
+
+snippet tc "typeclass" !b
+@typeclass trait $1[$2]
+{
+
 }
 endsnippet
