@@ -34,13 +34,9 @@ function! tek_sj#split_scala_function() abort "{{{
   let line = getline('.')
   let pattern =
         \ '\v<' . s:func_keywords . ' ' .
-        \ '\w+%(\[.{-}\])?%(\(.{-}\))?' .
-        \ '%(\s*:\s*\w[^={]*)?' .
-        \ '%(\s*\=)?' .
-        \ '\zs' .
-        \ '%(\s*\{\s*)?' .
-        \ '([^{].{-})' .
-        \ '(\s*\}\s*)?$'
+        \ '\k+%(\[.{-}\])?%(\(.{-}\))?' .
+        \ '%(\s*:\s*\w[^=]*)?' .
+        \ ' \=\zs (.*)$'
 
   if line =~ pattern
     call sj#ReplaceMotion('V', substitute(line, pattern, ' {\n\1\n}', ''))
