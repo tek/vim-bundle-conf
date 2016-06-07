@@ -1,5 +1,5 @@
 " setlocal omnifunc=jedi#completions
-setlocal omnifunc=
+" setlocal omnifunc=
 
 nnoremap <buffer><silent> gd :call jedi#goto_definitions()<cr>
 nnoremap <buffer><silent> <localleader>d :call jedi#show_documentation()<cr>

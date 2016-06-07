@@ -40,5 +40,17 @@
     "name": "vim-maque",
     "type": "vim",
     "types": ["riml"]
+  },
+  {
+    "name": "proteome",
+    "type": "python.nvim",
+    "types": ["python"],
+    "langs": ["python"]
+  },
+  {
+    "name": "myo",
+    "type": "python.nvim",
+    "types": ["python"],
+    "langs": ["python"]
   }
 ]

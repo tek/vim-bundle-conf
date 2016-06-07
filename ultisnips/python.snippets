@@ -2,6 +2,8 @@ clearsnippets test
 
 global !p
 import tek_vim_py_test
+import tek_vim_py_inspect
+from tryp import *
 endglobal
 
 snippet cl "class"
@@ -157,7 +159,15 @@ endsnippet
 
 snippet sup "super" !i
 super().${1:`!p
-snip.rv = tek_vim_py_test.current_function_name()`}($2)
+snip.rv = tek_vim_py_test.current_function_name()`}(${2:`!p
+f = tek_vim_py_inspect.containing_function()
+if f:
+	args = f.args
+	a = List.wrap(args.args[1:] + args.kwonlyargs) / _.arg
+	s = List(Maybe(args.vararg) / _.arg / '*{}'.format,
+					 Maybe(args.kwarg) / _.arg / '**{}'.format).flatten
+	snip.rv = ', '.join(a + s)
+`})
 endsnippet
 
 snippet aa "private attribute assignment" !b

@@ -1,7 +1,7 @@
 let g:neomake_python_enabled_makers = ['flake8', 'mypy']
 
 let g:neomake_python_mypy_maker = {
-    \ 'args': ['--use-python-path', '--silent-imports'],
+    \ 'args': ['--silent-imports'],
     \ 'errorformat': '%f:%l: %m',
     \ }
 
@@ -14,6 +14,7 @@ let g:pymport_package_precedence =
       \ g:project_name,
       \ 'trypnv',
       \ 'tryp',
+      \ 'golgi',
       \ 'tek_utils',
       \ 'tek',
       \ ]
