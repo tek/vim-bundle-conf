@@ -33,16 +33,16 @@ nmap <silent> <leader>C viwolB<Plug>VSurround)X
 nmap dC lbdt("_ds):call repeat#set('dC')<cr>
 nnoremap cC lbct(
 
-function! s:wrap(obj) "{{{
-  exe "normal ysi".a:obj .')'
+function! s:wrap(obj, char) "{{{
+  exe "normal ysi".a:obj . a:char
   startinsert
-  call tek_misc#repeat_insert('ysi'.a:obj .')')
+  call tek_misc#repeat_insert('ysi'.a:obj . a:char)
 endfunction "}}}
 
 " wrap word/WORD with a function call, leaving cursor in insert at the
 " first paren
-nnoremap <leader>ww :call <SID>wrap('w')<cr>
-nnoremap <leader>wW :call <SID>wrap('W')<cr>
+nnoremap <leader>ww :call <SID>wrap('w', ')')<cr>
+nnoremap <leader>wW :call <SID>wrap('W', ')')<cr>
 
 function! s:wrap_object(type, ...) abort "{{{
   silent exe "normal! `[v`]y"
