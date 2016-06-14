@@ -88,5 +88,5 @@ function! tek_bundle_misc#add_ctags_source(path) abort "{{{
 endfunction "}}}
 
 function! tek_bundle_misc#post_save() abort "{{{
-  ProSave
+  silent! ProSave
 endfunction "}}}
