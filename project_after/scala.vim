@@ -81,7 +81,7 @@ nnoremap <silent> <c-f2> :MaqueTmuxKillWait sbt<cr>:MaqueRunCommand sbt<cr>
 nnoremap <silent> <c-f3> :MaqueRunCommand publishLocal<cr>
 nmap <silent> <f3> <Plug>(maque-parse):call SbtScrollToError()<cr>zvzz
 
-let g:ctrlp_custom_ignore['dir'] .= '|<%(project/target|project/project/target|target|bin|gen)>'
+let g:ctrlp_custom_ignore['dir'] .= '|<%(project/target|project/project/target|target)>'
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
 let g:maque_tmux_error_pane = 'sbt'
 let g:sbt_command = 'compile'

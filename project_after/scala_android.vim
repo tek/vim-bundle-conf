@@ -22,3 +22,5 @@ augroup maque_scala_android_project
   autocmd!
   autocmd User MaqueTmuxMake MaqueTmuxClearLog log
 augroup END
+
+let g:ctrlp_custom_ignore['dir'] .= '|<%(bin|gen)>'
