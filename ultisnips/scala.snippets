@@ -2,10 +2,6 @@ snippet i "import" b
 import ${1}${3:.${2:_}}
 endsnippet
 
-snippet l "log" b
-Log.d($0)
-endsnippet
-
 snippet d "method" !b
 def ${1:name}(${2}) = {
   $0
@@ -116,7 +112,7 @@ snippet iz "import scalaz" !b
 import scalaz._, Scalaz._
 endsnippet
 
-snippet im "implicit" !
+snippet im "implicit" !i
 implicit $0
 endsnippet
 
@@ -146,6 +142,30 @@ extends AnyVal
 trait To$1Ops
 {
   implicit def To$1Ops(x: $1): $1Ops = new $1Ops(x)
+}
+endsnippet
+
+snippet idext "implicit extension class for type param" !b
+final class ${1}Ops[A](val self: A)
+extends AnyVal
+{
+}
+
+trait To$1Ops
+{
+  implicit def To$1Ops[A](x: A): $1Ops[A] = new $1Ops(x)
+}
+endsnippet
+
+snippet fext "implicit extension class for effect" !b
+final class ${1}Ops[F[_], A](val self: ${2:F}[A])
+extends AnyVal
+{
+}
+
+trait To$1Ops
+{
+  implicit def To$1Ops[A](x: $2[A]): $1Ops[F, A] = new $1Ops(x)
 }
 endsnippet
 
