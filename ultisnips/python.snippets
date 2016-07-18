@@ -66,6 +66,15 @@ def ${1}(${2}):
 	${0}
 endsnippet
 
+snippet decf "decorated function" !b
+@$1
+def $2(`!p
+if snip.indent:
+	snip.rv = 'self'
+	snip.rv += (", " if len(t[2]) else "")`$3):
+	${0}
+endsnippet
+
 snippet tli "import logger" !
 from tek import logger
 endsnippet
