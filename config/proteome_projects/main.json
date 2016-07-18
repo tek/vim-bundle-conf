@@ -12,6 +12,12 @@
     "root": "~/.zsh"
   },
   {
+    "name": ".sbt",
+    "type": "scala",
+    "langs": ["scala"],
+    "root": "~/.sbt/0.13.full"
+  },
+  {
     "name": "loki_droid",
     "type": "scala",
     "types": ["scala_android"]
@@ -43,13 +49,25 @@
   },
   {
     "name": "proteome",
-    "type": "python.nvim",
+    "type": "python_nvim",
+    "types": ["python"],
+    "langs": ["python"]
+  },
+  {
+    "name": "tubbs",
+    "type": "python_nvim",
     "types": ["python"],
     "langs": ["python"]
   },
   {
     "name": "myo",
-    "type": "python.nvim",
+    "type": "python_nvim",
+    "types": ["python"],
+    "langs": ["python"]
+  },
+  {
+    "name": "trypnv",
+    "type": "python_nvim",
     "types": ["python"],
     "langs": ["python"]
   }
