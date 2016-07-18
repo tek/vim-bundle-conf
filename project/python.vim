@@ -30,7 +30,7 @@ function! s:project_added() abort "{{{
     let g:pymport_paths = [root] + g:pymport_paths
     let $PYTHONPATH = root . ':' . $PYTHONPATH
     let &path = root . ',' . &path
-    execute 'python3 sys.path[:0] = "'. root . '"'
+    execute 'python3 sys.path.insert(0, '''. root . ''')'
   endif
 endfunction "}}}
 
