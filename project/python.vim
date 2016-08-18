@@ -59,3 +59,8 @@ nnoremap <silent> <s-f2> :SaveAll<cr>:MaqueToggleCommand ipython3<cr>
 nnoremap <silent> <f5> :SaveAll<cr>:MaqueRunCommand spec_unit<cr>
 nnoremap <silent> <f6> :SaveAll<cr>:MaqueRunCommand spec_integration<cr>
 nnoremap <silent> <f8> :MaqueTmuxFocus ipython<cr>
+
+let g:test#runners = {
+      \ 'python': ['Spec']
+      \ }
+let test#python#runner = 'spec'
