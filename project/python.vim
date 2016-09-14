@@ -1,7 +1,8 @@
 let g:neomake_python_enabled_makers = ['flake8', 'mypy']
 
 let g:neomake_python_mypy_maker = {
-    \ 'args': ['--silent-imports'],
+    \ 'args': ['--silent-imports', '--fast-parser', '--incremental',
+    \ '--strict-optional'],
     \ 'errorformat': '%f:%l: %m',
     \ }
 
@@ -12,8 +13,8 @@ let g:pymport_package_precedence =
       \ 'integration',
       \ 'tests',
       \ g:project_name,
-      \ 'trypnv',
-      \ 'tryp',
+      \ 'ribosome',
+      \ 'amino',
       \ 'golgi',
       \ 'tek_utils',
       \ 'tek',
@@ -41,26 +42,47 @@ augroup END
 
 let g:syntastic_aggregate_errors=0
 
-MaqueAddCommand 'pip install -r requirements.txt', { 'name': 'deps' }
-MaqueAddCommand 'spec unit', { 'name': 'spec_unit' }
-MaqueAddCommand 'spec integration', { 'name': 'spec_integration' }
+if g:use_myo
+  MyoShellCommand deps { 'line': 'pip install -r requirements.txt' }
+  MyoShellCommand unit { 'line': 'spec unit' }
+  MyoShellCommand integration { 'line': 'spec integration' }
+  MyoTmuxCreatePane ipython {
+        \ 'parent': 'main',
+        \ 'minimized': 1,
+        \ 'minimized_size': 10,
+        \ 'fixed_size': 25,
+        \ }
+  MyoShell ipython { 'line': 'ipython', 'target': 'ipython' }
 
-MaqueAddShell 'ipython3', {
-      \ 'start': 0,
-      \ 'create_minimized': 1,
-      \ 'minimized_size': 25,
-      \ 'size': 48,
-      \ 'compiler': 'python',
-      \ 'kill_signals': ['KILL'],
-      \ }
+  nnoremap <silent> <s-f1> :MyoRun deps<cr>
+  nnoremap <silent> <s-f2> :MyoRun ipython<cr>
+  nnoremap <silent> <f5> :MyoRun unit<cr>
+  nnoremap <silent> <f6> :MyoRun integration<cr>
+  nnoremap <silent> <f8> :MyoTmuxFocus ipython<cr>
+else
+  MaqueAddCommand 'pip install -r requirements.txt', { 'name': 'deps' }
+  MaqueAddCommand 'spec unit', { 'name': 'spec_unit' }
+  MaqueAddCommand 'spec integration', { 'name': 'spec_integration' }
 
-nnoremap <silent> <s-f1> :SaveAll<cr>:MaqueRunCommand deps<cr>
-nnoremap <silent> <s-f2> :SaveAll<cr>:MaqueToggleCommand ipython3<cr>
-nnoremap <silent> <f5> :SaveAll<cr>:MaqueRunCommand spec_unit<cr>
-nnoremap <silent> <f6> :SaveAll<cr>:MaqueRunCommand spec_integration<cr>
-nnoremap <silent> <f8> :MaqueTmuxFocus ipython<cr>
+  MaqueAddShell 'ipython3', {
+        \ 'start': 0,
+        \ 'create_minimized': 1,
+        \ 'minimized_size': 25,
+        \ 'size': 48,
+        \ 'compiler': 'python',
+        \ 'kill_signals': ['KILL'],
+        \ }
+
+  nnoremap <silent> <s-f1> :SaveAll<cr>:MaqueRunCommand deps<cr>
+  nnoremap <silent> <s-f2> :SaveAll<cr>:MaqueToggleCommand ipython3<cr>
+  nnoremap <silent> <f5> :SaveAll<cr>:MaqueRunCommand spec_unit<cr>
+  nnoremap <silent> <f6> :SaveAll<cr>:MaqueRunCommand spec_integration<cr>
+  nnoremap <silent> <f8> :MaqueTmuxFocus ipython<cr>
+endif
 
 let g:test#runners = {
       \ 'python': ['Spec']
       \ }
 let test#python#runner = 'spec'
+
+let g:myo_first_error = ['py:myo_bundle.first_error']
