@@ -10,6 +10,7 @@ except ImportError as e:
 except Exception as e:
     print(e)
 EOF
+  let $PYTHONPATH = $PYTHONPATH . ':' . g:python_modules_bundle_conf
   endif
 catch
 endtry
