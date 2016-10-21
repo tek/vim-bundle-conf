@@ -8,3 +8,5 @@ let g:deoplete#omni#input_patterns.scala = [
       \ '[:\[,] ?\w*',
       \ '^import .*'
       \ ] 
+
+call deoplete#custom#set('_', 'sorters', ['sorter_word'])
