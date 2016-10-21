@@ -2,39 +2,39 @@ priority -50
 
 snippet eq "Equation" b
 \begin{equation}
-	$0
+	${VISUAL}$0
 \end{equation}
 endsnippet
 
 snippet eqs "Equation star" b
 \begin{equation*}
-	$0
+	${VISUAL}$0
 \end{equation*}
 endsnippet
 
 snippet al "align" b
 \begin{align}
-	$0
+	${1:${VISUAL}}
 \end{align}
 endsnippet
 
 snippet als "align star" b
 \begin{align*}
-	$0
+	${VISUAL}$0
 \end{align*}
 endsnippet
 
-snippet frac "Fraction" w
-\frac{${1:${VISUAL:nom}}}{${2:denom}}
+snippet f "Fraction" w
+\frac{${1:${VISUAL}}}{${2}}
 endsnippet
 
 snippet mat "Smart Matrix"
 \begin{${1:p/b/v/V/B/small}matrix}
-	$0
+	${VISUAL}$0
 \end{$1matrix}
 endsnippet
 
-snippet lr( "left( right)" w
+snippet lr "left( right)" w
 \left( ${1:${VISUAL}} \right)
 endsnippet
 
@@ -42,11 +42,15 @@ snippet lr| "left| right|" w
 \left| ${1:${VISUAL}} \right|
 endsnippet
 
-snippet lr{ "left\{ right\}" w
-\left\\{ ${1:${VISUAL}} \right\\}
+snippet lrb "left\{ right\}" w
+\left\lbrace ${1:${VISUAL}} \right\rbrace
 endsnippet
 
-snippet lr[ "left[ right]" w
+snippet lra "left\langle right\rangle" w
+\left\langle ${1:${VISUAL}} \right\rangle
+endsnippet
+
+snippet lrs "left[ right]" w
 \left[ ${1:${VISUAL}} \right]
 endsnippet
 

@@ -3,7 +3,7 @@ clearsnippets test
 global !p
 import tek_vim_py_test
 import tek_vim_py_inspect
-from tryp import *
+from amino import *
 endglobal
 
 snippet cl "class"
@@ -28,7 +28,7 @@ if snip.indent:
 endsnippet
 
 snippet deff "explicit free function" !
-def ${1:function}(${2:arg1}):
+def ${1}(${2}):
 	${0}
 endsnippet
 
@@ -52,6 +52,12 @@ if snip.indent:
 	${0}
 endsnippet
 
+snippet defL "private property" !
+@property
+def _${1}(self):
+	${0}
+endsnippet
+
 snippet defc "classmethod" !
 @classmethod
 def ${1}(`!p
@@ -71,16 +77,8 @@ snippet decf "decorated function" !b
 def $2(`!p
 if snip.indent:
 	snip.rv = 'self'
-	snip.rv += (", " if len(t[2]) else "")`$3):
+	snip.rv += (", " if len(t[3]) else "")`$3):
 	${0}
-endsnippet
-
-snippet tli "import logger" !
-from tek import logger
-endsnippet
-
-snippet tdi "import debug" !
-from tek import debug
 endsnippet
 
 snippet inf "logger.info" !b
@@ -105,7 +103,7 @@ snippet ds "docstring" !
 endsnippet
 
 snippet i "import" !b
-import ${0:module}
+import $0
 endsnippet
 
 ##########################
@@ -113,10 +111,10 @@ endsnippet
 ##########################
 snippet try "Try / Except" !b
 try:
-	${1}
-except ${2:Exception}`!p
-snip.rv = (' as ' if len(t[3]) else '')`${3:e}:
-	${4}
+	${VISUAL}
+except ${1:Exception}`!p
+snip.rv = (' as ' if len(t[2]) else '')`${2:e}:
+	${3}
 endsnippet
 
 snippet try "Try / Except / Else" b
@@ -151,11 +149,6 @@ finally:
 	${7:pass}
 endsnippet
 
-snippet for "regular for loop" !b
-for ${1:iterator} in ${2:iterable}:
-    ${0:pass}
-endsnippet
-
 snippet "([\([]([^\([.]+)(\.\S+)?\sf)f" "generator for with call on iterator" !r
 `!p
 snip.rv = '{}or {}'.format(match.group(1), match.group(2))` in ${2:`!p snip.rv = match.group(2)`s}
@@ -174,7 +167,7 @@ if f:
 	args = f.args
 	a = List.wrap(args.args[1:] + args.kwonlyargs) / _.arg
 	s = List(Maybe(args.vararg) / _.arg / '*{}'.format,
-					 Maybe(args.kwarg) / _.arg / '**{}'.format).flatten
+					 Maybe(args.kwarg) / _.arg / '**{}'.format).join
 	snip.rv = ', '.join(a + s)
 `})
 endsnippet
@@ -184,11 +177,7 @@ self._${1:argname} = $1
 endsnippet
 
 snippet wv "with statement from visual" !b
-with ${VISUAL} as ${2:id}:
-endsnippet
-
-snippet w "with statement" !b
-with ${1:conman} as ${2:id}:
+with ${VISUAL} as ${2}:
 endsnippet
 
 snippet r "return statement" !b
@@ -232,10 +221,27 @@ snippet l "self.log" !b
 self.log.$1
 endsnippet
 
-snippet d "self.log.verbose" !b
+snippet d "self.log.verbose" !w
 self.log.verbose($1)
 endsnippet
 
-snippet mes "trypnv message" !b
-$1 = message('$1')
+snippet mes "ribosome message" !b
+$1 = message('$1'$2)
+endsnippet
+
+snippet mh "may handle" !b
+@may_handle($1)
+def $2(self):
+    $0
+endsnippet
+
+snippet nl "ribosome logging import" !b
+from ribosome.logging import log
+log.verbose($1)
+endsnippet
+
+snippet mc "message command" !b
+@msg_command($1)
+def $2(self):
+    pass
 endsnippet

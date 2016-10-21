@@ -13,25 +13,25 @@ def autoload_path():
 endglobal
 
 snippet fun "function" !b
-function! ${1:function_name}(${2}) abort "{{{
+function! ${1}(${2}) abort "{{{
 	${0}
 endfunction "}}}
 endsnippet
 
 snippet fund "dict function" !b
-function! ${1:function_name}(${2}) abort dict "{{{
+function! ${1}(${2}) abort dict "{{{
 	${0}
 endfunction "}}}
 endsnippet
 
 snippet funa "autoload function" !b
-function! `!p snip.rv = autoload_path()`#${1:function_name}(${2}) abort "{{{
+function! `!p snip.rv = autoload_path()`#${1}(${2}) abort "{{{
 	${0}
 endfunction "}}}
 endsnippet
 
 snippet funs "script-local function" !b
-function! s:${1:function_name}(${2}) abort "{{{
+function! s:${1}(${2}) abort "{{{
 	${0}
 endfunction "}}}
 endsnippet

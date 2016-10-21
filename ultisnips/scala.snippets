@@ -3,13 +3,7 @@ import ${1}${3:.${2:_}}
 endsnippet
 
 snippet d "method" !b
-def ${1:name}(${2}) = {
-  $0
-}
-endsnippet
-
-snippet a "function arg" !
-$1: ${2:type}
+def $1 = $0
 endsnippet
 
 snippet top "top arrow" !i
@@ -98,12 +92,6 @@ implicit def ${1}(${2:v}: $3) = {
 }
 endsnippet
 
-snippet ic "implicit class" !b
-implicit class ${1}(${2:v}: $3) {
-  $0
-}
-endsnippet
-
 snippet ilv "implicit lazy val" !b
 implicit lazy val $0
 endsnippet
@@ -125,6 +113,13 @@ endsnippet
 
 snippet cc "case class definition" !b
 case class $1($2)
+endsnippet
+
+snippet ac "abstract class" !b
+abstract class $1
+{
+  $0
+}
 endsnippet
 
 snippet pdd "protected def" !b
@@ -201,6 +196,13 @@ implicit def instance_$1_$2: $1[$2] =
   }
 endsnippet
 
+snippet instlv "typeclass instance" !b
+implicit lazy val instance_$1_$2: $1[$2] =
+  new $1[$2] {
+    def $3(a: $2) = $0
+  }
+endsnippet
+
 snippet instK "effect typeclass instance" !b
 implicit def instance_$1_$2: $1[$2] =
   new $1[$2] {
@@ -212,5 +214,27 @@ snippet tc "typeclass" !b
 @typeclass trait $1[$2]
 {
 
+}
+endsnippet
+
+snippet pt "private[this]" !b
+private[this] ${1:def} $0
+endsnippet
+
+snippet lv "lazy val" !b
+lazy val 
+endsnippet
+
+snippet spec "spec" !b
+class $1
+extends Spec
+{
+  def is = s2"""
+	run $run
+	"""
+
+	def run = {
+    1 === 1
+	}
 }
 endsnippet

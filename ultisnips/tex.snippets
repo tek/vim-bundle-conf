@@ -4,7 +4,7 @@ extends texmath
 
 snippet "b(egin)?" "begin{} / end{}" br
 \begin{$1}
-	${0:${VISUAL}}
+  ${0:${VISUAL}}
 \end{$1}
 endsnippet
 
@@ -16,94 +16,75 @@ endsnippet
 
 snippet table "Table environment" b
 \begin{table}[${1:htpb}]
-	\centering
-	\caption{${2:caption}}
-	\label{tab:${3:label}}
-	\begin{${4:t}${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}{${5:c}}
-	$0${5/((?<=.)c|l|r)|./(?1: & )/g}
-	\end{$4${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}
+  \centering
+  \caption{${2:caption}}
+  \label{tab:${3:label}}
+  \begin{${4:t}${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}{${5:c}}
+  $0${5/((?<=.)c|l|r)|./(?1: & )/g}
+  \end{$4${4/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}
 \end{table}
 endsnippet
 
 snippet fig "Figure environment" b
 \begin{figure}[${2:htpb}]
-	\centering
-	\includegraphics[width=${3:0.8}\linewidth]{${4:name.ext}}
-	\caption{${4/(\w+)\.\w+/\u$1/}$0}
-	\label{fig:${4/(\w+)\.\w+/$1/}}
+  \centering
+  \includegraphics[width=${3:0.8}\linewidth]{${4:name.ext}}
+  \caption{${4/(\w+)\.\w+/\u$1/}$0}%
+  \label{fig:${4/(\w+)\.\w+/$1/}}
 \end{figure}
 endsnippet
 
 snippet enum "Enumerate" b
 \begin{enumerate}
-	\item $0
+  \item $0
 \end{enumerate}
 endsnippet
 
 snippet item "Itemize" b
 \begin{itemize}
-	\item $0
+  \item $0
 \end{itemize}
 endsnippet
 
 snippet desc "Description" b
 \begin{description}
-	\item[$1] $0
+  \item[$1] $0
 \end{description}
 endsnippet
 
 snippet it "Individual item" b
-\item ${1}
-$0
+\item[${1}]$0
 endsnippet
 
 snippet part "Part" b
-\part{${1:part name}}
+\part{${1:part name}}%
 \label{prt:${2:${1/(\w+)|\W+/(?1:\L$0\E:_)/ga}}}
 
 ${0}
 endsnippet
 
-snippet cha "Chapter" b
-\chapter{${1:chapter name}}
-\label{cha:${2:${1/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
+global !p
+import re
+from amino import *
 
-${0}
-endsnippet
+sec_titles = dict(
+  part='part',
+  cha='chapter',
+  sec='section',
+  sub='subsection',
+  ssub='subsubsection',
+  par='paragraph',
+  spar='subparagraph',
+)
 
-snippet sec "Section" b
-\section{${1:section name}}
-\label{sec:${2:${1/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
+def label(name, pref):
+    l = re.sub('\W+', '_', name).lower()
+    return '\\label{{{}:{}}}'.format(pref, l)
+endglobal
 
-${0}
-endsnippet
-
-snippet sub "Subsection" b
-\subsection{${1:subsection name}}
-\label{sub:${2:${1/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
-
-${0}
-endsnippet
-
-snippet ssub "Subsubsection" b
-\subsubsection{${1:subsubsection name}}
-\label{ssub:${2:${1/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
-
-${0}
-endsnippet
-
-snippet par "Paragraph" b
-\paragraph{${1:paragraph name}}
-\label{par:${2:${1/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
-
-${0}
-endsnippet
-
-snippet subp "Subparagraph" b
-\subparagraph{${1:subparagraph name}}
-\label{par:${2:${1/\\\w+\{(.*?)\}|\\(.)|(\w+)|([^\w\\]+)/(?4:_:\L$1$2$3\E)/ga}}}
-
-${0}
+snippet "part|cha|sec|sub|ssub|par|spar" "sectioning" !br
+\\`!p snip.rv = sec_titles[match.group(0)]`{$1}%
+`!p snip.rv = label(t[1], match.group(0))`
 endsnippet
 
 snippet ni "Non-indented paragraph" b
@@ -115,7 +96,47 @@ snippet pac "Package" b
 \usepackage[${1:options}]{${2:package}}$0
 endsnippet
 
-snippet lp "Long parenthesis"
-\left(${1:${VISUAL:contents}}\right)$0
+snippet m "inline math mode" !w
+\($1\)$0
 endsnippet
-# vim:ft=snippets:
+
+snippet nc "newcommand" !b
+\newcommand{\\$1}{$2}
+endsnippet
+
+snippet br "braces" !i
+\lbrace $0 \rbrace
+endsnippet
+
+global !p
+theo_titles = dict(
+  defi='definition',
+  theo='theorem',
+  corr='corrollary',
+  lem='lemma',
+)
+endglobal
+
+snippet "defi|theo|corr|lem" "theorem" !br
+`!p title = theo_titles[match.group(0)]`\begin{`!p snip.rv = title`}[$1]%
+`!p snip.rv = snip.mkline(label(t[1], match.group(0)), indent='  ')`
+$0
+\end{`!p snip.rv = title`}
+endsnippet
+
+snippet S "subscript" !i
+_{$1}
+endsnippet
+
+snippet "\\item(\[.*\])? .*$" "item continuation" !r
+`!p snip.rv = match.group(0)`
+\item`!p
+snip.rv = '[' if match.group(1) else ' '
+`${1}`!p
+snip.rv = '] ' if match.group(1) else ''
+`$0
+endsnippet
+
+snippet mc "new math command" !b
+\newcommand{\\$1}{\ensuremath{$2}}
+endsnippet
