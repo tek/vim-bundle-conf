@@ -1,2 +1,2 @@
-ProAdd python/trypnv
-ProAdd python/tryp
+ProAdd python/ribosome
+ProAdd python/amino

@@ -1,2 +1,2 @@
-ProAdd python_nvim/trypnv
-ProAdd python/tryp
+ProAdd python_nvim/ribosome
+ProAdd python/amino
