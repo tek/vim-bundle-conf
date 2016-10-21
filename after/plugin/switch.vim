@@ -2,7 +2,7 @@ let s:switch_definitions =
     \ [ 
     \ {
     \   '\k\+ = ': 'return ',
-    \   'return ': 'value = ', 
+    \   'return ': 'v = ', 
     \ },
     \ ['yes', 'no'],
     \ ['horizontal', 'vertical'],
