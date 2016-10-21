@@ -27,7 +27,7 @@ function! test#python#spec#executable() abort "{{{
 endfunction "}}}
 
 let s:patterns = {
-  \ 'test':      ['\v^\s*def %(setup|_)@<!(\w+)\(self\)'],
+  \ 'test':      ['\v^\s*def %(setup|_)@<!(\w+)\(self>'],
   \ 'namespace': ['\v^\s*class (\w+)'],
 \}
 
