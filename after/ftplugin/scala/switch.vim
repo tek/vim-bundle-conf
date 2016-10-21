@@ -1,6 +1,6 @@
 let s:switch_definitions =
     \ [
-    \   ['def', 'lazy val', 'val'],
+    \   ['val', 'lazy val', 'def'],
     \   ['map', 'flatMap'],
     \   ['extends', 'with'],
     \   ['trait', 'abstract class'],
