@@ -1,6 +1,7 @@
 function! tek#bundle#scala#set_project() abort "{{{
   let data = get(g:sbt_projects, g:sbt_current_project, [])
   let g:sbt_prefix = get(data, 0, 'root')
+  let g:sbt_project = g:sbt_prefix
   let runner = get(data, 1, 'run')
   let p_compiler = get(data, 2, 'compile')
   let prefix = g:sbt_prefix == '' ? g:sbt_prefix : g:sbt_prefix . '/'
@@ -23,8 +24,9 @@ function! tek#bundle#scala#cycle_projects(...) abort "{{{
 endfunction "}}}
 
 function! tek#bundle#scala#sbt(cmd) abort "{{{
-  let g:sbt_command = a:cmd
-  MaqueRunCommand sbt command
+  " let g:sbt_command = a:cmd
+  execute 'Sbt ' . a:cmd
+  " MaqueRunCommand sbt command
 endfunction "}}}
 
 function! tek#bundle#scala#add_project(name) abort "{{{

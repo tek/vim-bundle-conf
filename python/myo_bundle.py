@@ -1,39 +1,114 @@
-from amino import _, __, L, List
+import re
+import abc
+
+from amino import _, __, List, Try, L, Map, Just
+from amino.lazy import lazy
 
 from myo.output.parser.python import FileEntry
+from ribosome.util.callback import VimCallback
 
 
-def _is_spec_entry(entry):
-    return isinstance(entry, FileEntry) and 'unittest' in str(entry.path)
+class FirstErrorPy(VimCallback):
+
+    @lazy
+    def pkg(self):
+        return Try(lambda: self.vim.vars('project_name')).join | ''
+
+    @lazy
+    def rex(self):
+        return re.compile(r'\b{p}/{p}/'.format(p=self.pkg))
+
+    def __call__(self, lines):
+        match = lambda line: self.rex.search(line.text)
+        return lines.reversed.index_where(match) / (lines.length - _)
 
 
-def _is_spec_trace(event):
-    return event.entries.exists(_is_spec_entry)
+class FilterPy(VimCallback):
+
+    @lazy
+    def packages(self):
+        pkg = Try(lambda: self.vim.vars('project_name')).join | ''
+        am_pkgs = List() if pkg == 'amino' else List('amino')
+        ribo_pkgs = List() if pkg == 'ribosome' else List('ribosome')
+        return am_pkgs + ribo_pkgs + List('sure', 'nose', 'unittest')
+
+    @lazy
+    def package_re(self):
+        rex = '/({}|site-packages|python\d\.\d)/{}/'
+        return self.packages / (lambda a: rex.format(a, a)) / re.compile
+
+    def _hide_path(self, entry):
+        return isinstance(entry, FileEntry) and self._match_path(entry.path)
+
+    def _match_path(self, path):
+        p = str(path)
+        return self.package_re.exists(__.search(p))
+
+    def _filter_event(self, events):
+        return events.modder.entries(__.filter_not(self._hide_path))
+
+    def __call__(self, r):
+        return r.modder.events(_ / self._filter_event)
+
+_trunc_re1 = re.compile('.*/code(_ext)?/python(_nvim)?/')
+_trunc_re2 = re.compile('.*/site-packages/')
+_trunc_re3 = re.compile('.*/python3\.5/')
 
 
-def _remove_spec_trace(events):
-    return events[:-1] if events.last.exists(_is_spec_trace) else events
+def truncate_py(path):
+    p1 = _trunc_re1.sub('', str(path))
+    p2 = _trunc_re2.sub('site/', p1)
+    p3 = _trunc_re3.sub('lib/', p2)
+    return p3
 
 
-def _find_line(lines, entry):
-    from ribosome.logging import log
-    log.verbose(entry)
-    return lines.index_where(_.target == entry)
+class SbtProjectCmd(VimCallback, metaclass=abc.ABCMeta):
+
+    @abc.abstractproperty
+    def command(self):
+        ...
+
+    @property
+    def projects(self):
+        return self.vim.vars('sbt_project_map') / Map | Map()
+
+    @property
+    def current(self):
+        return self.vim.vars('sbt_project')
+
+    def conf(self, key, pro, cmd):
+        return self.projects.get(pro) // __.get(key) // __.get(cmd)
+
+    def effective_command(self, pro, cmd):
+        return self.conf('command', pro, cmd)
+
+    def scope(self, pro, cmd):
+        return self.conf('scope', pro, cmd)
+
+    def scoped(self, pro, cmd):
+        return self.scope(pro, cmd) / L('{}:{}'.format)(_, cmd)
+
+    def format(self, pro):
+        name = self.command
+        cmd = self.effective_command(pro, name) | name
+        scoped = self.scoped(pro, name) | cmd
+        return '{}/{}'.format(pro, scoped)
+
+    def __call__(self):
+        return (self.current / self.format).o(Just(self.command))
 
 
-def first_error(result):
-    from ribosome.logging import log
-    events = (_remove_spec_trace(result.events) if result.events.length > 1
-              else result.events)
-    entry = (
-        events.last /
-        _.entries.reversed //
-        __.find(L(isinstance)(_, FileEntry))
-    )
-    log.verbose(entry)
-    lines = result.lines | List()
-    line = entry // L(_find_line)(lines, _)
-    log.verbose(line)
-    return line / (lambda a: (a + 1, 1))
+class SbtCompile(SbtProjectCmd):
 
-__all__ = ('first_error',)
+    @property
+    def command(self):
+        return 'compile'
+
+
+class SbtRun(SbtProjectCmd):
+
+    @property
+    def command(self):
+        return 'run'
+
+__all__ = ('FilterPy', 'truncate_py', 'FirstErrorPy', 'SbtCompile')

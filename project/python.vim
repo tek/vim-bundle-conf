@@ -36,53 +36,35 @@ function! s:project_added() abort "{{{
 endfunction "}}}
 
 augroup tek_bundle_python_project
-  autocmd!
-  autocmd User ProteomeAdded call <sid>project_added()
+autocmd!
+autocmd User ProteomeAdded call <sid>project_added()
 augroup END
 
 let g:syntastic_aggregate_errors=0
 
-if g:use_myo
-  MyoShellCommand deps { 'line': 'pip install -r requirements.txt' }
-  MyoShellCommand unit { 'line': 'spec unit' }
-  MyoShellCommand integration { 'line': 'spec integration' }
-  MyoTmuxCreatePane ipython {
-        \ 'parent': 'main',
-        \ 'minimized': 1,
-        \ 'minimized_size': 10,
-        \ 'fixed_size': 25,
-        \ }
-  MyoShell ipython { 'line': 'ipython', 'target': 'ipython' }
+MyoShellCommand deps { 'line': 'pip install -r requirements.txt' }
+MyoShellCommand unit { 'line': 'spec unit' }
+MyoShellCommand integration { 'line': 'spec integration' }
+MyoTmuxCreatePane ipython {
+      \ 'parent': 'main',
+      \ 'minimized': 1,
+      \ 'minimized_size': 10,
+      \ 'fixed_size': 25,
+      \ 'signals': ['kill'],
+      \ }
+MyoShell ipython { 'line': 'ipython', 'target': 'ipython' }
 
-  nnoremap <silent> <s-f1> :MyoRun deps<cr>
-  nnoremap <silent> <s-f2> :MyoRun ipython<cr>
-  nnoremap <silent> <f5> :MyoRun unit<cr>
-  nnoremap <silent> <f6> :MyoRun integration<cr>
-  nnoremap <silent> <f8> :MyoTmuxFocus ipython<cr>
-else
-  MaqueAddCommand 'pip install -r requirements.txt', { 'name': 'deps' }
-  MaqueAddCommand 'spec unit', { 'name': 'spec_unit' }
-  MaqueAddCommand 'spec integration', { 'name': 'spec_integration' }
-
-  MaqueAddShell 'ipython3', {
-        \ 'start': 0,
-        \ 'create_minimized': 1,
-        \ 'minimized_size': 25,
-        \ 'size': 48,
-        \ 'compiler': 'python',
-        \ 'kill_signals': ['KILL'],
-        \ }
-
-  nnoremap <silent> <s-f1> :SaveAll<cr>:MaqueRunCommand deps<cr>
-  nnoremap <silent> <s-f2> :SaveAll<cr>:MaqueToggleCommand ipython3<cr>
-  nnoremap <silent> <f5> :SaveAll<cr>:MaqueRunCommand spec_unit<cr>
-  nnoremap <silent> <f6> :SaveAll<cr>:MaqueRunCommand spec_integration<cr>
-  nnoremap <silent> <f8> :MaqueTmuxFocus ipython<cr>
-endif
+nnoremap <silent> <s-f1> :MyoRun deps<cr>
+nnoremap <silent> <s-f2> :MyoRun ipython<cr>
+nnoremap <silent> <f5> :MyoRun unit<cr>
+nnoremap <silent> <f6> :MyoRun integration<cr>
+nnoremap <silent> <f8> :MyoTmuxFocus ipython<cr>
 
 let g:test#runners = {
       \ 'python': ['Spec']
       \ }
 let test#python#runner = 'spec'
 
-let g:myo_first_error = ['py:myo_bundle.first_error']
+let g:myo_first_error = ['py:myo_bundle.FirstErrorPy']
+let g:myo_output_filters = ['py:myo_bundle.FilterPy']
+let g:myo_path_truncator = 'py:myo_bundle.truncate_py'

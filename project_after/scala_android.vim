@@ -2,14 +2,17 @@ let s:override = exists("g:override_project_android")
 
 let g:output_name = get(g:, 'logcat_output_name', g:project_name)
 
-MaqueAddService 'while true; do adb logcat -s ' . g:output_name . ':D' .
-      \ ' AndroidRuntime:E; done', { 'name': 'log', 'size': 30,
-      \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
-      \ 'start': 1, 'position': 0.5 }
+if g:use_myo
+else
+  MaqueAddService 'while true; do adb logcat -s ' . g:output_name . ':D' .
+        \ ' AndroidRuntime:E; done', { 'name': 'log', 'size': 30,
+        \ 'manual_termination': 1, 'capture': 1, 'minimized_size': 5,
+        \ 'start': 1, 'position': 0.5 }
 
-MaqueAddCommand 'rm **/proguard-cache*.jar', {
-        \ 'name': 'delete proguard cache',
-        \ }
+  MaqueAddCommand 'rm **/proguard-cache*.jar', {
+          \ 'name': 'delete proguard cache',
+          \ }
+endif
 
 for params in [
       \ ['ainstall', 'tek#bundle#scala#sbt_prefixed("android:install")', 1],
