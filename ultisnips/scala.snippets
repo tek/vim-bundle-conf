@@ -2,40 +2,16 @@ snippet i "import" b
 import ${1}${3:.${2:_}}
 endsnippet
 
-snippet d "method" !b
-def $1 = $0
+snippet d "def" !b
+def $0
 endsnippet
 
-snippet top "top arrow" !i
-↥
+snippet "\bdef \w+" "def continuation" ir
+`!p snip.rv = match.group(0)`($1) = $0
 endsnippet
 
-snippet bottom "bottom arrow" !i
-↧
-endsnippet
-
-snippet left "left arrow" !i
-↤
-endsnippet
-
-snippet right "right arrow" !i
-↦
-endsnippet
-
-snippet centerh "center horizontal arrow" !i
-⇹
-endsnippet
-
-snippet matchw "match_parent width arrow" !i
-↔
-endsnippet
-
-snippet matchh "match_parent height arrow" !i
-↕
-endsnippet
-
-snippet o "Option" !
-Option[${1}]
+snippet dp "parameterized def" !b
+def $1[$2]$3
 endsnippet
 
 snippet qq "quasiquotes block" !
@@ -50,36 +26,11 @@ ${1}
 """
 endsnippet
 
-snippet gec "global execution context" !b
-import concurrent.ExecutionContext.Implicits.global
-endsnippet
-
-snippet iec "implicit execution context" !i
-implicit ec: EC
-endsnippet
-
-snippet |+| "scalaz.Monoid append" !i
-⊹
-endsnippet
-
-snippet |@| "scalaz.Applicative append" b
-⊛
-endsnippet
-
 snippet ob "object def" !b
-object $1 ${2:
-extends $3}
+object $1
 {
   $0
 }
-endsnippet
-
-snippet ps "print interpolation string" !b
-p(s"$0")
-endsnippet
-
-snippet case "case" !
-case ${1:_} => $0
 endsnippet
 
 snippet c "case" !
@@ -87,17 +38,7 @@ case ${1:_} => $0
 endsnippet
 
 snippet id "implicit def" !b
-implicit def ${1}(${2:v}: $3) = {
-  $0
-}
-endsnippet
-
-snippet ilv "implicit lazy val" !b
-implicit lazy val $0
-endsnippet
-
-snippet iz "import scalaz" !b
-import scalaz._, Scalaz._
+implicit def $0
 endsnippet
 
 snippet im "implicit" !i
@@ -111,8 +52,12 @@ class $1
 }
 endsnippet
 
-snippet cc "case class definition" !b
+snippet cc "case class" !b
 case class $1($2)
+endsnippet
+
+snippet co "case object" !b
+case object $1
 endsnippet
 
 snippet ac "abstract class" !b
@@ -122,10 +67,8 @@ abstract class $1
 }
 endsnippet
 
-snippet pdd "protected def" !b
-protected def ${1}(${2:v}: $3) = {
-  $0
-}
+snippet pd "protected def" !b
+protected def $0
 endsnippet
 
 snippet ext "implicit extension class" !b
@@ -140,7 +83,7 @@ trait To$1Ops
 }
 endsnippet
 
-snippet idext "implicit extension class for type param" !b
+snippet extp "implicit extension class for type param" !b
 final class ${1}Ops[A](val self: A)
 extends AnyVal
 {
@@ -152,7 +95,7 @@ trait To$1Ops
 }
 endsnippet
 
-snippet fext "implicit extension class for effect" !b
+snippet extf "implicit extension class for effect" !b
 final class ${1}Ops[F[_], A](val self: ${2:F}[A])
 extends AnyVal
 {
@@ -179,12 +122,17 @@ snippet "package .*" "package continuation" !r
 package $0
 endsnippet
 
-snippet ".*\b(class|trait|object) .*" "class extends" !r
+global !p
+def eol(snip):
+  return snip.column == len(snip.buffer[snip.line]) - 1
+endglobal
+
+snippet ".*\b(class|trait|object) .*" "class extends" "eol(snip)" !re
 `!p snip.rv = match.group(0)`
 extends $0
 endsnippet
 
-snippet "(extends|with) .*" "extends continuation" !r
+snippet "(extends|with) .*" "extends continuation" "eol(snip)" !re
 `!p snip.rv = match.group(0)`
 with $0
 endsnippet
@@ -210,13 +158,6 @@ implicit def instance_$1_$2: $1[$2] =
   }
 endsnippet
 
-snippet tc "typeclass" !b
-@typeclass trait $1[$2]
-{
-
-}
-endsnippet
-
 snippet pt "private[this]" !b
 private[this] ${1:def} $0
 endsnippet
@@ -225,16 +166,79 @@ snippet lv "lazy val" !b
 lazy val 
 endsnippet
 
-snippet spec "spec" !b
-class $1
+snippet mc "message class" !b
+case class $1($2)
+extends Message
+endsnippet
+
+snippet mo "message object" !b
+case object $1
+extends Message
+endsnippet
+
+snippet spec "spec" b
+class $1Spec
 extends Spec
 {
   def is = s2"""
-	run $run
-	"""
+  ${2:test} \$${3:test}
+  """
 
-	def run = {
+  def $3 = {
     1 === 1
-	}
+  }
+}
+endsnippet
+
+snippet h "HList subtype" i
+$1 <: HList$0
+endsnippet
+
+snippet cp "Coproduct subtype" i
+$1 <: Coproduct$0
+endsnippet
+
+snippet p1 "Poly1" b
+object $1
+extends Poly1
+{
+  implicit def $2[$3]
+  = at[$4] { $5 =>
+    $0
+  }
+}
+endsnippet
+
+snippet p2 "Poly2" b
+object $1
+extends Poly2
+{
+  implicit def $2[$3]
+  = at[$4] {
+    ($5, $6) =>
+      $0
+  }
+}
+endsnippet
+
+snippet c1 "poly Case1" b
+implicit def $1[$2]
+= at[$3] { $4 =>
+  $0
+}
+endsnippet
+
+snippet c2 "poly Case2" b
+implicit def $1[$2]
+= at[$3] {
+  ($4, $5) =>
+    $0
+}
+endsnippet
+
+snippet t "trait" b
+trait $1
+{
+  $0
 }
 endsnippet

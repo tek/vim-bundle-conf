@@ -4,6 +4,7 @@ global !p
 import tek_vim_py_test
 import tek_vim_py_inspect
 from amino import *
+from amino.util.string import *
 endglobal
 
 snippet cl "class"
@@ -81,6 +82,18 @@ if snip.indent:
 	${0}
 endsnippet
 
+snippet defa "abstract method" !
+@abc.abstractmethod
+def ${1}(self, $2) -> $3:
+	...
+endsnippet
+
+snippet defap "abstract property" !
+@abc.abstractproperty
+def ${1}(self) -> $2:
+	...
+endsnippet
+
 snippet inf "logger.info" !b
 logger.info(${0})
 endsnippet
@@ -106,9 +119,6 @@ snippet i "import" !b
 import $0
 endsnippet
 
-##########################
-# Try / Except / Finally #
-##########################
 snippet try "Try / Except" !b
 try:
 	${VISUAL}
@@ -229,9 +239,19 @@ snippet mes "ribosome message" !b
 $1 = message('$1'$2)
 endsnippet
 
-snippet mh "may handle" !b
+snippet jmes "ribosome json message" !b
+$1 = json_message('$1'$2)
+endsnippet
+
+snippet defh "handle" !b
+@handle($1)
+def `!p snip.rv = snake_case(t[1])`(self):
+    $0
+endsnippet
+
+snippet defH "may handle" !b
 @may_handle($1)
-def $2(self):
+def `!p snip.rv = snake_case(t[1])`(self):
     $0
 endsnippet
 
