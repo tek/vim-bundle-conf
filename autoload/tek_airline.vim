@@ -24,7 +24,7 @@ function! tek_airline#root_dir() abort "{{{
 endfunction "}}}
 
 function! tek_airline#sbt_project() abort "{{{
-  return get(g:, 'sbt_prefix', '')
+  return get(g:, 'sbt_project', '')
 endfunction "}}}
 
 let s:any = 'ANY_PROJECT'

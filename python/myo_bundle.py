@@ -64,10 +64,6 @@ def truncate_py(path):
 
 class SbtProjectCmd(VimCallback, metaclass=abc.ABCMeta):
 
-    @abc.abstractproperty
-    def command(self):
-        ...
-
     @property
     def projects(self):
         return self.vim.vars('sbt_project_map') / Map | Map()
@@ -77,38 +73,30 @@ class SbtProjectCmd(VimCallback, metaclass=abc.ABCMeta):
         return self.vim.vars('sbt_project')
 
     def conf(self, key, pro, cmd):
-        return self.projects.get(pro) // __.get(key) // __.get(cmd)
+        return (self.projects.get(pro) // __.get(key) // __.get(cmd)).o(
+            self.projects.get('default') // __.get(key) // __.get(cmd)
+        )
 
     def effective_command(self, pro, cmd):
         return self.conf('command', pro, cmd)
 
-    def scope(self, pro, cmd):
-        return self.conf('scope', pro, cmd)
+    def scope(self, pro, name):
+        return self.conf('scope', pro, name)
 
-    def scoped(self, pro, cmd):
-        return self.scope(pro, cmd) / L('{}:{}'.format)(_, cmd)
+    def scoped(self, pro, name, cmd):
+        return self.scope(pro, name) / L('{}:{}'.format)(_, cmd)
 
-    def format(self, pro):
-        name = self.command
+    def format(self, pro, name):
         cmd = self.effective_command(pro, name) | name
-        scoped = self.scoped(pro, name) | cmd
-        return '{}/{}'.format(pro, scoped)
+        scoped = self.scoped(pro, name, cmd) | cmd
+        pre = '{}/'.format(pro) if pro else ''
+        return '{}{}'.format(pre, scoped)
 
-    def __call__(self):
-        return (self.current / self.format).o(Just(self.command))
-
-
-class SbtCompile(SbtProjectCmd):
-
-    @property
-    def command(self):
-        return 'compile'
+    def __call__(self, cmd):
+        return (self.current / L(self.format)(_, cmd)).o(Just(cmd))
 
 
-class SbtRun(SbtProjectCmd):
+def chain_sbt(names):
+    return ''.join([';{}'.format(name) for name in names])
 
-    @property
-    def command(self):
-        return 'run'
-
-__all__ = ('FilterPy', 'truncate_py', 'FirstErrorPy', 'SbtCompile')
+__all__ = ('FilterPy', 'truncate_py', 'FirstErrorPy', 'SbtProjectCmd')

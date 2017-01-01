@@ -1,5 +1,5 @@
 function! test#scala#specs2#test_file(file) abort "{{{
-  return a:file =~ '.*test.*/.*.scala'
+  return a:file =~ '.*/test.*/.*.scala'
 endfunction "}}}
 
 function! test#scala#specs2#build_position(type, position) abort "{{{
