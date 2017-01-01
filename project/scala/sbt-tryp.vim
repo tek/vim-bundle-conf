@@ -1,4 +1,4 @@
 let g:sbt_projects = [
-      \ ['root', 'publishLocal', 'compile'],
+      \ ['android', 'publishLocal', 'compile'],
       \ ['scripted', 'scripted', 'compile'],
       \ ]

@@ -1,7 +1,7 @@
 let g:sbt_projects = [
+      \ ['integration', 'protify', 'test:compile'],
       \ ['debug', 'protify'],
       \ ['unit', 'test', 'test:compile'],
-      \ ['integration', 'protify', 'test:compile'],
       \ ['release', 'android:run'],
       \ ]
 

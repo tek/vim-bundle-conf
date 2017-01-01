@@ -4,6 +4,7 @@ let g:sbt_projects = [
       \ ['state', 'test', 'test:compile'],
       \ ['view', 'test', 'test:compile'],
       \ ['trial', 'protify:run'],
+      \ ['integration', 'android:test'],
       \ ]
 let g:logcat_output_name = 'tryp'
 
@@ -16,7 +17,7 @@ let s:test = {
       \   },
       \ }
 
-let g:sbt_project_map =
+let s:sbt_project_map =
       \ {
       \   'trial': {
       \     'scope': {
@@ -25,8 +26,16 @@ let g:sbt_project_map =
       \     },
       \     'command': {
       \       'compile': 'install',
+      \     },
       \   },
+      \   'integration': {
+      \     'scope': {
+      \       'run': 'android',
+      \     },
+      \     'command': {
+      \       'run': 'install',
+      \     },
       \   },
-      \   'unit-droid': s:test,
-      \   'unit': s:test,
       \ }
+
+call extend(g:sbt_project_map, s:sbt_project_map)

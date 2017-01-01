@@ -1,27 +1,43 @@
 let g:sbt_layout = exists('$kaon') ? 'bg' : 'make'
 let s:sbt_size = exists('$kaon') ? 20 : 48
 
+function! _sbt_project_cmd(name, ...) abort "{{{
+  let line = a:0 ? a:1 : a:name
+  let extra = a:0 > 1 ? ', ' . a:2 : ''
+  execute "MyoShellCommand " . a:name .
+        \ " { 'line': 'py:myo_bundle.SbtProjectCmd'," .
+        \ " 'shell': 'sbt', 'langs': ['sbt'], 'eval': True, 'args': ['" .
+        \ line . ''']' . extra . ' }'
+endfunction "}}}
+
 if g:use_myo
-  MyoTmuxCreatePane sbt { 'parent': 'main', 'fixed_size': 48, 'position': 0.8 }
+  MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35,
+        \ 'position': 0.8 }
   MyoShell sbt { 'line': 'sbt', 'target': 'sbt', 'langs': ['sbt'],
-        \ 'signals': ['kill'] }
-  MyoShellCommand compile { 'line': 'py:myo_bundle.SbtCompile', 'shell': 'sbt',
-        \ 'langs': ['sbt'], 'eval': True }
-  MyoShellCommand run { 'line': 'py:myo_bundle.SbtRun', 'shell': 'sbt',
-        \ 'langs': ['sbt'], 'eval': True }
+        \ 'signals': ['kill'], 'history': False }
+  call _sbt_project_cmd('compile')
+  call _sbt_project_cmd('test', 'test')
+  call _sbt_project_cmd('clean', 'clean', '''history'': False')
+  call _sbt_project_cmd('publishLocal')
+  MyoShellCommand release { 'line': 'release with-defaults', 'shell': 'sbt',
+        \ 'langs': ['sbt'] }
+
+  let g:myo_chainer = 'py:myo_bundle.chain_sbt'
 
   command! -nargs=+ Sbt MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'] }
+  command! -nargs=+ SbtNh MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'], 'history': False }
   nnoremap <silent> <f6> :MyoRun compile<cr>
-  nnoremap <silent> <f5> :MyoRun run<cr>
+  nnoremap <silent> <f5> :MyoRun test<cr>
   nnoremap <silent> <f6> :MyoRun compile<cr>
-  nnoremap <silent> <f7> :MyoFocus log<cr>
+  nnoremap <silent> <s-f6> :MyoRun clean<cr>
+  nnoremap <silent> <f7> :MyoTmuxFocus log<cr>
   nnoremap <silent> <s-f7> :MyoToggleCommand log<cr>
-  nnoremap <silent> <f8> :MyoFocus sbt<cr>
+  nnoremap <silent> <f8> :MyoTmuxFocus sbt<cr>
   nnoremap <silent> <s-f8> :MyoToggleCommand sbt<cr>
   nnoremap <silent> <leader><f8> :call SbtScrollToError()<cr>
-  nnoremap <silent> <f11> :Sbt reload<cr>
-  nnoremap <silent> <f12> :Sbt r<cr>
-  nnoremap <silent> <c-f2> :MyoTmuxKill sbt<cr>:MyoRun sbt<cr>
+  nnoremap <silent> <f11> :SbtNh reload<cr>
+  nnoremap <silent> <f12> :SbtNh r<cr>
+  nnoremap <silent> <c-f2> :MyoRebootCommand sbt<cr>
   nnoremap <silent> <c-f3> :MyoRun publishLocal<cr>
 else
   MaqueAddShell 'sbt', {
@@ -124,17 +140,43 @@ map <leader>j :Sbt<space>
 let g:ctrlp_custom_ignore['dir'] .= '|<%(project/target|project/project/target|target)>'
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
 let g:sbt_command = 'compile'
+let s:cpar_used = 0
 
 silent call tek#bundle#scala#set_project()
 
-function! s:impl(state, ...) abort "{{{
-  let axis = a:0 > 0 ? a:1 : 'ThisBuild'
-  let oper = a:state ? ' +=' : ' -='
-  execute 'Sbt set scalacOptions in ' . axis . oper . ' "-Xlog-implicits"'
+function! s:compiler_param(name, value, project, ...) abort "{{{
+  let flag = 'g:' . a:name . '_state'
+  if !exists(flag)
+    execute 'let ' . flag . ' = 1'
+  endif
+  execute 'let state = ' . flag
+  if !s:cpar_used
+    let s:cpar_used = 1
+    SbtNh \ 
+  endif
+  if a:0 > 1
+    let axis = a:2
+    let oper = a:1 ? ' +=' : ' -='
+  else
+    let axis = a:project ? g:sbt_project . '.!' : 'ThisBuild'
+    let oper = state ? ' +=' : ' -='
+  endif
+  execute 'SbtNh set scalacOptions in ' . axis . oper . ' "' . a:value . '"'
+  execute 'let ' . flag . ' = !' . flag
+endfunction "}}}
+
+function! s:impl(...) abort "{{{
+  return s:compiler_param('impl', '-Xlog-implicits', 1)
+endfunction "}}}
+
+function! s:splain(...) abort "{{{
+  return s:compiler_param('splain', '-P:splain:all:false', 1)
 endfunction "}}}
 
 command! -nargs=? ImplOn call <sid>impl(1, <f-args>)
 command! -nargs=? ImplOff call <sid>impl(0, <f-args>)
+command! Impl call <sid>impl()
+command! Splain call <sid>splain()
 
 highlight clear EnErrorStyle
 highlight EnErrorStyle ctermbg=0

@@ -28,7 +28,20 @@ nnoremap <silent> <s-home> :ActivateSbtProject<cr>
 let s:override = exists("g:override_project_scala")
 
 let g:test#runners = {
-      \ 'scala': ['Specs2']
+      \ 'scala': ['Android', 'Specs2']
       \ }
-let test#python#runner = 'specs2'
 let g:myo_test_shell = 'sbt'
+
+let g:sbt_project_test = {
+      \   'scope': {
+      \     'compile': 'test',
+      \   },
+      \   'command': {
+      \     'run': 'test',
+      \   },
+      \ }
+
+let g:sbt_project_map =
+      \ {
+      \   'default': g:sbt_project_test,
+      \ }
