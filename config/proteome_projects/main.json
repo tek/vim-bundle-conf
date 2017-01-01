@@ -23,6 +23,11 @@
     "types": ["scala_android"]
   },
   {
+    "name": "bodhi",
+    "type": "scala",
+    "types": ["scala_android"]
+  },
+  {
     "name": "droid",
     "type": "scala",
     "types": ["scala_android"]
