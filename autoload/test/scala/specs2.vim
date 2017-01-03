@@ -45,5 +45,6 @@ function! s:nearest_test(position) abort "{{{
   let name = test#base#nearest_test(a:position, s:patterns)
   let pkg = test#scala#specs2#package()
   let cls = get(name['test'], 0, '')
-  return empty(cls) || empty(pkg) ? [] : [join([pkg, cls], '.')]
+  let target = empty(pkg) ? cls : join([pkg, cls], '.')
+  return empty(cls) ? [] : [target]
 endfunction "}}}
