@@ -107,7 +107,18 @@ endsnippet
 snippet init "init function" !b
 def __init__(self`!p
 snip.rv = (', ' if len(t[1]) else '')`${1}) -> None:
-	${0:pass}
+`!p
+def go(h, t):
+  snip.shift()
+  first = snip.mkline(h)
+  snip.shift()
+  rest = t / snip.mkline
+  snip.rv = '\n'.join(rest.cons(first))
+def pss():
+  snip.rv = 'pass'
+List.wrap(t[1].split(', ')).map(lambda a: f'self.{a} = {a}')\
+  .detach_head.map2(go) | pss
+`$0
 endsnippet
 
 snippet ds "docstring" !
@@ -264,4 +275,13 @@ snippet mc "message command" !b
 @msg_command($1)
 def $2(self):
     pass
+endsnippet
+
+snippet at "init attribute" b
+self.$1 = $1
+endsnippet
+
+snippet "self.(\w+) = (\w+)" "init attribute continuation" r
+`!p snip.rv = match.group(0)`
+self.$1 = $1
 endsnippet
