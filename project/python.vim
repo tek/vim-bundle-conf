@@ -56,6 +56,7 @@ MyoTmuxCreatePane ipython {
       \ 'minimized_size': 10,
       \ 'fixed_size': 25,
       \ 'signals': ['kill'],
+      \ 'history': False,
       \ }
 MyoShell ipython { 'line': 'ipython', 'target': 'ipython' }
 
