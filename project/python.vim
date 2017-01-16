@@ -1,10 +1,15 @@
 let g:neomake_python_enabled_makers = ['flake8', 'mypy']
 
 let g:neomake_python_mypy_maker = {
-    \ 'args': ['--silent-imports', '--fast-parser', '--incremental',
-    \ '--strict-optional'],
-    \ 'errorformat': '%f:%l: %m',
+    \ 'args': [
+    \  '--follow-imports=skip', '--fast-parser', '--incremental',
+    \  '--strict-optional',
+    \  '--warn-redundant-casts', '--warn-no-return', '--warn-unused-ignores',
+    \  '--show-error-context', '--show-column-numbers', '--check-untyped-defs',
+    \ ],
+    \ 'errorformat': '%f:%l:%c: %m,%f:%l: %m',
     \ }
+" '--disallow-untyped-calls',
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
 let g:pymport_package_precedence =
