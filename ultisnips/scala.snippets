@@ -10,6 +10,12 @@ snippet "\bdef \w+" "def continuation" ir
 `!p snip.rv = match.group(0)`($1) = $0
 endsnippet
 
+snippet dd "def with params and block expression" b
+def $1($2) = {
+  $0
+}
+endsnippet
+
 snippet dp "parameterized def" !b
 def $1[$2]$3
 endsnippet
@@ -241,4 +247,10 @@ trait $1
 {
   $0
 }
+endsnippet
+
+snippet doc "doc comment" b
+/**
+ * $0
+ */
 endsnippet
