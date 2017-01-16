@@ -17,5 +17,5 @@ nnoremap <silent> <leader>9 :MyoUniteHistory<cr>
 nnoremap <silent> <f10> :MyoTmuxKill make<cr>
 nnoremap <silent> <s-f10> :MyoTmuxPack<cr>
 nnoremap <silent> <leader><f1> :MyoUniteCommands<cr>
-nnoremap <m--> :SaveAll:MyoEventPrev<cr>
-nnoremap <m-=> :SaveAll:MyoEventNext<cr>
+nnoremap <m--> :SaveAll<cr>:MyoEventPrev<cr>
+nnoremap <m-=> :SaveAll<cr>:MyoEventNext<cr>
