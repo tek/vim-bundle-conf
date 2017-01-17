@@ -56,9 +56,8 @@ MyoTmuxCreatePane ipython {
       \ 'minimized_size': 10,
       \ 'fixed_size': 25,
       \ 'signals': ['kill'],
-      \ 'history': False,
       \ }
-MyoShell ipython { 'line': 'ipython', 'target': 'ipython' }
+MyoShell ipython { 'line': 'ipython', 'target': 'ipython', 'history': False }
 
 nnoremap <silent> <s-f1> :MyoRun deps<cr>
 nnoremap <silent> <s-f2> :MyoRun ipython<cr>
