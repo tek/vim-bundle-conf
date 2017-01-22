@@ -10,6 +10,7 @@ let g:deoplete#lock_buffer_name_pattern = '*unite*\|Command Line'
 let g:deoplete#force_overwrite_completefunc = 1
 let g:deoplete#enable_auto_close_preview = 0
 let g:deoplete#manual_completion_start_length = 0
+let g:deoplete#enable_refresh_always = 1
 " if !exists('g:deoplete#sources')
 "   let g:deoplete#sources = {}
 " endif
