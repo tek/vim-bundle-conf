@@ -133,14 +133,14 @@ def eol(snip):
   return snip.column == len(snip.buffer[snip.line]) - 1
 endglobal
 
-snippet ".*\b(class|trait|object) .*" "class extends" "eol(snip)" !re
+snippet "(\s*).*\b(class|trait|object) .*" "class extends" "eol(snip)" !re
 `!p snip.rv = match.group(0)`
-extends $0
+`!p snip.rv = snip.mkline('extends', match.group(1))` $0
 endsnippet
 
-snippet "(extends|with) .*" "extends continuation" "eol(snip)" !re
+snippet "(\s*)(extends|with) .*" "extends continuation" "eol(snip)" !re
 `!p snip.rv = match.group(0)`
-with $0
+`!p snip.rv = snip.mkline('with', match.group(1))` $0
 endsnippet
 
 snippet inst "typeclass instance" !b
