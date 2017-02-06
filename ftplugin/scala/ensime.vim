@@ -1,3 +1,2 @@
-nnoremap <silent> <localleader>i :EnSuggestImport<cr>
-nmap <silent> <m-i> <localleader>i
-nnoremap <silent> gd :EnDeclaration<cr>
+nnoremap <buffer> <silent> <m-i> :EnSuggestImport<cr>
+nnoremap <buffer> <silent> gd :EnDeclaration<cr>
