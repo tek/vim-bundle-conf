@@ -6,10 +6,10 @@ let g:neomake_python_mypy_maker = {
     \  '--strict-optional',
     \  '--warn-redundant-casts', '--warn-no-return', '--warn-unused-ignores',
     \  '--show-error-context', '--show-column-numbers', '--check-untyped-defs',
+    \  '--disallow-untyped-calls', '--disallow-untyped-defs',
     \ ],
     \ 'errorformat': '%f:%l:%c: %m,%f:%l: %m',
     \ }
-" '--disallow-untyped-calls',
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
 let g:pymport_package_precedence =
@@ -66,9 +66,9 @@ nnoremap <silent> <f6> :MyoRun integration<cr>
 nnoremap <silent> <f8> :MyoTmuxFocus ipython<cr>
 
 let g:test#runners = {
-      \ 'python': ['Spec']
+      \ 'python': ['Klk', 'Spec']
       \ }
-let test#python#runner = 'spec'
+let test#python#runner = 'klk'
 
 let g:myo_first_error = ['py:myo_bundle.FirstErrorPy']
 let g:myo_output_filters = ['py:myo_bundle.FilterPy']
