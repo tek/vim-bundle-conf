@@ -8,7 +8,7 @@ from amino.util.string import *
 endglobal
 
 snippet cl "class"
-class ${1:MyClass}(${2:object}):
+class $1:
 	${0:pass}
 endsnippet
 
@@ -24,24 +24,24 @@ snippet def "function" !
 def ${1}(`!p
 if snip.indent:
 	snip.rv = 'self'
-	snip.rv += (", " if len(t[2]) else "")`${2}):
+	snip.rv += (", " if len(t[2]) else "")`${2}) -> ${3:None}:
 	${0}
 endsnippet
 
 snippet deff "explicit free function" !
-def ${1}(${2}):
+def ${1}(${2}) -> ${3:None}:
 	${0}
 endsnippet
 
 snippet defp "property" !
 @property
-def ${1}(self):
+def ${1}(self) -> ${3}:
 	${0}
 endsnippet
 
 snippet defz "lazy property" !b
 @lazy
-def ${1}(self):
+def ${1}(self) -> ${3}:
 	${0}
 endsnippet
 
@@ -49,13 +49,13 @@ snippet defl "private function" !
 def _${1}(`!p
 if snip.indent:
 	snip.rv = 'self'
-	snip.rv += (", " if len(t[2]) else "")`${2}):
+	snip.rv += (", " if len(t[2]) else "")`${2}) -> ${3}:
 	${0}
 endsnippet
 
 snippet defL "private property" !
 @property
-def _${1}(self):
+def _${1}(self) -> ${3}:
 	${0}
 endsnippet
 
@@ -63,13 +63,13 @@ snippet defc "classmethod" !
 @classmethod
 def ${1}(`!p
 snip.rv = 'self'
-snip.rv += (", " if len(t[2]) else "")`${2}):
+snip.rv += (", " if len(t[2]) else "")`${2}) -> ${3}:
 	${0}
 endsnippet
 
 snippet defst "staticmethod" !
 @staticmethod
-def ${1}(${2}):
+def ${1}(${2}) -> ${3}:
 	${0}
 endsnippet
 
@@ -78,7 +78,7 @@ snippet decf "decorated function" !b
 def $2(`!p
 if snip.indent:
 	snip.rv = 'self'
-	snip.rv += (", " if len(t[3]) else "")`$3):
+	snip.rv += (", " if len(t[3]) else "")`$3) -> ${3}:
 	${0}
 endsnippet
 
@@ -100,7 +100,7 @@ endsnippet
 
 snippet defs "special function" !
 def __${1}__(self`!p
-snip.rv = (', ' if len(t[2]) else '')`${2}):
+snip.rv = (', ' if len(t[2]) else '')`${2}) -> ${3}:
 	${0:pass}
 endsnippet
 
@@ -284,4 +284,9 @@ endsnippet
 snippet "self.(\w+) = (\w+)" "init attribute continuation" r
 `!p snip.rv = match.group(0)`
 self.$1 = $1
+endsnippet
+
+snippet ex "klk expectation" b
+def $1(self) -> Expectation:
+    return k(1).must(equal(1))
 endsnippet
