@@ -1,6 +1,6 @@
-nmap Sa <Plug>(operator-surround-append)
-nmap Sr <Plug>(operator-surround-replace)
-nmap Sd <Plug>(operator-surround-delete)
+" nmap Sa <Plug>(operator-surround-append)
+" nmap Sr <Plug>(operator-surround-replace)
+" nmap Sd <Plug>(operator-surround-delete)
 
 " nmap <leader>s <Plug>(operator-surround-append)iw
 " nmap <m-s> <Plug>(operator-surround-append)iW
