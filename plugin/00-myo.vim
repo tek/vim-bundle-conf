@@ -12,6 +12,7 @@ nnoremap <silent> <f2> :MyoVimTest<cr>
 nnoremap <silent> <f3> :MyoParse<cr>
 nnoremap <silent> <f4> :MyoRunLatest<cr>
 nnoremap <silent> <f9> :MyoTmuxOpenOrToggle main<cr>
+nnoremap <silent> <s-f9> :MyoTmuxToggle <vim><cr>
 nnoremap <silent> <leader>4 :MyoTmuxFocus make<cr>
 nnoremap <silent> <leader>9 :MyoUniteHistory<cr>
 nnoremap <silent> <f10> :MyoTmuxKill make<cr>
