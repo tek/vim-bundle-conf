@@ -254,3 +254,8 @@ snippet doc "doc comment" b
  * $0
  */
 endsnippet
+
+snippet "<- .*$" "enumerator continuation" ri
+`!p snip.rv = match.group(0)`
+$1 <- $2
+endsnippet
