@@ -21,6 +21,7 @@ if g:use_myo
   call _sbt_project_cmd('publishLocal')
   MyoShellCommand release { 'line': 'release with-defaults', 'shell': 'sbt',
         \ 'langs': ['sbt'] }
+  MyoUpdate layout <vim> { 'minimized_size': 85 }
 
   let g:myo_chainer = 'py:myo_bundle.chain_sbt'
 
