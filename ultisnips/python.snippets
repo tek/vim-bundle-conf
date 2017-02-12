@@ -256,13 +256,13 @@ endsnippet
 
 snippet defh "handle" !b
 @handle($1)
-def `!p snip.rv = snake_case(t[1])`(self):
+def `!p snip.rv = snake_case(t[1])`(self) -> Maybe[Message]:
     $0
 endsnippet
 
 snippet defH "may handle" !b
 @may_handle($1)
-def `!p snip.rv = snake_case(t[1])`(self):
+def `!p snip.rv = snake_case(t[1])`(self) -> Message:
     $0
 endsnippet
 
@@ -286,7 +286,7 @@ snippet "self.(\w+) = (\w+)" "init attribute continuation" r
 self.$1 = $1
 endsnippet
 
-snippet ex "klk expectation" b
+snippet defex "klk expectation" b
 def $1(self) -> Expectation:
     return k(1).must(equal(1))
 endsnippet
