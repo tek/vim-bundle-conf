@@ -15,3 +15,4 @@ if isdirectory(s:central)
 endif
 
 let g:neomake_tex_enabled_makers = ['chktex']
+let g:latex_extra_args = ''
