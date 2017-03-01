@@ -181,3 +181,4 @@ command! Splain call <sid>splain()
 
 highlight clear EnErrorStyle
 highlight EnErrorStyle ctermbg=0
+set omnifunc=
