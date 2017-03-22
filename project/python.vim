@@ -75,3 +75,5 @@ let g:spec_integration = 'klk integration'
 let g:myo_first_error = ['py:myo_bundle.FirstErrorPy']
 let g:myo_output_filters = ['py:myo_bundle.FilterPy']
 let g:myo_path_truncator = 'py:myo_bundle.truncate_py'
+
+ProAdd python/amino

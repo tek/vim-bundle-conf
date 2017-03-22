@@ -1,5 +1,4 @@
 set wildignore+=tests/_fixtures
-ProAdd python/amino
 
 let g:test#runners = {
       \ 'python': ['Spec']
