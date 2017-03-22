@@ -48,8 +48,8 @@ augroup END
 let g:syntastic_aggregate_errors=0
 
 MyoShellCommand deps { 'line': 'pip install -r requirements.txt' }
-MyoShellCommand unit { 'line': 'spec unit' }
-MyoShellCommand integration { 'line': 'spec integration' }
+MyoShellCommand unit { 'line': 'var:spec_unit', 'eval': True }
+MyoShellCommand integration { 'line': 'var:spec_integration', 'eval': True }
 MyoTmuxCreatePane ipython {
       \ 'parent': 'main',
       \ 'minimized': 1,
@@ -69,6 +69,8 @@ let g:test#runners = {
       \ 'python': ['Klk', 'Spec']
       \ }
 let test#python#runner = 'klk'
+let g:spec_unit = 'klk unit'
+let g:spec_integration = 'klk integration'
 
 let g:myo_first_error = ['py:myo_bundle.FirstErrorPy']
 let g:myo_output_filters = ['py:myo_bundle.FilterPy']
