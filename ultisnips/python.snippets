@@ -238,7 +238,7 @@ snippet ti "mypy ignore" !
  # type: ignore
 endsnippet
 
-snippet l "self.log" !b
+snippet lg "self.log" !b
 self.log.$1
 endsnippet
 
@@ -289,4 +289,8 @@ endsnippet
 snippet defex "klk expectation" b
 def $1(self) -> Expectation:
     return k(1).must(equal(1))
+endsnippet
+
+snippet ll "lambda" i
+lambda$1: $0
 endsnippet
