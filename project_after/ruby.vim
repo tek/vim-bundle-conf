@@ -1,4 +1,3 @@
-" let g:maque_args_rspec_default = '--drb'
 let g:rspec_backtrace = 0
 
 function! Toggle_backtrace() "{{{
@@ -15,23 +14,5 @@ endfunction "}}}
 command -bar TB call Toggle_backtrace()
 
 let g:pry_command = get(g:, 'pry_command', 'pry')
-
-" MyoShellCommand 'bundle install', { 'pane': 'main' }
-" " MyoShellCommand 'yard'
-" MyoShellCommand 'tail -n 1000 -f log/development.log',
-"       \ { 'name': 'log', 'compiler': 'rspec', 'create_minimized': 0 }
-" MyoShellCommand g:pry_command, {
-"       \ 'name': 'pry',
-"       \ 'autoclose': 0,
-"       \ 'size': 20,
-"       \ 'minimized_size': 5,
-"       \ 'create_minimized': 0,
-"       \ 'focus_on_restore': 1,
-"       \ 'focus_on_make': 1,
-"       \ }
-
-" nnoremap <silent> <s-f1> :MaqueRunCommand bundle<cr>
-" nnoremap <silent> <s-f2> :MaqueToggleCommand pry<cr>
-" nnoremap <silent> <s-f3> :MaqueToggleCommand log<cr>
 
 let g:ctrlp_custom_ignore['dir'] .= '|<%(profiles|log|doc|vendor/assets|tmp|coverage)>'

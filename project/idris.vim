@@ -1,4 +1,4 @@
-MaqueAddShell 'idris', {
+MyoShell 'idris', {
       \ 'start': 1,
       \ 'create_minimized': 0,
       \ 'minimized_size': 25,
