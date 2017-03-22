@@ -99,4 +99,8 @@ class SbtProjectCmd(VimCallback, metaclass=abc.ABCMeta):
 def chain_sbt(names):
     return ''.join([';{}'.format(name) for name in names])
 
+
+def chain_shell(names) -> str:
+    return ' && '.join(names)
+
 __all__ = ('FilterPy', 'truncate_py', 'FirstErrorPy', 'SbtProjectCmd')
