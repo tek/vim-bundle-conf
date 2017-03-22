@@ -1,10 +1,12 @@
+ProAdd scala/pulsar
+
 let g:sbt_projects = [
-      \ ['unit', 'test', 'test:compile'],
-      \ ['unit-droid', 'test', 'test:compile'],
-      \ ['state', 'test', 'test:compile'],
-      \ ['view', 'test', 'test:compile'],
-      \ ['trial', 'protify:run'],
-      \ ['integration', 'android:test'],
+      \ ['unit'],
+      \ ['unit-droid'],
+      \ ['state'],
+      \ ['view'],
+      \ ['trial'],
+      \ ['integration'],
       \ ]
 let g:logcat_output_name = 'tryp'
 
@@ -13,7 +15,16 @@ let s:test = {
       \     'compile': 'test',
       \   },
       \   'command': {
-      \     'run': 'test',
+      \     'test': 'test',
+      \   },
+      \ }
+
+let s:int = {
+      \   'scope': {
+      \     'test': 'protify',
+      \   },
+      \   'command': {
+      \     'test': 'install',
       \   },
       \ }
 
@@ -21,21 +32,15 @@ let s:sbt_project_map =
       \ {
       \   'trial': {
       \     'scope': {
-      \       'run': 'protify',
+      \       'test': 'protify',
       \       'compile': 'protify',
       \     },
       \     'command': {
       \       'compile': 'install',
       \     },
       \   },
-      \   'integration': {
-      \     'scope': {
-      \       'run': 'android',
-      \     },
-      \     'command': {
-      \       'run': 'install',
-      \     },
-      \   },
+      \   'integration': s:int,
+      \   'tstatei': s:int,
       \ }
 
 call extend(g:sbt_project_map, s:sbt_project_map)
