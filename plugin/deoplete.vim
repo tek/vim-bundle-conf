@@ -11,13 +11,11 @@ let g:deoplete#force_overwrite_completefunc = 1
 let g:deoplete#enable_auto_close_preview = 0
 let g:deoplete#manual_completion_start_length = 0
 let g:deoplete#enable_refresh_always = 1
-" if !exists('g:deoplete#sources')
-"   let g:deoplete#sources = {}
-" endif
+let g:deoplete#auto_complete_delay = 50
+
 if !exists('g:deoplete#ignore_sources')
   let g:deoplete#ignore_sources = {}
 endif
 let g:deoplete#ignore_sources._ = ['ultisnips']
-" let g:deoplete#sources.python = ['jedi']
 
 autocmd BufEnter * let b:deoplete_detected_foldmethod = 1
