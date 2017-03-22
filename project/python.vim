@@ -2,8 +2,8 @@ let g:neomake_python_enabled_makers = ['flake8', 'mypy']
 
 let g:neomake_python_mypy_maker = {
     \ 'args': [
-    \  '--follow-imports=skip', '--fast-parser', '--incremental',
-    \  '--strict-optional',
+    \  '--follow-imports=skip', '--incremental',
+    \  '--strict-optional', '--python-version', '3.6',
     \  '--warn-redundant-casts', '--warn-no-return', '--warn-unused-ignores',
     \  '--show-error-context', '--show-column-numbers', '--check-untyped-defs',
     \  '--disallow-untyped-calls', '--disallow-untyped-defs',
