@@ -39,3 +39,5 @@ let s:sbt_project_map =
       \ }
 
 call extend(g:sbt_project_map, s:sbt_project_map)
+
+let g:scala_integration_rex = '\(integration\|tstatei\)'
