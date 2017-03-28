@@ -4,7 +4,7 @@ endfunction "}}}
 
 function! test#scala#specs2#build_position(type, position) abort "{{{
   if a:type == 'nearest'
-    return s:nearest_test(a:position)
+    return test#scala#specs2#nearest_test(a:position)
   else
     return []
   endif
@@ -17,11 +17,6 @@ endfunction "}}}
 function! test#scala#specs2#executable() abort "{{{
   return tek#bundle#scala#sbt_prefixed('test-only')
 endfunction "}}}
-
-let s:patterns = {
-  \ 'test':      ['\v^\s*def %(setup)\@<!([^_]\w+)'],
-  \ 'namespace': ['\v^\s*class (\w+)'],
-\}
 
 function! test#scala#specs2#package() abort "{{{
   let i = 1
@@ -37,11 +32,11 @@ function! test#scala#specs2#package() abort "{{{
 endfunction "}}}
 
 let s:patterns = {
-      \ 'test': ['\v.*<class (\w+%(Test|Spec)).*'],
+      \ 'test': ['\v.*<%(class|object) (\w+%(Test|Spec)).*'],
       \ 'namespace': [],
 \}
 
-function! s:nearest_test(position) abort "{{{
+function! test#scala#specs2#nearest_test(position) abort "{{{
   let name = test#base#nearest_test(a:position, s:patterns)
   let pkg = test#scala#specs2#package()
   let cls = get(name['test'], 0, '')
