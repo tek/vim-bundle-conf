@@ -1,4 +1,8 @@
-if exists('g:session_dir') && !argc() && !exists('g:maque_remote')
+if exists('g:proteome_main_name')
+  call tek_bundle_misc#init_session_dir()
+endif
+
+if exists('g:session_dir') && !argc()
   let s:session_file = join([g:session_dir, 'Session.vim'], '/')
   let cwd = $PWD
   if filereadable(s:session_file)

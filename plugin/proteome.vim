@@ -7,10 +7,10 @@ let g:proteome_plugins = [
       \ 'proteome.plugins.unite',
       \ ]
 let g:proteome_history_base = '~/usr/var/tmp/vim/history'
-let g:proteome_base_dirs = ['~/code', '/var/tek/lib/repos']
+let g:proteome_base_dirs = ['~/code/ext', '~/code/tek', '~/code/spr', '/var/tek/lib/repos']
 let g:proteome_type_base_dirs = {
       \ $VIMBUNDLES: ['vim'],
-      \ '/home/tek/code/python/external': ['python']
+      \ '/home/tek/code/tek/python/external': ['python']
       \ }
 let g:proteome_all_projects_history = 1
 let tek_misc#postsave_functions += ['tek_bundle_misc#post_save']

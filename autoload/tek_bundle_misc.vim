@@ -28,7 +28,7 @@ endfunction "}}}
 
 function! tek_bundle_misc#init_session_dir() abort "{{{
   let g:sessions_dir = get(g:, 'sessions_dir', expand('~/usr/var/tmp/vim/session'))
-  let session_dir = join([g:sessions_dir, g:project_type, g:project_name], '/')
+  let session_dir = join([g:sessions_dir, g:proteome_main_type, g:proteome_main_name], '/')
   silent! call mkdir(session_dir, 'p')
   let g:session_dir = get(g:, 'session_dir', session_dir)
 endfunction "}}}
