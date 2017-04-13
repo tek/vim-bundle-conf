@@ -10,10 +10,25 @@ function! _sbt_project_cmd(name, ...) abort "{{{
         \ line . ''']' . extra . ' }'
 endfunction "}}}
 
+let g:scala#sbt_cmdline = 'sbt'
+
+function! s:toggle_sbt_min() abort "{{{
+  if g:scala#sbt_cmdline == 'sbt'
+    let g:scala#sbt_cmdline = 'sbt -sbt-dir ~/.config/sbt-min'
+    echo 'minimal sbt'
+  else
+    let g:scala#sbt_cmdline = 'sbt'
+    echo 'full sbt'
+  endif
+endfunction "}}}
+
+command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
+nnoremap <c-f4> :SbtMin<cr>
+
 MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35,
       \ 'position': 0.8 }
-MyoShell sbt { 'line': 'sbt', 'target': 'sbt', 'langs': ['sbt'],
-      \ 'signals': ['kill'], 'history': False }
+MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'],
+      \ 'signals': ['kill'], 'history': False, 'eval': True }
 call _sbt_project_cmd('compile')
 call _sbt_project_cmd('test', 'test')
 call _sbt_project_cmd('clean', 'clean', '''history'': False')
