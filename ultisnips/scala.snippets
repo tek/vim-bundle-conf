@@ -209,7 +209,8 @@ object $1
 extends Poly1
 {
   implicit def $2[$3]
-  = at[$4] { $5 =>
+  : Case.Aux[$4]
+  = at { $5 =>
     $0
   }
 }
@@ -220,7 +221,8 @@ object $1
 extends Poly2
 {
   implicit def $2[$3]
-  = at[$4] {
+  : Case.Aux[$4]
+  = at {
     ($5, $6) =>
       $0
   }
@@ -229,14 +231,16 @@ endsnippet
 
 snippet c1 "poly Case1" b
 implicit def $1[$2]
-= at[$3] { $4 =>
+  : Case.Aux[$3]
+= at { $4 =>
   $0
 }
 endsnippet
 
 snippet c2 "poly Case2" b
 implicit def $1[$2]
-= at[$3] {
+  : Case.Aux[$3]
+= at {
   ($4, $5) =>
     $0
 }
