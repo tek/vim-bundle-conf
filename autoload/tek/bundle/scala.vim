@@ -29,7 +29,7 @@ function! tek#bundle#scala#sbt(cmd) abort "{{{
 endfunction "}}}
 
 function! tek#bundle#scala#add_project(name) abort "{{{
-  call tek_bundle_misc#add_root_project(g:scala_project_dir . '/' . a:name)
+  call tek_bundle_misc#add_root_project(g:main_scala_project_dir . '/' . a:name)
 endfunction "}}}
 
 function! tek#bundle#scala#sbt_prefixed(cmd) abort "{{{
@@ -49,6 +49,6 @@ function! tek#bundle#scala#add_sbt_project(path, ...) abort "{{{
 endfunction "}}}
 
 function! tek#bundle#scala#activate_sbt_project(name) abort "{{{
-  let cmd = 'project {file:' . g:scala_project_dir . '/' . a:name . '}'
+  let cmd = 'project {file:' . g:main_scala_project_dir . '/' . a:name . '}'
   call tek#bundle#scala#sbt(cmd)
 endfunction "}}}

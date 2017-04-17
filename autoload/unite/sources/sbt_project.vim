@@ -4,12 +4,14 @@ endfunction "}}}
 
 function! unite#sources#sbt_project#gather_candidates(args, context) abort "{{{
   let res = []
-  for project in glob(g:scala_project_dir . '/*', 0, 1)
-    let candidate = {
-          \ 'word': fnamemodify(project, ':t'),
-          \ 'action__path': project
-          \ }
-    call add(res, candidate)
+  for base in g:scala_project_dirs
+    for project in glob(base . '/*', 0, 1)
+      let candidate = {
+            \ 'word': fnamemodify(project, ':t'),
+            \ 'action__path': project
+            \ }
+      call add(res, candidate)
+    endfor
   endfor
   return res
 endfunction "}}}

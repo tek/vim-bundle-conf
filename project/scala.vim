@@ -12,7 +12,10 @@ endif
 
 let g:sbt_current_project = 0
 
-let g:scala_project_dir = $HOME . '/code/scala'
+let s:code = $HOME . '/code/'
+
+let g:scala_project_dirs = [s:code . 'tek/scala', s:code . 'ext/scala', s:code . 'spr/scala']
+let g:main_scala_project_dir = g:scala_project_dirs[0]
 
 command! -bar NextProject call tek#bundle#scala#cycle_projects(1)
 command! -bar PrevProject call tek#bundle#scala#cycle_projects(-1)
