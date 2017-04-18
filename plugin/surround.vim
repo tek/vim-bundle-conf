@@ -43,6 +43,8 @@ endfunction "}}}
 " first paren
 nnoremap <leader>ww :call <SID>wrap('w', ')')<cr>
 nnoremap <leader>wW :call <SID>wrap('W', ')')<cr>
+nnoremap <leader>wb :call <SID>wrap('w', ']')<cr>
+nnoremap <leader>wB :call <SID>wrap('W', ']')<cr>
 
 function! s:wrap_object(type, ...) abort "{{{
   silent exe "normal! `[v`]y"
