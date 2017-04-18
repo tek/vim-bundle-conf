@@ -10,16 +10,14 @@ function! _sbt_project_cmd(name, ...) abort "{{{
         \ line . ''']' . extra . ' }'
 endfunction "}}}
 
+let g:scala#sbt_cmdline_index = 0
 let g:scala#sbt_cmdline = 'sbt'
+let g:scala#sbt_cmdlines = ['sbt', 'sbt -sbt-dir ~/.config/sbt-min', 'sbt -sbt-dir ~/.config/sbt-min-release']
 
 function! s:toggle_sbt_min() abort "{{{
-  if g:scala#sbt_cmdline == 'sbt'
-    let g:scala#sbt_cmdline = 'sbt -sbt-dir ~/.config/sbt-min'
-    echo 'minimal sbt'
-  else
-    let g:scala#sbt_cmdline = 'sbt'
-    echo 'full sbt'
-  endif
+  let g:scala#sbt_cmdline_index = (g:scala#sbt_cmdline_index + 1) % len(g:scala#sbt_cmdlines)
+  let g:scala#sbt_cmdline = g:scala#sbt_cmdlines[g:scala#sbt_cmdline_index]
+  echo 'cmdline `' . g:scala#sbt_cmdline . '`'
 endfunction "}}}
 
 command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
