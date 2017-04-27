@@ -56,3 +56,4 @@ nnoremap <silent> <leader>w :set opfunc=<sid>wrap_object<cr>g@
 
 " same for visual
 xmap <leader>w <leader>s)i
+xmap <leader>b <leader>s]i
