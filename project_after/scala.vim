@@ -10,6 +10,10 @@ function! _sbt_project_cmd(name, ...) abort "{{{
         \ line . ''']' . extra . ' }'
 endfunction "}}}
 
+function! _sbt_project_cmd_nohist(name, ...) abort "{{{
+  return call('_sbt_project_cmd', [a:name] + a:000 + ['''history'': False'])
+endfunction "}}}
+
 let g:scala#sbt_cmdline_index = 0
 let g:scala#sbt_cmdline = 'sbt'
 let g:scala#sbt_cmdlines = ['sbt', 'sbt -sbt-dir ~/.config/sbt-min', 'sbt -sbt-dir ~/.config/sbt-min-release']
@@ -29,7 +33,7 @@ MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'
       \ 'signals': ['kill'], 'history': False, 'eval': True }
 call _sbt_project_cmd('compile')
 call _sbt_project_cmd('test', 'test')
-call _sbt_project_cmd('clean', 'clean', '''history'': False')
+call _sbt_project_cmd_nohist('clean', 'clean')
 call _sbt_project_cmd('publishLocal')
 MyoShellCommand release { 'line': 'release with-defaults', 'shell': 'sbt',
       \ 'langs': ['sbt'] }
