@@ -1,5 +1,6 @@
 " shortcut for surrounding inner word/WORD
 nmap <leader>s csw
+nmap S ys
 nmap <m-s> csW
 
 function! Subround(char) "{{{
