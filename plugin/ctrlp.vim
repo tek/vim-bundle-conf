@@ -4,10 +4,21 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_open_multiple_files = '1r'
 let g:ctrlp_max_height = 30
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v<\.%(git|hg|svn)>|<build>',
-  \ 'file': '\v\.%(exe|so|dll|png)$',
-  \ 'link': '',
-  \ }
+
+if !exists('g:ctrlp_custom_ignore')
+  let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v',
+    \ 'file': '\v',
+    \ 'link': '\v',
+    \ }
+else
+  let i = g:ctrlp_custom_ignore
+  let g:ctrlp_custom_ignore['dir'] = '\v' . i['dir']
+  let g:ctrlp_custom_ignore['file'] = '\v' . i['dir']
+  let g:ctrlp_custom_ignore['link'] = '\v' . i['dir']
+endif
+
+let g:ctrlp_custom_ignore['dir'] .= '<\.%(git|hg|svn)>|<build>|<target>'
+let g:ctrlp_custom_ignore['file'] .= '\.%(exe|so|dll|png)$'
 
 nnoremap <silent> <leader>e :call tek_bundle_misc#ctrlp()<cr>
