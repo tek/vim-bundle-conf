@@ -11,7 +11,14 @@ nmap <silent> <leader>b :Unite -auto-resize buffer<cr>
 command! -bar -nargs=1 UniteAg Unite -auto-resize -no-quit grep:.::<args>
 
 "{{{ ag
-if executable('ag')
+if executable('rg')
+  let s:opts = ['--color', 'never', '--no-ignore-vcs', '--ignore-file ~/.agignore']
+  let g:unite_source_grep_command = 'rg'
+  let g:unite_source_grep_default_opts = join(s:opts + ['--line-number'])
+  let g:unite_source_grep_recursive_opt = ''
+  let g:unite_source_rec_async_command =
+        \ ['rg', '--follow', '--hidden', '-g', ''] + s:opts
+elseif executable('ag')
   let g:unite_source_grep_command = 'ag'
   let g:unite_source_grep_default_opts = '--nocolor --nogroup --skip-vcs-ignores'
   let g:unite_source_grep_recursive_opt = ''
