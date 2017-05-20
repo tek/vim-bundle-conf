@@ -1,5 +1,5 @@
 function! test#scala#specs2#test_file(file) abort "{{{
-  return fnamemodify(a:file, ':p') =~ '.*test.*\.scala'
+  return fnamemodify(a:file, ':p') =~ '.*\(test\|it/\).*\.scala'
 endfunction "}}}
 
 function! test#scala#specs2#build_position(type, position) abort "{{{
@@ -15,7 +15,11 @@ function! test#scala#specs2#build_args(args) abort "{{{
 endfunction "}}}
 
 function! test#scala#specs2#executable() abort "{{{
-  return tek#bundle#scala#sbt_prefixed('test-only')
+  let cmd = 'test-only'
+  if fnamemodify(expand('%'), ':p') =~ '.*/it/.*\.scala'
+    let cmd = 'it:' . cmd
+  endif
+  return tek#bundle#scala#sbt_prefixed(cmd)
 endfunction "}}}
 
 function! test#scala#specs2#package() abort "{{{
