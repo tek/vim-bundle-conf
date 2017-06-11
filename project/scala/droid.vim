@@ -1,13 +1,13 @@
 ProAdd scala/pulsar
 
 let g:sbt_projects = [
-      \ ['unit'],
-      \ ['unit-droid'],
-      \ ['state'],
-      \ ['view'],
-      \ ['trial'],
       \ ['integration'],
       \ ]
+      " \ ['unit'],
+      " \ ['unit-droid'],
+      " \ ['state'],
+      " \ ['view'],
+      " \ ['trial'],
 let g:logcat_output_name = 'tryp'
 
 let s:test = {
@@ -40,9 +40,6 @@ let s:sbt_project_map =
       \     },
       \   },
       \   'integration': s:int,
-      \   'tstatei': s:int,
       \ }
 
 call extend(g:sbt_project_map, s:sbt_project_map)
-
-let g:scala_integration_rex = '\(integration\|tstatei\)'
