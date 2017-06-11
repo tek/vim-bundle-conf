@@ -23,8 +23,7 @@ elseif executable('ag')
   let g:unite_source_grep_default_opts = '--nocolor --nogroup --skip-vcs-ignores'
   let g:unite_source_grep_recursive_opt = ''
   let g:unite_source_rec_async_command =
-        \ ['ag', '--follow', '--nocolor', '--nogroup', '--hidden',
-        \ '--skip-vcs-ignores', '-g', '']
+        \ ['ag', '--follow', '--nocolor', '--nogroup', '--hidden', '--skip-vcs-ignores', '-g', '']
 endif
 
 nnoremap <silent> <leader>aa :Unite -auto-resize -no-quit grep:.:-s:<cr>
