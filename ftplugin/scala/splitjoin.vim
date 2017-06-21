@@ -16,4 +16,5 @@ let b:splitjoin_split_callbacks += [
       \ 'tek_sj#split_scala_block',
       \ 'tek_sj#split_scala_package',
       \ 'tek_sj#split_scala_import',
+      \ 'tek_sj#split_scala_params',
       \ ]

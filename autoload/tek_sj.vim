@@ -81,7 +81,7 @@ function! tek_sj#join_scala_package_import() abort "{{{
   if this_line !~ pattern || next_line !~ pattern
     return 0
   endif
-  let new_line = 
+  let new_line =
         \ substitute(this_line, pattern, '\1 \3', '') .
         \ substitute(next_line, pattern, '.\2', '')
   call sj#ReplaceLines(this_line_no, next_line_no, new_line)
@@ -93,6 +93,19 @@ function! tek_sj#split_scala_import() abort "{{{
   let pattern = '\v^import %(\w|\.){}\zs\.(_@!\w+%(\._)?)$'
   if line =~ pattern
     call sj#ReplaceMotion('V', substitute(line, pattern, '._\nimport \1', ''))
+    return 1
+  endif
+endfunction "}}}
+
+function! tek_sj#split_scala_params() abort "{{{
+  let line = getline('.')
+  let pattern = '\v^([^(]*)\((.*)\)([^)]*)$'
+  if line =~ pattern
+    let params = substitute(line, pattern, '\2', '')
+    let trailingComma = substitute(params, '[^,]\zs$', ',', '')
+    let paramLines = substitute(trailingComma, ',\s*', ',\n', 'g')
+    let replacement = substitute(line, pattern, '\1(\n' . paramLines . ')\3', '')
+    call sj#ReplaceMotion('V', replacement)
     return 1
   endif
 endfunction "}}}
