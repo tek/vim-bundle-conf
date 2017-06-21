@@ -53,6 +53,10 @@ snippet id "implicit def" !b
 implicit def $0
 endsnippet
 
+snippet iv "implicit val" !b
+implicit val $0
+endsnippet
+
 snippet im "implicit" !i
 implicit $0
 endsnippet
@@ -175,7 +179,7 @@ private[this] ${1:def} $0
 endsnippet
 
 snippet lv "lazy val" !b
-lazy val 
+lazy val
 endsnippet
 
 snippet mc "message class" !b
@@ -268,4 +272,10 @@ endsnippet
 snippet "<- .*$" "enumerator continuation" ri
 `!p snip.rv = match.group(0)`
 $1 <- $2
+endsnippet
+
+snippet f "for comp" b
+for {
+  $1 <- $2
+} yield $3
 endsnippet
