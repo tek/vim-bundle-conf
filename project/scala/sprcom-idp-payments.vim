@@ -1,4 +1,4 @@
-let g:sbt_projects = [['mongo'], ['core'], ['root']]
+let g:sbt_projects = [['root'], ['mongo'], ['core']]
 
 let s:sbt_project_map =
       \ {
