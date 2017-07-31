@@ -19,3 +19,26 @@ endif
 let g:deoplete#ignore_sources._ = ['ultisnips']
 
 autocmd BufEnter * let b:deoplete_detected_foldmethod = 1
+
+let g:deoplete_logdir = $HOME . '/usr/var/log/deoplete'
+let g:deoplete_logfile = g:deoplete_logdir . '/log_' . getpid()
+let g:deoplete#sources#jedi#debug_server = 1
+
+if !isdirectory(g:deoplete_logdir)
+  try
+    execute 'silent! !mkdir -p ' . g:deoplete_logdir
+  catch
+  endtry
+endif
+
+function! _deoplete_log(level) abort "{{{
+  call deoplete#enable_logging(a:level, g:deoplete_logfile)
+endfunction "}}}
+
+function! DeopleteDebug() abort "{{{
+  call _deoplete_log('DEBUG')
+endfunction "}}}
+
+if isdirectory(g:deoplete_logdir)
+  call _deoplete_log('WARN')
+endif
