@@ -1,5 +1,5 @@
-function! test#python#spec#test_file(file) abort "{{{
-  return a:file =~ '.*_spec.py'
+function! test#python#spec#test_file(fname) abort "{{{
+  return test#util#want('python', 'spec') && a:fname =~ '.*_spec.py'
 endfunction "}}}
 
 function! test#python#spec#build_position(type, position) abort "{{{

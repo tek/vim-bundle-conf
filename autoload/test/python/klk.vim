@@ -1,5 +1,5 @@
 function! test#python#klk#test_file(fname) abort "{{{
-  return a:fname =~ '.*_spec.py'
+  return test#util#want('python', 'klk') && a:fname =~ '.*_spec.py'
 endfunction "}}}
 
 function! test#python#klk#build_position(type, position) abort "{{{
