@@ -20,6 +20,10 @@ snippet ss "self private" w
 self._
 endsnippet
 
+snippet sss "self scoped" w
+self.__
+endsnippet
+
 snippet def "function" !
 def ${1}(`!p
 if snip.indent:
@@ -108,6 +112,7 @@ snippet init "init function" !b
 def __init__(self`!p
 snip.rv = (', ' if len(t[1]) else '')`${1}) -> None:
 `!p
+rex = Regex(':.*')
 def go(h, t):
   snip.shift()
   first = snip.mkline(h)
@@ -116,13 +121,13 @@ def go(h, t):
   snip.rv = '\n'.join(rest.cons(first))
 def pss():
   snip.rv = 'pass'
-List.wrap(t[1].split(', ')).map(lambda a: f'self.{a} = {a}')\
+List.wrap(t[1].split(', ')).map(L(rex.sub)('', _)).map(lambda a: f'self.{a} = {a}')\
   .detach_head.map2(go) | pss
 `$0
 endsnippet
 
 snippet ds "docstring" !
-''' ${0:doc}
+'''${0}
 '''
 endsnippet
 
@@ -256,13 +261,13 @@ endsnippet
 
 snippet defh "handle" !b
 @handle($1)
-def `!p snip.rv = snake_case(t[1])`(self) -> Maybe[Message]:
+def `!p snip.rv = snake_case(t[1])`(self, data: Data, msg: $1) -> Maybe[Message]:
     $0
 endsnippet
 
 snippet defH "may handle" !b
 @may_handle($1)
-def `!p snip.rv = snake_case(t[1])`(self) -> Message:
+def `!p snip.rv = snake_case(t[1])`(self, data: Data, msg: $1) -> Message:
     $0
 endsnippet
 
