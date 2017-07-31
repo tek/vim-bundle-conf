@@ -2,7 +2,7 @@ nnoremap <silent> <leader><F5> :LatexView<cr>
 
 set makeprg=latexmk
 
-let s:central = $HOME . '/res/tex'
+let s:central = $HOME . '/data/tex'
 
 if isdirectory(s:central)
   let s:build_dir = s:central . '/' . g:project_name

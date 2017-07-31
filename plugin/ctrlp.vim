@@ -18,7 +18,7 @@ else
   let g:ctrlp_custom_ignore['link'] = '\v' . i['dir']
 endif
 
-let g:ctrlp_custom_ignore['dir'] .= '<\.%(git|hg|svn)>|/build>|<target>'
+let g:ctrlp_custom_ignore['dir'] .= '<\.git>|/build>|<target>'
 let g:ctrlp_custom_ignore['file'] .= '\.%(png|jpg)$'
 
 nnoremap <silent> <leader>e :call tek_bundle_misc#ctrlp()<cr>

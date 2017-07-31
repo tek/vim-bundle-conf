@@ -49,6 +49,4 @@ let g:sbt_project_map =
       \   'default': g:sbt_project_test,
       \ }
 
-let g:myo_tmux_vim_width = 125
-
 let g:scala_integration_rex = 'integration'
