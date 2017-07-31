@@ -48,8 +48,8 @@ augroup END
 let g:syntastic_aggregate_errors=0
 
 MyoShellCommand deps { 'line': 'pip install -r requirements.txt' }
-MyoShellCommand unit { 'line': 'var:spec_unit', 'eval': True }
-MyoShellCommand integration { 'line': 'var:spec_integration', 'eval': True }
+MyoShellCommand unit { 'line': 'var:spec_unit', 'eval': True, 'langs': ['python'] }
+MyoShellCommand integration { 'line': 'var:spec_integration', 'eval': True, 'langs': ['python'] }
 MyoTmuxCreatePane ipython {
       \ 'parent': 'main',
       \ 'minimized': 1,
