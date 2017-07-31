@@ -34,7 +34,7 @@ MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'
 call _sbt_project_cmd('compile')
 call _sbt_project_cmd('test', 'test')
 call _sbt_project_cmd_nohist('clean', 'clean')
-call _sbt_project_cmd('publishLocal')
+call _sbt_project_cmd('publishLocal', '+publishLocal')
 MyoShellCommand release { 'line': 'release with-defaults', 'shell': 'sbt',
       \ 'langs': ['sbt'] }
 MyoUpdate layout <vim> { 'minimized_size': 85 }
@@ -75,7 +75,7 @@ function! s:compiler_param(name, value, project, ...) abort "{{{
   execute 'let state = ' . flag
   if !s:cpar_used
     let s:cpar_used = 1
-    SbtNh \ 
+    SbtNh \
   endif
   if a:0 > 1
     let axis = a:2
