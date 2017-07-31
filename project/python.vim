@@ -2,13 +2,13 @@ let g:neomake_python_enabled_makers = ['flake8', 'mypy']
 
 let g:neomake_python_mypy_maker = {
     \ 'args': [
-    \  '--follow-imports=skip', '--incremental',
+    \  '--follow-imports=silent', '--incremental',
     \  '--strict-optional', '--python-version', '3.6',
     \  '--warn-redundant-casts', '--warn-no-return', '--warn-unused-ignores',
     \  '--show-error-context', '--show-column-numbers', '--check-untyped-defs',
     \  '--disallow-untyped-calls', '--disallow-untyped-defs',
     \ ],
-    \ 'errorformat': '%f:%l:%c: %m,%f:%l: %m',
+    \ 'errorformat': '%f:%l:%c: %m,%f:%l: %m,%-G%.%#',
     \ }
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
