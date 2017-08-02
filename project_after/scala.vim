@@ -45,7 +45,6 @@ command! -nargs=+ Sbt MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'] }
 command! -nargs=+ SbtNh MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'], 'history': False }
 nnoremap <silent> <f6> :MyoRun compile<cr>
 nnoremap <silent> <f5> :MyoRun test<cr>
-nnoremap <silent> <f6> :MyoRun compile<cr>
 nnoremap <silent> <s-f6> :MyoRun clean<cr>
 nnoremap <silent> <f7> :MyoTmuxFocus log<cr>
 nnoremap <silent> <s-f7> :MyoToggleCommand log<cr>

@@ -8,6 +8,5 @@ MyoShellCommand run_tryp { 'line': 'vim:Myo_chef_run', 'eval': True }
 nnoremap <silent> <f5> :MyoRunChained upload_tryp run_tryp<cr>
 
 let g:maque_chef_node_name = 'pulsar'
-let g:maque_chef_cookbook = g:project_name
 
 let g:myo_chainer = 'py:myo_bundle.chain_shell'
