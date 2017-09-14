@@ -29,8 +29,8 @@ class FilterPy(VimCallback):
     def packages(self):
         pkg = Try(lambda: self.vim.vars('project_name')).join | ''
         am_pkgs = List() if pkg == 'amino' else List('amino')
-        ribo_pkgs = List() if pkg == 'ribosome' else List('ribosome')
-        return am_pkgs + ribo_pkgs + List('sure', 'nose', 'unittest')
+        # ribo_pkgs = List() if pkg == 'ribosome' else List('ribosome')
+        return am_pkgs + List('sure', 'nose', 'unittest')
 
     @lazy
     def package_re(self):
