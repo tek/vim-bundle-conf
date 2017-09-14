@@ -26,7 +26,7 @@ endsnippet
 
 snippet def "function" !
 def ${1}(`!p
-if snip.indent:
+if len(snip.indent) == 4:
 	snip.rv = 'self'
 	snip.rv += (", " if len(t[2]) else "")`${2}) -> ${3:None}:
 	${0}
@@ -143,7 +143,7 @@ snip.rv = (' as ' if len(t[2]) else '')`${2:e}:
 	${3}
 endsnippet
 
-snippet try "Try / Except / Else" b
+snippet trye "Try / Except / Else" b
 try:
 	${1:pass}
 except ${2:Exception}`!p
@@ -153,7 +153,7 @@ else:
 	${5:pass}
 endsnippet
 
-snippet try "Try / Except / Finally" b
+snippet tryf "Try / Except / Finally" b
 try:
 	${1:pass}
 except ${2:Exception}`!p
@@ -163,7 +163,7 @@ finally:
 	${5:pass}
 endsnippet
 
-snippet try "Try / Except / Else / Finally" b
+snippet tryef "Try / Except / Else / Finally" b
 try:
 	${1:pass}
 except${2: ${3:Exception}`!p
@@ -247,8 +247,12 @@ snippet lg "self.log" !b
 self.log.$1
 endsnippet
 
-snippet d "self.log.verbose" !w
-self.log.verbose($1)
+snippet d "self.log.test" !w
+self.log.test($1)
+endsnippet
+
+snippet rd "ribo_log.test" !w
+ribo_log.test($1)
 endsnippet
 
 snippet mes "ribosome message" !b
@@ -261,24 +265,24 @@ endsnippet
 
 snippet defh "handle" !b
 @handle($1)
-def `!p snip.rv = snake_case(t[1])`(self, data: Data, msg: $1) -> Maybe[Message]:
+def `!p snip.rv = snake_case(t[1])`(self) -> Maybe[Message]:
     $0
 endsnippet
 
 snippet defH "may handle" !b
 @may_handle($1)
-def `!p snip.rv = snake_case(t[1])`(self, data: Data, msg: $1) -> Message:
+def `!p snip.rv = snake_case(t[1])`(self) -> Message:
     $0
 endsnippet
 
 snippet nl "ribosome logging import" !b
-from ribosome.logging import log
-log.verbose($1)
+from ribosome.logging import ribo_log
+ribo_log.test($1)
 endsnippet
 
 snippet mc "message command" !b
 @msg_command($1)
-def $2(self):
+def `!p snip.rv = snake_case(t[1])`(self) -> None:
     pass
 endsnippet
 
@@ -298,4 +302,8 @@ endsnippet
 
 snippet ll "lambda" i
 lambda$1: $0
+endsnippet
+
+snippet tv "type variable" b
+$1 = TypeVar('$1'$2)
 endsnippet
