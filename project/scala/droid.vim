@@ -1,4 +1,4 @@
-ProAdd scala/pulsar
+ProAdd! scala/pulsar
 
 let g:sbt_projects = [
       \ ['integration'],

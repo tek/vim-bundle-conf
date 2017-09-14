@@ -1,1 +1,1 @@
-ProAdd python_nvim/ribosome
+ProAdd! python_nvim/ribosome

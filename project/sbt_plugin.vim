@@ -1,1 +1,1 @@
-ProAdd scala/tryplug
+ProAdd! scala/tryplug

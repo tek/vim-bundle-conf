@@ -1,4 +1,4 @@
-ProAdd python_nvim/ribosome
+ProAdd! python_nvim/ribosome
 
 let test#python#runner = 'spec'
 let g:spec_unit = 'spec unit'
