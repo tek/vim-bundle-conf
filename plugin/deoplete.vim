@@ -22,7 +22,7 @@ autocmd BufEnter * let b:deoplete_detected_foldmethod = 1
 
 let g:deoplete_logdir = $HOME . '/usr/var/log/deoplete'
 let g:deoplete_logfile = g:deoplete_logdir . '/log_' . getpid()
-let g:deoplete#sources#jedi#debug_server = 1
+" let g:deoplete#sources#jedi#debug_server = 1
 
 if !isdirectory(g:deoplete_logdir)
   try
@@ -38,7 +38,3 @@ endfunction "}}}
 function! DeopleteDebug() abort "{{{
   call _deoplete_log('DEBUG')
 endfunction "}}}
-
-if isdirectory(g:deoplete_logdir)
-  call _deoplete_log('WARN')
-endif
