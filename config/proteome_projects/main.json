@@ -71,6 +71,12 @@
     "langs": ["python"]
   },
   {
+    "name": "chromatin",
+    "type": "python_nvim",
+    "types": ["python"],
+    "langs": ["python"]
+  },
+  {
     "name": "ribosome",
     "type": "python_nvim",
     "types": ["python"],
