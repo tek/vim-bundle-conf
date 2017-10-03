@@ -1,15 +1,28 @@
 let g:neomake_python_enabled_makers = ['flake8', 'mypy']
+let g:neomake_coconut_enabled_makers = ['mypy']
+
+let s:mypy_args = [
+      \  '--follow-imports=silent', '--incremental',
+      \  '--strict-optional',
+      \  '--warn-redundant-casts', '--warn-no-return', '--warn-unused-ignores',
+      \  '--show-error-context', '--show-column-numbers', '--check-untyped-defs',
+      \  '--disallow-untyped-calls', '--disallow-untyped-defs',
+      \ ]
+
+let s:mypy_efm = '%f:%l:%c: %m,%f:%l: %m,%-G%.%#'
 
 let g:neomake_python_mypy_maker = {
-    \ 'args': [
-    \  '--follow-imports=silent', '--incremental',
-    \  '--strict-optional', '--python-version', '3.6',
-    \  '--warn-redundant-casts', '--warn-no-return', '--warn-unused-ignores',
-    \  '--show-error-context', '--show-column-numbers', '--check-untyped-defs',
-    \  '--disallow-untyped-calls', '--disallow-untyped-defs',
-    \ ],
-    \ 'errorformat': '%f:%l:%c: %m,%f:%l: %m,%-G%.%#',
-    \ }
+      \ 'args': s:mypy_args + ['--python-version', '3.6'],
+      \ 'errorformat': s:mypy_efm,
+      \ }
+
+let g:neomake_coconut_mypy_maker = {
+      \ 'exe': 'coconut',
+      \ 'args': ['--target', '3.6', '--strict', '--quiet', '--line-numbers', '%:p', '--mypy'] + s:mypy_args,
+      \ 'errorformat': s:mypy_efm,
+      \ 'append_file': 0,
+      \ 'process_output': function('tek#bundle#python#coconut_mypy_process_output'),
+      \ }
 
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
 let g:pymport_package_precedence =
