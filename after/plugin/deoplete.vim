@@ -6,7 +6,6 @@ let g:deoplete#omni#input_patterns.python = '[^. ]\.\w*\|import \w*\|from \w*'
 
 let g:deoplete#omni#input_patterns.scala = [
       \ '[^. *\t]\.\w*',
-      \ '[:\[,] ?\w*',
       \ '^import .*'
       \ ]
 
