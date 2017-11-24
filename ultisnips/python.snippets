@@ -175,18 +175,9 @@ finally:
 	${7:pass}
 endsnippet
 
-snippet "([\([]([^\([.]+)(\.\S+)?\sf)f" "generator for with call on iterator" !r
-`!p
-snip.rv = '{}or {}'.format(match.group(1), match.group(2))` in ${2:`!p snip.rv = match.group(2)`s}
-endsnippet
-
-snippet "\S\sf" "generator for" !r
-`!p
-snip.rv = '{}or'.format(match.group(0))` ${1:iterator} in ${2:iterable}
-endsnippet
-
 snippet sup "super" !i
 super().${1:`!p
+tek_vim_py_test.parse_file()
 snip.rv = tek_vim_py_test.current_function_name()`}(${2:`!p
 f = tek_vim_py_inspect.containing_function()
 if f:
@@ -251,7 +242,7 @@ snippet d "self.log.test" !w
 self.log.test($1)
 endsnippet
 
-snippet rd "ribo_log.test" !w
+snippet rl "ribo_log.test" !w
 ribo_log.test($1)
 endsnippet
 
@@ -290,14 +281,14 @@ snippet at "init attribute" b
 self.$1 = $1
 endsnippet
 
-snippet "self.(\w+) = (\w+)" "init attribute continuation" r
+snippet "self.(\w+) = \1" "init attribute continuation" r
 `!p snip.rv = match.group(0)`
 self.$1 = $1
 endsnippet
 
 snippet defex "klk expectation" b
 def $1(self) -> Expectation:
-    return k(1).must(equal(1))
+    return k(1) == 1
 endsnippet
 
 snippet ll "lambda" i
@@ -306,4 +297,15 @@ endsnippet
 
 snippet tv "type variable" b
 $1 = TypeVar('$1'$2)
+endsnippet
+
+snippet ad "arg desc function" b
+def _arg_desc(self) -> List[str]:
+    return List($0)
+endsnippet
+
+snippet tdo "type do notation function" b
+@tdo($1)
+def $2($3) -> Generator:
+  $0
 endsnippet
