@@ -11,4 +11,3 @@
 " " let g:neocomplete#force_omni_input_patterns.scala = '[^. \t]\.\w*\|import \w*'
 " let g:neocomplete#manual_completion_start_length = 0
 
-" inoremap <expr> <m-m> neocomplete#start_manual_complete()

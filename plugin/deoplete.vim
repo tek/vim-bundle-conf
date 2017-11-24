@@ -1,8 +1,6 @@
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_ignore_case = 1
-let g:deoplete#auto_completion_start_length = 0
-let deoplete#auto_completion_start_length = 0
-let deoplete#auto_complete_start_length = 0
+let g:deoplete#auto_complete_start_length = 1
 let g:deoplete#data_directory = '~/.cache/deoplete'
 let g:deoplete#enable_auto_delimiter = 1
 let g:deoplete#enable_auto_pairs = 1
@@ -12,6 +10,8 @@ let g:deoplete#enable_auto_close_preview = 0
 let g:deoplete#manual_completion_start_length = 0
 let g:deoplete#enable_refresh_always = 1
 let g:deoplete#auto_complete_delay = 50
+
+inoremap <expr> <m-m> deoplete#manual_complete()
 
 if !exists('g:deoplete#ignore_sources')
   let g:deoplete#ignore_sources = {}
