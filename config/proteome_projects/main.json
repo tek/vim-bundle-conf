@@ -80,6 +80,6 @@
     "name": "ribosome",
     "type": "python_nvim",
     "types": ["python"],
-    "langs": ["python"]
+    "langs": ["python", "coco"]
   }
 ]
