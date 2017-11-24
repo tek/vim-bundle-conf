@@ -1,8 +1,10 @@
-let s:switch_definitions = 
-    \ [ 
+let s:switch_definitions =
+    \ [
     \ {
     \   '\k\+ = ': 'return ',
-    \   'return ': 'v = ', 
+    \   'return ': 'v = ',
+    \   'dec\(\w\+\)': 'enc\1',
+    \   'enc\(\w\+\)': 'dec\1',
     \ },
     \ ['yes', 'no'],
     \ ['horizontal', 'vertical'],
