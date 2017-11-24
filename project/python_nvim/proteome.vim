@@ -1,5 +1,5 @@
 ProAdd! python_nvim/ribosome
 
-let test#python#runner = 'spec'
-let g:spec_unit = 'spec unit'
-let g:spec_integration = 'spec integration'
+let test#python#runner = 'klk'
+let g:spec_unit = 'klk unit'
+let g:spec_integration = 'klk integration'
