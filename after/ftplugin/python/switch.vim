@@ -1,6 +1,10 @@
-let s:switch_definitions = 
-    \ [ 
-    \  ['extend', 'append']
+let s:switch_definitions =
+    \ [
+    \ {
+    \   '\k\+ = yield': 'yield ',
+    \   'yield ': 'v = yield',
+    \ },
+    \ ['flat_map', 'map'],
     \ ]
 
 if !exists('b:switch_custom_definitions')
