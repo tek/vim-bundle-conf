@@ -9,4 +9,5 @@ class <pythontestname>:
     def test(self) -> Expectation:
         return k(1) == 1
 
+
 __all__ = ('<pythontestname>',)
