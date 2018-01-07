@@ -27,10 +27,9 @@ endfunction "}}}
 command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
 nnoremap <c-f4> :SbtMin<cr>
 
-MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35,
-      \ 'position': 0.8 }
-MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'],
-      \ 'signals': ['kill'], 'history': False, 'eval': True }
+MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35, 'position': 0.8 }
+MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'], 'signals': ['kill'],
+      \ 'history': False, 'eval': True }
 call _sbt_project_cmd('compile')
 call _sbt_project_cmd('test', 'test')
 call _sbt_project_cmd_nohist('clean', 'clean')

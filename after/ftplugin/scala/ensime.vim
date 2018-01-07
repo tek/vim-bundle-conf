@@ -1,1 +1,1 @@
-set omnifunc=
+" set omnifunc=
