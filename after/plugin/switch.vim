@@ -3,11 +3,14 @@ let s:switch_definitions =
     \ {
     \   '\k\+ = ': 'return ',
     \   'return ': 'v = ',
-    \   'dec\(\w\+\)': 'enc\1',
-    \   'enc\(\w\+\)': 'dec\1',
+    \   'dec\zeod': 'enc',
+    \   'enc\zeod': 'dec',
+    \   'Dec\zeod': 'Enc',
+    \   'Enc\zeod': 'Dec',
     \ },
     \ ['yes', 'no'],
     \ ['horizontal', 'vertical'],
+    \ ['left', 'right'],
     \ ]
 
 if !exists('g:switch_definitions')
