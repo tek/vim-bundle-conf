@@ -5,6 +5,38 @@ import tek_vim_py_test
 import tek_vim_py_inspect
 from amino import *
 from amino.util.string import *
+
+rex = Regex(':.*')
+
+def init_attr(h, t, n=1):
+  snip.shift()
+  first = snip.mkline(h)
+  for i in range(n):
+    snip.shift()
+  rest = t / snip.mkline
+  snip.rv = rest.cons(first).join_lines
+
+def pass_token():
+  snip.rv = 'pass'
+
+def init_params(num: int):
+    return List.wrap(t[num].split(', ')).map(L(rex.sub)('', _))
+
+def init_attrs(num: int):
+    return (
+        init_params(num)
+            .map(lambda a: f'self.{a} = {a}')
+            .detach_head
+            .map2(init_attr) |
+            pass_token
+    )
+
+def cons_params(num: int):
+    snip.shift()
+    return List.wrap(t[num].split(', ')).map(lambda a: f'{a},').detach_head.map2(init_attr)
+
+def init_args(num: int):
+    return init_params(num).map(lambda a: f'{a},').detach_head.map2(lambda a, b: init_attr(a, b, 2))
 endglobal
 
 snippet cl "class"
@@ -111,19 +143,7 @@ endsnippet
 snippet init "init function" !b
 def __init__(self`!p
 snip.rv = (', ' if len(t[1]) else '')`${1}) -> None:
-`!p
-rex = Regex(':.*')
-def go(h, t):
-  snip.shift()
-  first = snip.mkline(h)
-  snip.shift()
-  rest = t / snip.mkline
-  snip.rv = '\n'.join(rest.cons(first))
-def pss():
-  snip.rv = 'pass'
-List.wrap(t[1].split(', ')).map(L(rex.sub)('', _)).map(lambda a: f'self.{a} = {a}')\
-  .detach_head.map2(go) | pss
-`$0
+`!p init_attrs(1)`$0
 endsnippet
 
 snippet ds "docstring" !
@@ -246,6 +266,10 @@ snippet rl "ribo_log.test" !w
 ribo_log.test($1)
 endsnippet
 
+snippet rd "ribo_log.debug" !w
+ribo_log.debug($1)
+endsnippet
+
 snippet mes "ribosome message" !b
 $1 = message('$1'$2)
 endsnippet
@@ -304,8 +328,23 @@ def _arg_desc(self) -> List[str]:
     return List($0)
 endsnippet
 
-snippet tdo "type do notation function" b
-@tdo($1)
-def $2($3) -> Generator:
+snippet do "do notation function" b
+@do($1)
+def $2($3) -> Do:
   $0
+endsnippet
+
+snippet dat "data class" b
+class $1(Dat['$1']):
+
+    @staticmethod
+    def cons(
+    `!p cons_params(2)`
+    ) -> '$1':
+        return $1(
+        `!p init_args(2)`
+        )
+
+    def __init__(self`!p snip.rv = (', ' if len(t[2]) else '')`$2) -> None:
+    `!p init_attrs(2)`
 endsnippet
