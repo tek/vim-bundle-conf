@@ -7,14 +7,14 @@ fun! s:template_keywords() "{{{
 try:
   import vim
   from os import path
-  from tek.tools import camelcaseify
+  from amino.util.string import camelcase
   import re
 except:
     pass
 try:
     match = re.search(r'/([^/]+)_(test|spec).py$', vim.current.buffer.name)
     if match:
-      name = camelcaseify(match.group(1))
+      name = camelcase(match.group(1))
       vim.command('let l:pytestname="{}Spec"'.format(name))
 except Exception as e:
     print('Error while creating python test class name: {}'.format(e))
@@ -22,7 +22,7 @@ try:
     match = re.search('([^/]+)_controller.coffee$', vim.current.buffer.name)
     if match:
       ctrl = match.group(1)
-      vim.command('let l:coffee_ctrl = "{}"'.format(camelcaseify(ctrl)))
+      vim.command('let l:coffee_ctrl = "{}"'.format(camelcase(ctrl)))
 except Exception as e:
     print('Error while creating coffee controller name: {}'.format(e))
 END
