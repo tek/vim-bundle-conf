@@ -9,6 +9,7 @@ let s:switch_definitions =
     \   'Enc\zeod': 'Dec',
     \ },
     \ ['yes', 'no'],
+    \ ['on', 'off'],
     \ ['horizontal', 'vertical'],
     \ ['left', 'right'],
     \ ]
