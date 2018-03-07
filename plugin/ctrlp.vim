@@ -14,11 +14,11 @@ if !exists('g:ctrlp_custom_ignore')
 else
   let i = g:ctrlp_custom_ignore
   let g:ctrlp_custom_ignore['dir'] = '\v' . i['dir']
-  let g:ctrlp_custom_ignore['file'] = '\v' . i['dir']
-  let g:ctrlp_custom_ignore['link'] = '\v' . i['dir']
+  let g:ctrlp_custom_ignore['file'] = '\v' . i['file']
+  let g:ctrlp_custom_ignore['link'] = '\v' . i['link']
 endif
 
-let g:ctrlp_custom_ignore['dir'] .= '<\.git>|/build>|<target>'
+let g:ctrlp_custom_ignore['dir'] .= '\.git>|/build>|<target>|' . $PWD . '/node_modules'
 let g:ctrlp_custom_ignore['file'] .= '\.%(png|jpg)$'
 
 nnoremap <silent> <leader>e :call tek_bundle_misc#ctrlp()<cr>

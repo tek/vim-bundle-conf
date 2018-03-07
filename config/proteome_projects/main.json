@@ -81,5 +81,11 @@
     "type": "python_nvim",
     "types": ["python"],
     "langs": ["python", "coco"]
+  },
+  {
+    "name": "sprcom-journal-page-front-end",
+    "type": "nodejs",
+    "types": ["javascript"],
+    "langs": ["javascript"]
   }
 ]
