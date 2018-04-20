@@ -109,3 +109,43 @@ function! tek_sj#split_scala_params() abort "{{{
     return 1
   endif
 endfunction "}}}
+
+function! tek_sj#single_line(pattern, replacement) abort "{{{
+  let line = getline('.')
+  if line =~ a:pattern
+    call sj#ReplaceMotion('V', substitute(line, a:pattern, a:replacement, ''))
+    return 1
+  endif
+endfunction "}}}
+
+function! tek_sj#multi_line(pattern, replacement) abort "{{{
+  let line_patterns = split(a:pattern, '\\n')
+  let lno = line('.')
+  let line = getline('.')
+  let line_count = len(line_patterns)
+  let matches = map(copy(line_patterns), {index, pat -> match(line, pat) >= 0})
+  let cursor_pattern_index = index(matches, 1)
+  if cursor_pattern_index >= 0
+    let start_line = lno - cursor_pattern_index
+    let end_line = lno + line_count - cursor_pattern_index
+    let lines = getline(start_line, end_line - 1)
+    let text = join(lines, "\n")
+    let result = substitute(text, a:pattern, a:replacement, '')
+    call sj#ReplaceLines(start_line, end_line - 1, result)
+    return 1
+  endif
+endfunction "}}}
+
+function! tek_sj#join_python_do() abort "{{{
+  return tek_sj#multi_line(
+        \ '\v^( *)\@do\((.*)\)\n( *def .* -\> )Do:$',
+        \ '\1\3\2:',
+        \ )
+endfunction "}}}
+
+function! tek_sj#split_python_do() abort "{{{
+  return tek_sj#single_line(
+        \ '\v^( *)(def .* -\> )%(Do)@!(.*):$',
+        \ '\1@do(\3)\n\1\2Do:',
+        \ )
+endfunction "}}}
