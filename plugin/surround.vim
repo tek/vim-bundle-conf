@@ -47,13 +47,22 @@ nnoremap <leader>wW :call <SID>wrap('W', ')')<cr>
 nnoremap <leader>wb :call <SID>wrap('w', ']')<cr>
 nnoremap <leader>wB :call <SID>wrap('W', ']')<cr>
 
-function! s:wrap_object(type, ...) abort "{{{
+function! s:wrap_object(char) abort "{{{
   silent exe "normal! `[v`]y"
-  execute "normal gv\<Plug>VSurround)"
+  execute "normal gv\<Plug>VSurround" . a:char
   startinsert
 endfunction "}}}
 
-nnoremap <silent> <leader>w :set opfunc=<sid>wrap_object<cr>g@
+function! s:wrap_object_parens(type, ...) abort "{{{
+  return s:wrap_object(')')
+endfunction "}}}
+
+function! s:wrap_object_brackets(type, ...) abort "{{{
+  return s:wrap_object(']')
+endfunction "}}}
+
+nnoremap <silent> <leader>w :set opfunc=<sid>wrap_object_parens<cr>g@
+nnoremap <silent> <leader>q :set opfunc=<sid>wrap_object_brackets<cr>g@
 
 " same for visual
 xmap <leader>w <leader>s)i
