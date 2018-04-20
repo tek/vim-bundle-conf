@@ -44,10 +44,6 @@ class $1:
 	${0:pass}
 endsnippet
 
-snippet s "self" w
-self.
-endsnippet
-
 snippet ss "self private" w
 self._
 endsnippet
@@ -233,15 +229,6 @@ snippet p "print" !b
 print(${1:'${2:text}'})
 endsnippet
 
-snippet pr "print repr" !b
-print(repr(${0}))
-endsnippet
-
-snippet with "context" !b
-with ${1:manager}${3: as ${2:identifier}}:
-	${0}
-endsnippet
-
 snippet from "from import" !b
 from $1 import $2
 endsnippet
@@ -270,35 +257,13 @@ snippet rd "ribo_log.debug" !w
 ribo_log.debug($1)
 endsnippet
 
-snippet mes "ribosome message" !b
-$1 = message('$1'$2)
-endsnippet
-
-snippet jmes "ribosome json message" !b
-$1 = json_message('$1'$2)
-endsnippet
-
-snippet defh "handle" !b
-@handle($1)
-def `!p snip.rv = snake_case(t[1])`(self) -> Maybe[Message]:
-    $0
-endsnippet
-
-snippet defH "may handle" !b
-@may_handle($1)
-def `!p snip.rv = snake_case(t[1])`(self) -> Message:
-    $0
+snippet al "amino_log.test" !w
+amino_log.test($1)
 endsnippet
 
 snippet nl "ribosome logging import" !b
 from ribosome.logging import ribo_log
 ribo_log.test($1)
-endsnippet
-
-snippet mc "message command" !b
-@msg_command($1)
-def `!p snip.rv = snake_case(t[1])`(self) -> None:
-    pass
 endsnippet
 
 snippet at "init attribute" b
@@ -315,23 +280,20 @@ def $1(self) -> Expectation:
     return k(1) == 1
 endsnippet
 
-snippet ll "lambda" i
-lambda$1: $0
-endsnippet
-
 snippet tv "type variable" b
 $1 = TypeVar('$1'$2)
 endsnippet
 
-snippet ad "arg desc function" b
-def _arg_desc(self) -> List[str]:
-    return List($0)
+snippet do "do notation function" b
+@do($3)
+def $1($2) -> Do:
+    yield $0
 endsnippet
 
-snippet do "do notation function" b
-@do($1)
-def $2($3) -> Do:
-  $0
+snippet ndo "@do(NS)" b
+@do(NS[None, None])
+def $1() -> Do:
+    yield NS.unit
 endsnippet
 
 snippet dat "data class" b
@@ -347,4 +309,31 @@ class $1(Dat['$1']):
 
     def __init__(self`!p snip.rv = (', ' if len(t[2]) else '')`$2) -> None:
     `!p init_attrs(2)`
+endsnippet
+
+snippet prg "ribosome program" b
+@prog
+@do(NS[None, None])
+def $1() -> Do:
+    yield NS.unit
+endsnippet
+
+snippet prgd "ribosome program with prog.do" b
+@prog.do
+@do(Prog[None])
+def $1() -> Do:
+    yield Prog.unit
+endsnippet
+
+snippet case "case match" b
+class $1(Case[$2, $3], alg=$2):
+
+    def $4(self, $5) -> $6:
+        $0
+endsnippet
+
+priority 1
+
+snippet s "self" w
+self.
 endsnippet
