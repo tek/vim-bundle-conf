@@ -30,10 +30,12 @@ let g:pymport_package_precedence =
       \ 'unit',
       \ 'integration',
       \ 'tests',
+      \ 'test',
       \ g:project_name,
       \ 'ribosome',
       \ 'amino',
       \ 'golgi',
+      \ 'chiasma',
       \ 'tek_utils',
       \ 'tek',
       \ ]
