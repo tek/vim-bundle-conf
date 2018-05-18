@@ -1,3 +1,4 @@
+let g:surround_99 = "Callable[[], \r]"
 let g:surround_108 = "List[\r]"
 let g:surround_109 = "Maybe[\r]"
 let g:surround_110 = "NvimIO[\r]"
