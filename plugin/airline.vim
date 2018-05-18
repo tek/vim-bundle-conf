@@ -30,3 +30,27 @@ let g:airline#extensions#default#section_truncate_width = {
     \ }
 
 autocmd User AirlineAfterInit call tek_airline#init()
+
+" let g:airline_extensions = [
+"       \ 'nrrwrgn',
+"       \ 'wordcount',
+"       \ 'ctrlp',
+"       \ 'fugitiveline',
+"       \ 'obsession',
+"       \ 'term',
+"       \ 'virtualenv',
+"       \ 'ale',
+"       \ 'whitespace',
+"       \ 'cursormode',
+"       \ 'hunks',
+"       \ 'undotree',
+"       \ 'windowswap',
+"       \ 'default',
+"       \ 'keymap',
+"       \ 'quickfix',
+"       \ 'unicode',
+"       \ 'wordcount',
+"       \ 'denite',
+"       \ 'neomake',
+"       \ 'netrw',
+"       \ ]
