@@ -1,8 +1,11 @@
+if exists('$CRM_DEV')
+  finish
+endif
+
 let g:myo_tmux_use_defaults = 1
 let g:myo_output_window_max_size = 18
 " let g:myo_tmux_watcher_interval = 1.0
 let g:myo_tmux_vim_width = 130
-
 let g:myo_components = [
       \ 'tmux',
       \ 'command',
