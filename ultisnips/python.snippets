@@ -337,3 +337,19 @@ priority 1
 snippet s "self" w
 self.
 endsnippet
+
+snippet l "log.test" b
+log.test($0)
+endsnippet
+
+snippet spec "ribosome spec function" b
+@do(NvimIO[Expectation])
+def $1() -> Do:
+    yield $0
+endsnippet
+
+snippet uspec "ribosome unit spec function" b
+@do(NS[PS, Expectation])
+def $1() -> Do:
+    yield $0
+endsnippet
