@@ -5,6 +5,7 @@ call denite#custom#option('_', 'reversed', 1)
 call denite#custom#option('_', 'mode', 'normal')
 call denite#custom#option('_', 'cursor_wrap', 1)
 call denite#custom#option('_', 'highlight_mode_normal', 'CursorLine')
+call denite#custom#option('_', 'highlight_matched_char', 'Normal')
 
 if executable('ag')
 	call denite#custom#var('grep', 'command', ['ag'])
