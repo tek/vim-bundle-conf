@@ -27,15 +27,15 @@ let g:neomake_coconut_mypy_maker = {
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
 let g:pymport_package_precedence =
       \ [
+      \ g:project_name,
+      \ 'ribosome',
+      \ 'amino',
+      \ 'chiasma',
       \ 'unit',
       \ 'integration',
       \ 'tests',
       \ 'test',
-      \ g:project_name,
-      \ 'ribosome',
-      \ 'amino',
       \ 'golgi',
-      \ 'chiasma',
       \ 'tek_utils',
       \ 'tek',
       \ ]
@@ -62,17 +62,19 @@ augroup END
 
 let g:syntastic_aggregate_errors=0
 
-MyoShellCommand deps { 'line': 'pip install --no-cache -r requirements.txt' }
-MyoShellCommand unit { 'line': 'var:spec_unit', 'eval': True, 'langs': ['python'] }
-MyoShellCommand integration { 'line': 'var:spec_integration', 'eval': True, 'langs': ['python'] }
-MyoTmuxCreatePane ipython {
-      \ 'parent': 'main',
-      \ 'minimized': 1,
-      \ 'minimized_size': 10,
-      \ 'fixed_size': 25,
-      \ 'signals': ['kill'],
-      \ }
-MyoShell ipython { 'line': 'ipython', 'target': 'ipython', 'history': False }
+if !g:crm_dev
+  MyoShellCommand deps { 'line': 'pip install --no-cache -r requirements.txt' }
+  MyoShellCommand unit { 'line': 'var:spec_unit', 'eval': True, 'langs': ['python'] }
+  MyoShellCommand integration { 'line': 'var:spec_integration', 'eval': True, 'langs': ['python'] }
+  MyoTmuxCreatePane ipython {
+        \ 'parent': 'main',
+        \ 'minimized': 1,
+        \ 'minimized_size': 10,
+        \ 'fixed_size': 25,
+        \ 'signals': ['kill'],
+        \ }
+  MyoShell ipython { 'line': 'ipython', 'target': 'ipython', 'history': False }
+endif
 
 nnoremap <silent> <s-f1> :MyoRun deps<cr>
 nnoremap <silent> <s-f2> :MyoRun ipython<cr>

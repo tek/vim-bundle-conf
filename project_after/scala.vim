@@ -27,37 +27,51 @@ endfunction "}}}
 command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
 nnoremap <c-f4> :SbtMin<cr>
 
-MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35, 'position': 0.8 }
-MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'], 'signals': ['kill'],
-      \ 'history': False, 'eval': True }
-call _sbt_project_cmd('compile')
-call _sbt_project_cmd('test', 'test')
-call _sbt_project_cmd_nohist('clean', 'clean')
-call _sbt_project_cmd('publishLocal', '+publishLocal')
-MyoShellCommand release { 'line': 'release with-defaults', 'shell': 'sbt',
-      \ 'langs': ['sbt'] }
-MyoUpdate layout <vim> { 'minimized_size': 85 }
+if g:crm_dev
+  MyoCreatePane {
+        \ "layout": "make",
+        \ "name": "sbt",
+        \ "min_size": 0.5,
+        \ "max_size": 35,
+        \ "position": 0.8
+        \ }
+  MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
+  MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
+  MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
+  nnoremap <silent> <f6> :MyoRun compile<cr>
+  nnoremap <silent> <f9> :MyoTogglePane make<cr>
+else
+  MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35, 'position': 0.8 }
+  MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'], 'signals': ['kill'],
+        \ 'history': False, 'eval': True }
+  call _sbt_project_cmd('compile')
+  call _sbt_project_cmd('test', 'test')
+  call _sbt_project_cmd_nohist('clean', 'clean')
+  call _sbt_project_cmd('publishLocal', '+publishLocal')
+  MyoShellCommand release { 'line': 'release with-defaults', 'shell': 'sbt', 'langs': ['sbt'] }
+  MyoUpdate layout <vim> { 'minimized_size': 85 }
 
-let g:myo_chainer = 'py:myo_bundle.chain_sbt'
+  let g:myo_chainer = 'py:myo_bundle.chain_sbt'
 
-command! -nargs=+ Sbt MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'] }
-command! -nargs=+ SbtNh MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'], 'history': False }
-nnoremap <silent> <f6> :MyoRun compile<cr>
-nnoremap <silent> <f5> :MyoRun test<cr>
-nnoremap <silent> <s-f6> :MyoRun clean<cr>
-nnoremap <silent> <f7> :MyoTmuxFocus log<cr>
-nnoremap <silent> <s-f7> :MyoToggleCommand log<cr>
-nnoremap <silent> <f8> :MyoTmuxFocus sbt<cr>
-nnoremap <silent> <s-f8> :MyoToggleCommand sbt<cr>
-nnoremap <silent> <leader><f8> :call SbtScrollToError()<cr>
-nnoremap <silent> <f11> :SbtNh reload<cr>
-nnoremap <silent> <f12> :SbtNh r<cr>
-nnoremap <silent> <c-f2> :MyoRebootCommand sbt<cr>
-nnoremap <silent> <f26> :MyoRebootCommand sbt<cr>
-nnoremap <silent> <c-f3> :MyoRun publishLocal<cr>
-nnoremap <silent> <f27> :MyoRun publishLocal<cr>
+  command! -nargs=+ Sbt MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'] }
+  command! -nargs=+ SbtNh MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'], 'history': False }
+  nnoremap <silent> <f6> :MyoRun compile<cr>
+  nnoremap <silent> <f5> :MyoRun test<cr>
+  nnoremap <silent> <s-f6> :MyoRun clean<cr>
+  nnoremap <silent> <f7> :MyoTmuxFocus log<cr>
+  nnoremap <silent> <s-f7> :MyoToggleCommand log<cr>
+  nnoremap <silent> <f8> :MyoTmuxFocus sbt<cr>
+  nnoremap <silent> <s-f8> :MyoToggleCommand sbt<cr>
+  nnoremap <silent> <leader><f8> :call SbtScrollToError()<cr>
+  nnoremap <silent> <f11> :SbtNh reload<cr>
+  nnoremap <silent> <f12> :SbtNh r<cr>
+  nnoremap <silent> <c-f2> :MyoRebootCommand sbt<cr>
+  nnoremap <silent> <f26> :MyoRebootCommand sbt<cr>
+  nnoremap <silent> <c-f3> :MyoRun publishLocal<cr>
+  nnoremap <silent> <f27> :MyoRun publishLocal<cr>
 
-map <leader>j :Sbt<space>
+  map <leader>j :Sbt<space>
+endif
 
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
 let g:ctrlp_custom_ignore['dir'] .= '|<node_modules>|<stylesheets_gen>|<soapui>|<bower_components>'
