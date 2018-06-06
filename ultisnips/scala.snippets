@@ -46,7 +46,7 @@ object $1
 endsnippet
 
 snippet c "case" !
-case ${1:_} => $0
+case ${1:_} =>$0
 endsnippet
 
 snippet id "implicit def" !b
@@ -154,21 +154,21 @@ snippet "(\s*)(extends|with) .*" "extends continuation" "eol(snip)" !re
 endsnippet
 
 snippet inst "typeclass instance" !b
-implicit def instance_$1_$2: $1[$2] =
+implicit def $1_$2: $1[$2] =
   new $1[$2] {
     def $3(a: $2) = $0
   }
 endsnippet
 
 snippet instlv "typeclass instance" !b
-implicit lazy val instance_$1_$2: $1[$2] =
+implicit lazy val $1_$2: $1[$2] =
   new $1[$2] {
     def $3(a: $2) = $0
   }
 endsnippet
 
 snippet instK "effect typeclass instance" !b
-implicit def instance_$1_$2: $1[$2] =
+implicit def $1_$2: $1[$2] =
   new $1[$2] {
     def $3[A](fa: $2[A]) = $0
   }
@@ -278,4 +278,8 @@ snippet f "for comp" b
 for {
   $1 <- $2
 } yield $3
+endsnippet
+
+snippet pr "println()" b
+println($0)
 endsnippet
