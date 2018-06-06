@@ -87,5 +87,17 @@
     "type": "nodejs",
     "types": ["javascript"],
     "langs": ["javascript"]
+  },
+  {
+    "name": "sprcom-nature",
+    "type": "nodejs",
+    "types": ["javascript"],
+    "langs": ["javascript"]
+  },
+  {
+    "name": "sprcom-sf-ci-scala-lib-release",
+    "type": "python",
+    "types": [ "python"],
+    "langs": ["python"]
   }
 ]
