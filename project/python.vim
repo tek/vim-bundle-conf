@@ -27,7 +27,7 @@ let g:neomake_coconut_mypy_maker = {
 let g:pymport_paths += glob('$VIRTUAL_ENV/lib/python*/site-packages', 0, 1)
 let g:pymport_package_precedence =
       \ [
-      \ g:project_name,
+      \ g:proteome_main_name,
       \ 'ribosome',
       \ 'amino',
       \ 'chiasma',
