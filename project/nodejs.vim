@@ -23,6 +23,6 @@ MyoShellCommand purs { 'line': 'npm run purs:dev', 'target': 'purs', 'kill': Tru
 nnoremap <silent> <f7> :MyoRun purs<cr>
 
 let g:test#runners = {
-      \ 'javascript': ['Ava']
+      \ 'javascript': ['Ava', 'Tape']
       \ }
 let test#javascript#runner = 'ava'
