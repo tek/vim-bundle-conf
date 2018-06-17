@@ -80,7 +80,7 @@ nnoremap <silent> <s-f1> :MyoRun deps<cr>
 nnoremap <silent> <s-f2> :MyoRun ipython<cr>
 nnoremap <silent> <f5> :MyoRun unit<cr>
 nnoremap <silent> <f6> :MyoRun integration<cr>
-nnoremap <silent> <f8> :MyoTmuxFocus ipython<cr>
+" nnoremap <silent> <f8> :MyoTmuxFocus ipython<cr>
 
 let g:test#runners = {
       \ 'python': ['Klk', 'Spec']

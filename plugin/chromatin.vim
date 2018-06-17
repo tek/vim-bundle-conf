@@ -15,7 +15,7 @@ if g:crm_dev
   let g:chromatin_rplugins += [
         \ { 'name': 'myo', 'spec': 'dir:/home/tek/code/tek/python_nvim/myo/myo', 'pythonpath': s:pp, 'debug': v:true }
         \ ]
-  let g:chromatin_rplugins += [{ 'spec': 'proteome~=11.4.0', 'name': 'proteome' }]
+  let g:chromatin_rplugins += [{ 'spec': 'proteome', 'name': 'proteome' }]
   " let g:chromatin_rplugins += [{ 'name': 'tubbs', 'spec': '/home/tek/code/tek/python_nvim/tubbs' }]
 else
   let g:chromatin_rplugins += [{ 'spec': 'proteome~=11.4.0', 'name': 'proteome' }]

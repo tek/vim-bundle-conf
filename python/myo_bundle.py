@@ -52,7 +52,7 @@ class FilterPy(VimCallback):
 
 _trunc_re1 = re.compile('.*/code(_ext)?/python(_nvim)?/')
 _trunc_re2 = re.compile('.*/site-packages/')
-_trunc_re3 = re.compile('.*/python3\.5/')
+_trunc_re3 = re.compile('.*/python3\.\d/')
 
 
 def truncate_py(path):
