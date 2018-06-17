@@ -328,7 +328,7 @@ endsnippet
 snippet case "case match" b
 class $1(Case[$2, $3], alg=$2):
 
-    def $4(self, $5) -> $6:
+    def $4(self, a: $2) -> $3:
         $0
 endsnippet
 
@@ -352,4 +352,8 @@ snippet uspec "ribosome unit spec function" b
 @do(NS[PS, Expectation])
 def $1() -> Do:
     yield $0
+endsnippet
+
+snippet ml "module_log()" b
+log = module_log()
 endsnippet
