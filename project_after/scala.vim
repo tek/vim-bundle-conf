@@ -102,17 +102,10 @@ function! s:compiler_param(name, value, project, ...) abort "{{{
   execute 'let ' . flag . ' = !' . flag
 endfunction "}}}
 
-function! s:impl(...) abort "{{{
-  return s:compiler_param('impl', '-Xlog-implicits', 1)
-endfunction "}}}
-
 function! s:splain(...) abort "{{{
   return s:compiler_param('splain', '-P:splain:all:false', 1)
 endfunction "}}}
 
-command! -nargs=? ImplOn call <sid>impl(1, <f-args>)
-command! -nargs=? ImplOff call <sid>impl(0, <f-args>)
-command! Impl call <sid>impl()
 command! Splain call <sid>splain()
 
 highlight clear EnErrorStyle
