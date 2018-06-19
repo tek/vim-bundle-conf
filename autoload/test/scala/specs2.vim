@@ -1,5 +1,5 @@
 function! test#scala#specs2#test_file(file) abort "{{{
-  return fnamemodify(a:file, ':p') =~ '.*\(test\|it/\).*\.scala'
+  return fnamemodify(a:file, ':p') =~? '.*\(test\|spec\).*\.scala'
 endfunction "}}}
 
 function! test#scala#specs2#build_position(type, position) abort "{{{
