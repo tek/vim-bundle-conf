@@ -39,7 +39,7 @@ if g:crm_dev
   MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
   MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
   MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
-  nnoremap <silent> <f6> :MyoRunLine { "shell": "sbt", "line": "compile" }<cr>
+  nnoremap <silent> <f6> :MyoLine { "shell": "sbt", "line": "compile" }<cr>
   nnoremap <silent> <f9> :MyoTogglePane make<cr>
 else
   MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35, 'position': 0.8 }
