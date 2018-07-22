@@ -11,7 +11,8 @@ call unite#filters#sorter_default#use(['sorter_rank'])
 command! -bar -nargs=1 UniteAg Unite -auto-resize -no-quit grep:.::<args>
 
 "{{{ ag
-if executable('rg')
+if v:false && executable('rg')
+  let g:rg = v:true
   let s:opts = ['--color', 'never', '--no-ignore-vcs', '--ignore-file ~/.agignore']
   let g:unite_source_grep_command = 'rg'
   let g:unite_source_grep_default_opts = join(s:opts + ['--line-number'])
@@ -19,11 +20,12 @@ if executable('rg')
   let g:unite_source_rec_async_command =
         \ ['rg', '--follow', '--hidden', '-l', ''] + s:opts
 elseif executable('ag')
+  let g:rg = v:false
   let g:unite_source_grep_command = 'ag'
   let g:unite_source_grep_default_opts = '--nocolor --nogroup --skip-vcs-ignores'
   let g:unite_source_grep_recursive_opt = ''
   let g:unite_source_rec_async_command =
-        \ ['ag', '--follow', '--nocolor', '--nogroup', '--hidden', '--skip-vcs-ignores', '-g', '']
+        \ ['ag', '--follow', '--nocolor', '--nogroup', '--hidden', '--skip-vcs-ignores']
 endif
 
 " nnoremap <silent> <leader>aa :Unite -auto-resize -no-quit grep:.:-s:<cr>
