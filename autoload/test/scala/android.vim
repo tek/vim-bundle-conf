@@ -1,5 +1,6 @@
 function! test#scala#android#test_file(file) abort "{{{
-  return a:file =~ '.*\<' . g:scala_integration_rex . '/test.*/.*.scala'
+  return 0
+  " return a:file =~ '.*\<' . g:scala_integration_rex . '/test.*/.*.scala'
 endfunction "}}}
 
 function! test#scala#android#build_position(type, position) abort "{{{
