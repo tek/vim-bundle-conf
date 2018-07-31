@@ -14,7 +14,7 @@ function! test#javascript#tape#build_position(type, position) abort "{{{
 endfunction "}}}
 
 function! test#javascript#tape#build_args(args) abort "{{{
-  return [] + a:args
+  return [] + a:args + ['|', 'tap-summary']
 endfunction "}}}
 
 function! test#javascript#tape#executable() abort "{{{
