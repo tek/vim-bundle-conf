@@ -15,7 +15,6 @@ let g:deoplete#omni#input_patterns.haskell = [
 
 let g:deoplete#omni#input_patterns.scala = [
       \ '[^. *\t]\.\w*',
-      \ '^import .*'
       \ ]
 
 " call deoplete#custom#set('_', 'sorters', ['sorter_word'])
