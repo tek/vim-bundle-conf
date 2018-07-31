@@ -1,9 +1,3 @@
-let g:neomake_javascript_enabled_makers = ['eslint_d']
-
-let g:neomake_javascript_eslint_d_maker = {
-      \ 'args': ['--ignore-pattern', '!.neomake*'],
-      \ }
-
 set path+=src/node_modules
 set path+=src
 
