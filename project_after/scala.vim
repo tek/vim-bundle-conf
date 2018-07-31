@@ -110,7 +110,6 @@ command! Splain call <sid>splain()
 
 highlight clear EnErrorStyle
 highlight EnErrorStyle ctermbg=0
-set omnifunc=
 
 let g:output_patterns +=
       \ ['[^.]\\b(pr|p|print(ln)?|dHead|dbg)\\(', '^\ *(hl|nl)$',
