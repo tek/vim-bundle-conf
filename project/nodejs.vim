@@ -1,5 +1,4 @@
-set path+=src/node_modules
-set path+=src
+set path+=src/node_modules,src/main,src
 
 let g:output_patterns += [
       \ 'console\\.log\\(',
