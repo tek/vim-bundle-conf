@@ -3,8 +3,12 @@ let s:switch_definitions =
     \ {
     \   '\k\+ = ': 'return ',
     \   'return ': 'v = ',
+    \ },
+    \ {
     \   'dec\zeod': 'enc',
     \   'enc\zeod': 'dec',
+    \ },
+    \ {
     \   'Dec\zeod': 'Enc',
     \   'Enc\zeod': 'Dec',
     \ },

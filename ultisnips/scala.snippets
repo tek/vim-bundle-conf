@@ -153,6 +153,14 @@ snippet "(\s*)(extends|with) .*" "extends continuation" "eol(snip)" !re
 `!p snip.rv = snip.mkline('with', match.group(1))` $0
 endsnippet
 
+snippet ind "typeclass instance def" b
+implicit def $1_$2: $1[$2] =$0
+endsnippet
+
+snippet inv "typeclass instance val" b
+implicit val $1_$2: $1[$2] =$0
+endsnippet
+
 snippet inst "typeclass instance" !b
 implicit def $1_$2: $1[$2] =
   new $1[$2] {
@@ -174,26 +182,8 @@ implicit def $1_$2: $1[$2] =
   }
 endsnippet
 
-snippet pt "private[this]" !b
-private[this] ${1:def} $0
-endsnippet
-
-snippet lv "lazy val" !b
-lazy val
-endsnippet
-
-snippet mc "message class" !b
-case class $1($2)
-extends Message
-endsnippet
-
-snippet mo "message object" !b
-case object $1
-extends Message
-endsnippet
-
 snippet spec "spec" b
-object $1Spec
+class $1Spec
 extends Spec
 {
   def is = s2"""
@@ -282,4 +272,8 @@ endsnippet
 
 snippet pr "println()" b
 println($0)
+endsnippet
+
+snippet iec "implicit ExecutionContext" b
+(implicit ec: ExecutionContext)
 endsnippet
