@@ -1,5 +1,5 @@
 function! test#javascript#ava#test_file(fname) abort "{{{
-  return test#util#want('javascript', 'node') && a:fname =~ '\(^\|.*/\)test/.*'
+  " return test#util#want('javascript', 'node') && a:fname =~ '\(^\|.*/\)test/.*'
 endfunction "}}}
 
 function! test#javascript#ava#build_position(type, position) abort "{{{
