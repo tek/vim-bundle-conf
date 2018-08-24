@@ -1,19 +1,3 @@
-let g:sbt_layout = exists('$kaon') ? 'bg' : 'make'
-let s:sbt_size = exists('$kaon') ? 20 : 48
-
-function! _sbt_project_cmd(name, ...) abort "{{{
-  let line = a:0 ? a:1 : a:name
-  let extra = a:0 > 1 ? ', ' . a:2 : ''
-  execute "MyoShellCommand " . a:name .
-        \ " { 'line': 'py:myo_bundle.SbtProjectCmd'," .
-        \ " 'shell': 'sbt', 'langs': ['sbt'], 'eval': True, 'args': ['" .
-        \ line . ''']' . extra . ' }'
-endfunction "}}}
-
-function! _sbt_project_cmd_nohist(name, ...) abort "{{{
-  return call('_sbt_project_cmd', [a:name] + a:000 + ['''history'': False'])
-endfunction "}}}
-
 let g:scala#sbt_cmdline_index = 0
 let g:scala#sbt_cmdline = 'sbt'
 let g:scala#sbt_cmdlines = ['sbt', 'sbt -sbt-dir ~/.config/sbt-min', 'sbt -sbt-dir ~/.config/sbt-min-release']
@@ -39,9 +23,30 @@ if g:crm_dev
   MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
   MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
   MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
-  nnoremap <silent> <f6> :MyoLine { "shell": "sbt", "line": "compile" }<cr>
-  nnoremap <silent> <f9> :MyoTogglePane make<cr>
+  command! -nargs=+ Sbt MyoLine { "shell": "sbt", "line": "<args>" }
+  command! -nargs=+ SbtNoHistory MyoLine { "shell": "sbt", "line": "<args>", "history": false }
+  command! -nargs=+ SbtPrefixed call MyoLine('{ "shell": "sbt", "line": " ' . tek#bundle#scala#sbt_prefixed(<q-args>) . '" }')
+  nnoremap <silent> <f5> :SbtPrefixed test<cr>
+  nnoremap <silent> <f6> :SbtPrefixed test:compile<cr>
+  nnoremap <silent> <s-f6> :SbtNoHistory clean<cr>
+  nnoremap <silent> <f11> :SbtNoHistory reload<cr>
+  nnoremap <silent> <f12> :SbtNoHistory r<cr>
+  nnoremap <silent> <leader>4 :MyoFocus make<cr>
+  nnoremap <silent> <c-f2> :MyoReboot sbt<cr>
 else
+  function! _sbt_project_cmd(name, ...) abort "{{{
+    let line = a:0 ? a:1 : a:name
+    let extra = a:0 > 1 ? ', ' . a:2 : ''
+    execute "MyoShellCommand " . a:name .
+          \ " { 'line': 'py:myo_bundle.SbtProjectCmd'," .
+          \ " 'shell': 'sbt', 'langs': ['sbt'], 'eval': True, 'args': ['" .
+          \ line . ''']' . extra . ' }'
+  endfunction "}}}
+
+  function! _sbt_project_cmd_nohist(name, ...) abort "{{{
+    return call('_sbt_project_cmd', [a:name] + a:000 + ['''history'': False'])
+  endfunction "}}}
+
   MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35, 'position': 0.8 }
   MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'], 'signals': ['kill'],
         \ 'history': False, 'eval': True }
@@ -108,8 +113,8 @@ endfunction "}}}
 
 command! Splain call <sid>splain()
 
-highlight clear EnErrorStyle
-highlight EnErrorStyle ctermbg=0
+" highlight clear EnErrorStyle
+" highlight EnErrorStyle ctermbg=0
 
 let g:output_patterns +=
       \ ['[^.]\\b(pr|p|print(ln)?|dHead|dbg)\\(', '^\ *(hl|nl)$',

@@ -1,7 +1,5 @@
 let g:chromatin_rplugins = []
 
-let g:crm_dev = exists('$CRM_DEV')
-
 if g:crm_dev
   " let g:chromatin_debug_pythonpath = v:true
   " let g:chromatin_rplugins += [{ 'name': 'proteome', 'spec': '/home/tek/code/tek/python_nvim/proteome' }]
@@ -13,9 +11,9 @@ if g:crm_dev
         \ '/home/tek/.virtualenvs/myo/lib/python3.6/site-packages'
         \ ]
   let g:chromatin_rplugins += [
-        \ { 'name': 'myo', 'spec': 'dir:/home/tek/code/tek/python_nvim/myo/myo', 'pythonpath': s:pp, 'debug': v:true }
+        \ { 'name': 'myo', 'spec': 'dir:/home/tek/code/tek/python_nvim/myo', 'pythonpath': s:pp, 'debug': v:true }
         \ ]
-  let g:chromatin_rplugins += [{ 'spec': 'proteome', 'name': 'proteome' }]
+  let g:chromatin_rplugins += [{ 'spec': 'proteome~=11.4.0', 'name': 'proteome', 'interpreter': 'python3.6' }]
   " let g:chromatin_rplugins += [{ 'name': 'tubbs', 'spec': '/home/tek/code/tek/python_nvim/tubbs' }]
 else
   let g:chromatin_rplugins += [{ 'spec': 'proteome~=11.4.0', 'name': 'proteome' }]

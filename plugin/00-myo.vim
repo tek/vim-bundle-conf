@@ -1,4 +1,4 @@
-if exists('$CRM_DEV')
+if g:crm_dev
   finish
 endif
 

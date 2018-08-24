@@ -7,9 +7,9 @@ let g:output_file_patterns += ['\.py', '\.coco']
 
 if g:crm_dev
   let g:myo_test_langs = ['python']
-  MyoAddSystemCommand { "ident": "deps", "line": "pip install --no-cache -r requirements.txt" }
-  MyoAddSystemCommand { "ident": "unit", "line": "klk unit", "langs": ["python"] }
-  MyoAddSystemCommand { "ident": "integration", "line": "klk integration", "langs": ["python"] }
+  MyoAddSystemCommand { "ident": "deps", "line": "pip install --no-cache -r requirements.txt", "target": "make" }
+  MyoAddSystemCommand { "ident": "unit", "line": "klk unit", "langs": ["python"], "target": "make" }
+  MyoAddSystemCommand { "ident": "integration", "line": "klk integration", "langs": ["python"], "target": "make" }
   MyoCreatePane {
         \ "ident": "ipython",
         \ "layout": "make",
