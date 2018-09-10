@@ -43,6 +43,7 @@ let g:pymport_package_precedence =
 if exists('g:pyenv_python_dir')
   let g:pymport_paths +=
         \ glob(g:pyenv_python_dir . '/lib/python*/site-packages', 0, 1)
+  let g:pymport_python_dir = get(glob(g:pyenv_python_dir . '/lib/python*', 0, 1), 0, '')
 endif
 
 function! s:project_added() abort "{{{
