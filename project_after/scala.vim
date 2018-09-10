@@ -31,7 +31,6 @@ if g:crm_dev
   nnoremap <silent> <s-f6> :SbtNoHistory clean<cr>
   nnoremap <silent> <f11> :SbtNoHistory reload<cr>
   nnoremap <silent> <f12> :SbtNoHistory r<cr>
-  nnoremap <silent> <leader>4 :MyoFocus make<cr>
   nnoremap <silent> <c-f2> :MyoReboot sbt<cr>
 else
   function! _sbt_project_cmd(name, ...) abort "{{{
@@ -116,8 +115,6 @@ command! Splain call <sid>splain()
 " highlight clear EnErrorStyle
 " highlight EnErrorStyle ctermbg=0
 
-let g:output_patterns +=
-      \ ['[^.]\\b(pr|p|print(ln)?|dHead|dbg)\\(', '^\ *(hl|nl)$',
-      \ '\\.p\\(\\)', '\\.dbg\\b']
-let g:output_file_patterns += ['*.scala']
+let g:output_patterns += ['^\s*println\(']
+let g:output_file_patterns += ['\.scala']
 let g:ctags_langs += ['scala']
