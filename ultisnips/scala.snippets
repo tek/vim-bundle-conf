@@ -6,20 +6,6 @@ snippet d "def" !b
 def $0
 endsnippet
 
-snippet "\bdef \w+" "def continuation" ir
-`!p snip.rv = match.group(0)`($1) = $0
-endsnippet
-
-snippet dd "def with params and block expression" b
-def $1($2) = {
-  $0
-}
-endsnippet
-
-snippet dp "parameterized def" !b
-def $1[$2]$3
-endsnippet
-
 snippet "" "multiline quotes" !
 """
 ${1}
@@ -274,6 +260,6 @@ snippet pr "println()" b
 println($0)
 endsnippet
 
-snippet iec "implicit ExecutionContext" b
+snippet iec "implicit ExecutionContext" i
 (implicit ec: ExecutionContext)
 endsnippet
