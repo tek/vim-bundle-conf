@@ -10,9 +10,10 @@ if g:crm_dev
         \ '/home/tek/code/tek/python/amino',
         \ '/home/tek/.virtualenvs/myo/lib/python3.6/site-packages'
         \ ]
-  let g:chromatin_rplugins += [
-        \ { 'name': 'myo', 'spec': 'dir:/home/tek/code/tek/python_nvim/myo', 'pythonpath': s:pp, 'debug': v:true }
-        \ ]
+  " let g:chromatin_rplugins += [
+  "       \ { 'name': 'myo', 'spec': 'dir:/home/tek/code/tek/python_nvim/myo', 'pythonpath': s:pp, 'debug': v:true }
+  "       \ ]
+  let g:chromatin_rplugins += [{ 'spec': 'myo~=1.0.0.a', 'name': 'myo' }]
   let g:chromatin_rplugins += [{ 'spec': 'proteome~=11.4.0', 'name': 'proteome', 'interpreter': 'python3.6' }]
   " let g:chromatin_rplugins += [{ 'name': 'tubbs', 'spec': '/home/tek/code/tek/python_nvim/tubbs' }]
 else
