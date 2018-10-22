@@ -34,7 +34,6 @@ let g:pymport_package_precedence =
       \ 'unit',
       \ 'integration',
       \ 'tests',
-      \ 'test',
       \ 'golgi',
       \ 'tek_utils',
       \ 'tek',
