@@ -22,3 +22,4 @@ nnoremap <silent> <f3> :SaveAll<cr>:MyoParse<cr>
 nnoremap <silent> <f4> :MyoRerun<cr>
 nnoremap <silent> <f9> :MyoToggleLayout make<cr>
 nnoremap <silent> <leader>4 :MyoFocus make<cr>
+nnoremap <silent> <leader>9 :call MyoHistoryMenu()<cr>
