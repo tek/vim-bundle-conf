@@ -18,7 +18,7 @@ else
   let g:ctrlp_custom_ignore['link'] = '\v' . i['link']
 endif
 
-let g:ctrlp_custom_ignore['dir'] .= '\.git>|/build>|<target>|' . $PWD . '/node_modules'
+let g:ctrlp_custom_ignore['dir'] .= '\.git>|/build>|<target>|<vendor>|' . $PWD . '/node_modules'
 let g:ctrlp_custom_ignore['file'] .= '\.%(png|jpg)$'
 
 nnoremap <silent> <leader>e :call tek_bundle_misc#ctrlp()<cr>
