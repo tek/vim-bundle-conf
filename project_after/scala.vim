@@ -79,7 +79,7 @@ else
 endif
 
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
-let g:ctrlp_custom_ignore['dir'] .= '|<node_modules>|<stylesheets_gen>|<soapui>|<bower_components>'
+let g:ctrlp_custom_ignore['dir'] .= '|<node_modules>|<stylesheets_gen>|<soapui>|<bower_components>|<fonts>|<vendor>'
 let g:sbt_command = 'compile'
 let s:cpar_used = 0
 
