@@ -5,3 +5,5 @@ nnoremap <buffer> <localleader>i :HdevtoolsInfo<cr>
 nnoremap <buffer> <localleader>c :HdevtoolsClear<cr>
 
 let g:ghcmod_use_basedir = getcwd()
+
+setlocal tags+=codex.tags
