@@ -1,5 +1,5 @@
-MyoTmuxCreatePane ghci { 'parent': 'main', 'min_size': 0.5, 'max_size': 35, 'position': 0.8 }
-MyoShell ghci { 'line': 'ghci', 'target': 'ghci', 'langs': ['haskell'], 'signals': ['kill'], 'history': False }
-MyoShellCommand stack-build { 'line': 'stack build --fast --pedantic' }
+MyoCreatePane { "ident": "ghci", "layout": "make", "min_size": 0.5, "max_size": 35, "position": 0.8 }
+MyoAddSystemCommand { "ident": "ghci", "line": "ghci", "target": "ghci", "langs": ["haskell"], "history": false }
+MyoAddSystemCommand { "ident": "stack-build", "line": "stack build --fast --pedantic", "target": "make" }
 
 nnoremap <f6> :MyoRun stack-build<cr>
