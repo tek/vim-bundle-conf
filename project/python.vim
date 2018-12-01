@@ -62,20 +62,6 @@ augroup END
 
 let g:syntastic_aggregate_errors=0
 
-if !g:crm_dev
-  MyoShellCommand deps { 'line': 'pip install --no-cache -r requirements.txt' }
-  MyoShellCommand unit { 'line': 'var:spec_unit', 'eval': True, 'langs': ['python'] }
-  MyoShellCommand integration { 'line': 'var:spec_integration', 'eval': True, 'langs': ['python'] }
-  MyoTmuxCreatePane ipython {
-        \ 'parent': 'main',
-        \ 'minimized': 1,
-        \ 'minimized_size': 10,
-        \ 'fixed_size': 25,
-        \ 'signals': ['kill'],
-        \ }
-  MyoShell ipython { 'line': 'ipython', 'target': 'ipython', 'history': False }
-endif
-
 nnoremap <silent> <s-f1> :MyoRun deps<cr>
 nnoremap <silent> <s-f2> :MyoRun ipython<cr>
 nnoremap <silent> <f5> :MyoRun unit<cr>

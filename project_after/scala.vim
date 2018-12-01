@@ -11,72 +11,26 @@ endfunction "}}}
 command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
 nnoremap <c-f4> :SbtMin<cr>
 
-if g:crm_dev
-  let g:myo_test_langs = ['scala']
-  MyoCreatePane {
-        \ "layout": "make",
-        \ "ident": "sbt",
-        \ "min_size": 0.5,
-        \ "max_size": 35,
-        \ "position": 0.8
-        \ }
-  MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
-  MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
-  MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
-  command! -nargs=+ Sbt MyoLine { "shell": "sbt", "line": "<args>" }
-  command! -nargs=+ SbtNoHistory MyoLine { "shell": "sbt", "line": "<args>", "history": false }
-  command! -nargs=+ SbtPrefixed call MyoLine('{ "shell": "sbt", "line": " ' . tek#bundle#scala#sbt_prefixed(<q-args>) . '" }')
-  nnoremap <silent> <f5> :SbtPrefixed test<cr>
-  nnoremap <silent> <f6> :SbtPrefixed test:compile<cr>
-  nnoremap <silent> <s-f6> :SbtNoHistory clean<cr>
-  nnoremap <silent> <f11> :SbtNoHistory reload<cr>
-  nnoremap <silent> <f12> :SbtNoHistory r<cr>
-  nnoremap <silent> <c-f2> :MyoReboot sbt<cr>
-else
-  function! _sbt_project_cmd(name, ...) abort "{{{
-    let line = a:0 ? a:1 : a:name
-    let extra = a:0 > 1 ? ', ' . a:2 : ''
-    execute "MyoShellCommand " . a:name .
-          \ " { 'line': 'py:myo_bundle.SbtProjectCmd'," .
-          \ " 'shell': 'sbt', 'langs': ['sbt'], 'eval': True, 'args': ['" .
-          \ line . ''']' . extra . ' }'
-  endfunction "}}}
-
-  function! _sbt_project_cmd_nohist(name, ...) abort "{{{
-    return call('_sbt_project_cmd', [a:name] + a:000 + ['''history'': False'])
-  endfunction "}}}
-
-  MyoTmuxCreatePane sbt { 'parent': 'main', 'min_size': 0.5, 'max_size': 35, 'position': 0.8 }
-  MyoShell sbt { 'line': 'var:scala#sbt_cmdline', 'target': 'sbt', 'langs': ['sbt'], 'signals': ['kill'],
-        \ 'history': False, 'eval': True }
-  call _sbt_project_cmd('compile')
-  call _sbt_project_cmd('test', 'test')
-  call _sbt_project_cmd_nohist('clean', 'clean')
-  call _sbt_project_cmd('publishLocal', '+publishLocal')
-  MyoShellCommand release { 'line': 'release with-defaults', 'shell': 'sbt', 'langs': ['sbt'] }
-  MyoUpdate layout <vim> { 'minimized_size': 85 }
-
-  let g:myo_chainer = 'py:myo_bundle.chain_sbt'
-
-  command! -nargs=+ Sbt MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'] }
-  command! -nargs=+ SbtNh MyoRunInShell sbt { 'line': '<args>', 'langs': ['sbt'], 'history': False }
-  nnoremap <silent> <f6> :MyoRun compile<cr>
-  nnoremap <silent> <f5> :MyoRun test<cr>
-  nnoremap <silent> <s-f6> :MyoRun clean<cr>
-  nnoremap <silent> <f7> :MyoTmuxFocus log<cr>
-  nnoremap <silent> <s-f7> :MyoToggleCommand log<cr>
-  nnoremap <silent> <f8> :MyoTmuxFocus sbt<cr>
-  nnoremap <silent> <s-f8> :MyoToggleCommand sbt<cr>
-  nnoremap <silent> <leader><f8> :call SbtScrollToError()<cr>
-  nnoremap <silent> <f11> :SbtNh reload<cr>
-  nnoremap <silent> <f12> :SbtNh r<cr>
-  nnoremap <silent> <c-f2> :MyoRebootCommand sbt<cr>
-  nnoremap <silent> <f26> :MyoRebootCommand sbt<cr>
-  nnoremap <silent> <c-f3> :MyoRun publishLocal<cr>
-  nnoremap <silent> <f27> :MyoRun publishLocal<cr>
-
-  map <leader>j :Sbt<space>
-endif
+let g:myo_test_langs = ['scala']
+MyoCreatePane {
+      \ "layout": "make",
+      \ "ident": "sbt",
+      \ "min_size": 0.5,
+      \ "max_size": 35,
+      \ "position": 0.8
+      \ }
+MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
+MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
+MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
+command! -nargs=+ Sbt MyoLine { "shell": "sbt", "line": "<args>" }
+command! -nargs=+ SbtNoHistory MyoLine { "shell": "sbt", "line": "<args>", "history": false }
+command! -nargs=+ SbtPrefixed call MyoLine('{ "shell": "sbt", "line": " ' . tek#bundle#scala#sbt_prefixed(<q-args>) . '" }')
+nnoremap <silent> <f5> :SbtPrefixed test<cr>
+nnoremap <silent> <f6> :SbtPrefixed test:compile<cr>
+nnoremap <silent> <s-f6> :SbtNoHistory clean<cr>
+nnoremap <silent> <f11> :SbtNoHistory reload<cr>
+nnoremap <silent> <f12> :SbtNoHistory r<cr>
+nnoremap <silent> <c-f2> :MyoReboot sbt<cr>
 
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
 let g:ctrlp_custom_ignore['dir'] .= '|<node_modules>|<stylesheets_gen>|<soapui>|<bower_components>|<fonts>|<vendor>'
