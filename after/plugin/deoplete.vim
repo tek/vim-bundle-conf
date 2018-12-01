@@ -9,8 +9,8 @@ let g:deoplete#omni#input_patterns.python = [
       \ ]
 
 let g:deoplete#omni#input_patterns.haskell = [
+      \ 'import.*',
       \ '^.\+\w',
-      \ 'import \w*',
       \ ]
 
 let g:deoplete#omni#input_patterns.scala = [
