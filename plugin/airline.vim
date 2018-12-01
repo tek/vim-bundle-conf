@@ -51,6 +51,5 @@ autocmd User AirlineAfterInit call tek_airline#init()
 "       \ 'unicode',
 "       \ 'wordcount',
 "       \ 'denite',
-"       \ 'neomake',
 "       \ 'netrw',
 "       \ ]
