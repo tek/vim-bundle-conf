@@ -15,7 +15,8 @@ function! test#haskell#htf#build_args(args) abort "{{{
 endfunction "}}}
 
 function! test#haskell#htf#executable() abort "{{{
-  return 'stack test ' . g:proteome_main_name . ' --fast --pedantic --silent --ta'
+  let name = get(g:, 'htf_project_name', g:proteome_main_name)
+  return 'stack test ' . name . ' --fast --pedantic --ta'
 endfunction "}}}
 
 let s:patterns = {
