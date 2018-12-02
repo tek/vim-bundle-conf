@@ -90,3 +90,16 @@ endfunction "}}}
 function! tek_bundle_misc#post_save() abort "{{{
   silent! ProSave
 endfunction "}}}
+
+function! tek_bundle_misc#set_sbtserver_address() abort "{{{
+  let address = ''
+  let info_file = 'project/target/active.json'
+  if filereadable(info_file)
+    silent! let data = json_decode(join(readfile(info_file), ''))
+    if !empty(data) && has_key(data, 'uri')
+      if data.uri[:5] == 'tcp://'
+        let g:ale_scala_sbtserver_address = l:data.uri[6:]
+      endif
+    endif
+  endif
+endfunction "}}}
