@@ -1,4 +1,4 @@
-let g:airline_powerline_fonts=1
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tagbar#enabled = 0
 let g:airline#extensions#branch#enabled = 0
 let g:airline#extensions#tmuxline#enabled = 0
