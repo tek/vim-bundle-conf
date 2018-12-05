@@ -1,1 +1,1 @@
-let g:proteome_neomake = v:true
+let g:tek_neomake = v:true
