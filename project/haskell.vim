@@ -8,3 +8,5 @@ let g:test#runners = {
 
 let g:output_patterns += ['\bprint\b', 'info', 'infoS']
 let g:output_file_patterns += ['\.hs']
+
+set path+=src/Lib
