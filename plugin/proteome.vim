@@ -10,8 +10,9 @@ if !g:proteome_alpha
 endif
 let g:proteome_history_base = '~/usr/var/tmp/vim/history'
 let g:proteome_base_dirs = ['~/code/ext', '~/code/tek', '~/code/spr', '~/code/rec', '/var/tek/lib/repos']
+let g:proteome_project_base_dirs = ['~/code/ext', '~/code/tek', '~/code/spr', '~/code/rec', '/var/tek/lib/repos']
 let g:proteome_type_base_dirs = {
-      \ $VIMBUNDLES: ['vim'],
+      \ $VIMPACK: ['vim'],
       \ '/home/tek/code/tek/python/external': ['python']
       \ }
 let g:proteome_all_projects_history = 1
