@@ -4,7 +4,12 @@ endfunction "}}}
 
 function! test#haskell#htf#build_position(type, position) abort "{{{
   if a:type == 'nearest'
-    return test#haskell#htf#nearest_test(a:position)
+    let name = get(g:, 'htf_project_name', g:proteome_main_name)
+    let f = a:position['file']
+    let is_unit = f[:6] == 'test/u/'
+    let skip = is_unit ? 'functional' : 'unit'
+    let skip_arg = ['--skip', name . '-' . skip, '--skip', name . '-exe']
+    return test#haskell#htf#nearest_test(a:position) + skip_arg
   else
     return []
   endif
