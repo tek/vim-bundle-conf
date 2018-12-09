@@ -9,7 +9,7 @@ nnoremap <f6> :MyoRun stack-build<cr>
 nnoremap <f7> :MyoRun stack-install<cr>
 
 let g:ctrlp_custom_ignore['file'] .= '|^codex.tags'
-let g:ctrlp_custom_ignore['dir'] .= '|^temp$'
+let g:ctrlp_custom_ignore['dir'] .= '|/temp/'
 let g:myo_test_langs = ['haskell']
 
 let s:source = {
