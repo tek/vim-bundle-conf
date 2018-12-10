@@ -1,7 +1,5 @@
 let g:chromatin_rplugins = []
 
-" let g:chromatin_debug_pythonpath = v:true
-" let g:chromatin_rplugins += [{ 'name': 'proteome', 'spec': '/home/tek/code/tek/python_nvim/proteome' }]
 let s:pp = [
       \ '/home/tek/code/tek/python_nvim/myo',
       \ '/home/tek/code/tek/python_nvim/ribosome',
@@ -18,4 +16,3 @@ if g:proteome_alpha
 else
   let g:chromatin_rplugins += [{ 'spec': 'proteome~=11.4.0', 'name': 'proteome', 'interpreter': 'python3.6' }]
 endif
-" let g:chromatin_rplugins += [{ 'name': 'tubbs', 'spec': '/home/tek/code/tek/python_nvim/tubbs' }]

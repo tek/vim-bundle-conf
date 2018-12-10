@@ -11,7 +11,7 @@ let g:deoplete#manual_completion_start_length = 0
 let g:deoplete#enable_refresh_always = 1
 let g:deoplete#auto_complete_delay = 50
 
-inoremap <silent><expr> <m-m> deoplete#manual_complete()
+" inoremap <silent><expr> <m-m> deoplete#manual_complete()
 
 if !exists('g:deoplete#ignore_sources')
   let g:deoplete#ignore_sources = {}

@@ -48,11 +48,6 @@
     "types": ["sbt_plugin"]
   },
   {
-    "name": "vim-maque",
-    "type": "vim",
-    "types": ["riml"]
-  },
-  {
     "name": "proteome",
     "type": "python_nvim",
     "types": ["python"],
