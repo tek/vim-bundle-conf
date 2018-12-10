@@ -17,7 +17,13 @@ let g:proteome_type_base_dirs = {
       \ }
 let g:proteome_all_projects_history = 1
 let tek_misc#postsave_functions += ['tek_bundle_misc#post_save']
-
+let g:proteome_project_config = {
+      \ 'projectTypes': {},
+      \ 'typeMap': {
+      \  'python_nvim': ['python'] ,
+      \ },
+      \ 'langMap': {},
+      \ }
 
 nnoremap <silent> <insert> :ProNext<cr>
 nnoremap <silent> <del> :ProPrev<cr>
