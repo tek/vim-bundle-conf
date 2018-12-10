@@ -1,16 +1,17 @@
 global !p
+import re
 
-def module_name_from_filename() -> str:
+def module_name_from_filename(base: str) -> str:
   import vim
   from amino import Lists
   path = vim.current.buffer.name.rsplit('.')[0]
   segments = Lists.split(path, '/')
-  lib_sub = segments.drop_while(lambda a: a != 'lib').drop(1)
+  lib_sub = segments.drop_while(lambda a: not re.match(base, a)).drop(1)
   return lib_sub.join_dot
 
-def module_name() -> str:
+def module_name(base: str) -> str:
   try:
-    return module_name_from_filename()
+    return module_name_from_filename(base)
   except Exception as e:
     print(e)
     return 'error'
@@ -29,8 +30,19 @@ import qualified $1 as $2
 endsnippet
 
 snippet m "module declaration" b
-module `!p snip.rv = module_name()`(
+module `!p snip.rv = module_name('lib$')`(
 ) where
 
+$0
+endsnippet
+
+snippet mt "test module declaration" b
+{-# OPTIONS_GHC -F -pgmF htfpp #-}
+
+module `!p snip.rv = module_name('u|f')`(
+  htf_thisModulesTests
+) where
+
+import Test.Framework
 $0
 endsnippet
