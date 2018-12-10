@@ -88,7 +88,7 @@ function! tek_bundle_misc#add_ctags_source(path) abort "{{{
 endfunction "}}}
 
 function! tek_bundle_misc#post_save() abort "{{{
-  silent! ProSave
+  silent! call ProSave()
 endfunction "}}}
 
 function! tek_bundle_misc#set_sbtserver_address() abort "{{{
