@@ -3,7 +3,7 @@ function! unite#kinds#sbt_project#define() abort "{{{
 endfunction "}}}
 
 function! unite#kinds#sbt_project#add_root(candidate) abort "{{{
-  execute 'ProAdd! scala/' . a:candidate.word
+  execute 'ProAdd scala/' . a:candidate.word
   execute 'ProTo scala/' . a:candidate.word
 endfunction "}}}
 

@@ -8,7 +8,7 @@ let g:sbt_projects = [
 let s:override = exists("g:override_project_android")
 
 if !s:override
-  ProAdd! scala/droid
+  ProAdd scala/droid
 endif
 
 let s:int = {

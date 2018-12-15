@@ -1,1 +1,1 @@
-ProAdd! loki_core
+ProAdd loki_core

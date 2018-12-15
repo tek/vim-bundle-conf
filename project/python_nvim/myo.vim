@@ -1,2 +1,2 @@
-ProAdd! python_nvim/ribosome
-ProAdd! python/chiasma
+ProAdd python_nvim/ribosome
+ProAdd python/chiasma

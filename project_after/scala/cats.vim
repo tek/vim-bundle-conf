@@ -1,1 +1,1 @@
-ProAdd! scala/fs2
+ProAdd scala/fs2
