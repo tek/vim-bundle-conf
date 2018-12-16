@@ -22,7 +22,9 @@ let g:proteome_project_config = {
       \ 'typeMap': {
       \  'python_nvim': ['python'] ,
       \ },
-      \ 'langMap': {},
+      \ 'langMap': {
+      \  'python_nvim': ['python'] ,
+      \ },
       \ }
 
 nnoremap <silent> <insert> :ProNext<cr>
