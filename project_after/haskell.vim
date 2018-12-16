@@ -1,8 +1,8 @@
 MyoCreatePane { "ident": "ghci", "layout": "make", "min_size": 0.5, "max_size": 35, "position": 0.8 }
-MyoAddSystemCommand { "ident": "ghci", "line": "ghci", "target": "ghci", "lang": "haskell", "history": false }
-MyoAddSystemCommand { "ident": "stack-build", "line": "stack build --fast --pedantic", "target": "make", "lang": "haskell" }
-MyoAddSystemCommand { "ident": "stack-test", "line": "stack test --fast --pedantic", "target": "make", "lang": "haskell" }
-MyoAddSystemCommand { "ident": "stack-install", "line": "stack install", "target": "make", "lang": "haskell" }
+MyoAddSystemCommand { "ident": "ghci", "line": "ghci", "target": "ghci", "langs": ["haskell"], "history": false }
+MyoAddSystemCommand { "ident": "stack-build", "line": "stack build --fast --pedantic", "target": "make", "langs": ["haskell"] }
+MyoAddSystemCommand { "ident": "stack-test", "line": "stack test --fast --pedantic", "target": "make", "langs": ["haskell"] }
+MyoAddSystemCommand { "ident": "stack-install", "line": "stack install", "target": "make", "langs": ["haskell"] }
 
 nnoremap <f5> :MyoRun stack-test<cr>
 nnoremap <f6> :MyoRun stack-build<cr>
