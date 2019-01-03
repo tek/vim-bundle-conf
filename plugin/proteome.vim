@@ -23,7 +23,9 @@ let g:proteome_project_config = {
       \  'python_nvim': ['python'] ,
       \ },
       \ 'langMap': {
-      \  'python_nvim': ['python'] ,
+      \  'python_nvim': 'python' ,
+      \ },
+      \ 'langsMap': {
       \ },
       \ }
 
