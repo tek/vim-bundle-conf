@@ -22,7 +22,7 @@ MyoCreatePane {
 MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
 MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
 MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
-command! -nargs=+ Sbt MyoLine { "shell": "sbt", "line": "<args>" }
+command! -nargs=+ Sbt MyoLine { "ident": "<args>", "shell": "sbt", "line": "<args>" }
 command! -nargs=+ SbtNoHistory MyoLine { "shell": "sbt", "line": "<args>", "history": false }
 command! -nargs=+ SbtPrefixed call MyoLine('{ "shell": "sbt", "line": " ' . tek#bundle#scala#sbt_prefixed(<q-args>) . '" }')
 nnoremap <silent> <f5> :SbtPrefixed test<cr>
