@@ -1,4 +1,5 @@
 let s:func_keywords = '%(def|var|val)'
+
 function! tek_sj#join_scala_function() abort "{{{
   let line = getline('.')
   let def_pattern = '\v<' . s:func_keywords .
@@ -148,4 +149,19 @@ function! tek_sj#split_python_do() abort "{{{
         \ '\v^( *)(def .* -\> )%(Do)@!(.*):$',
         \ '\1@do(\3)\n\1\2Do:',
         \ )
+endfunction "}}}
+
+function! tek_sj#haskell_type_param_split(ws, types) abort "{{{
+  return substitute(a:types, '[-=]>\zs\s*', "\n  " . a:ws, 'g')
+endfunction "}}}
+
+function! tek_sj#split_haskell_sig() abort "{{{
+  let pattern = '\v((\s*)^\S+ ::) (.*)'
+  let replacement = '\=submatch(1) . "\n" . tek_sj#haskell_type_param_split(submatch(2), submatch(3))'
+  return tek_sj#single_line(pattern, replacement)
+endfunction "}}}
+
+function! tek_sj#split_haskell_decl() abort "{{{
+  let pattern = '\v(.* =) (.*)'
+  return tek_sj#single_line(pattern, '\1\n\2')
 endfunction "}}}
