@@ -6,7 +6,7 @@ let g:test#runners = {
       \ 'haskell': ['Htf']
       \ }
 
-let g:output_patterns += ['\bprint\b', 'Log.info', 'Log.infoS']
+let g:output_patterns += ['\bprint\b', '\bLog\.infoS?\b', '\bLog\.p\b']
 let g:output_file_patterns += ['\.hs']
 
 set path+=./lib
