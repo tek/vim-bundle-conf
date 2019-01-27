@@ -29,10 +29,19 @@ def test_module() -> str:
   return f'''{pragma}
 
 module {module_name('u|f')}(
-  htf_thisModulesTests
+  htf_thisModulesTests,
 ) where
 
 import Test.Framework'''
+
+def project_name() -> str:
+  try:
+    import vim
+    from amino.util.string import camelcase
+    return camelcase(vim.vars.get('proteome_main_name', 'IO'))
+  except Exception as e:
+    print(e)
+    return 'error'
 
 def test_effect() -> str:
   try:
@@ -55,21 +64,20 @@ def spec_name() -> str:
 endglobal
 
 snippet i "import" b
-import $0
+import $1 ($2)
 endsnippet
 
 snippet iq "import qualified" b
-import qualified $0
+import qualified $1 ($2)
 endsnippet
 
 snippet iqa "import qualified as" b
-import qualified $1 as `!p snip.rv = name_of(t[1])` ($3)
+import qualified $1 as `!p snip.rv = name_of(t[1])` ($2)
 endsnippet
 
 snippet m "module declaration" b
 module `!p snip.rv = module_name('lib$')`(
 ) where
-
 $0
 endsnippet
 
@@ -97,4 +105,29 @@ endsnippet
 
 snippet ie "import echomS" b
 import Ribosome.Api.Echo (echomS)
+endsnippet
+
+snippet im "import Neovim monad" b
+import `!p snip.rv = test_effect()`.Data.`!p snip.rv = test_effect()` (`!p snip.rv = test_effect()`)
+endsnippet
+
+snippet data "data type" b
+data $1 =
+  ${2:$1}
+  deriving (Eq, Show)
+endsnippet
+
+snippet nt "newtype" b
+newtype $1 =
+  $1 $2
+  deriving (Eq, Show)
+endsnippet
+
+snippet f "function" b
+$1 :: $2
+$1 = undefined
+endsnippet
+
+snippet id "import Data" b
+import `!p snip.rv = project_name()`.Data.$1 ($1(..))
 endsnippet
