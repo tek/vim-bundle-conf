@@ -152,7 +152,7 @@ function! tek_sj#split_python_do() abort "{{{
 endfunction "}}}
 
 function! tek_sj#haskell_type_param_split(ws, types) abort "{{{
-  return substitute(a:types, '[-=]>\zs\s*', "\n  " . a:ws, 'g')
+  return substitute(a:types, '\v%(\([^)]*)@<![-=]\>\zs\s*', "\n  " . a:ws, 'g')
 endfunction "}}}
 
 function! tek_sj#split_haskell_sig() abort "{{{
@@ -162,6 +162,20 @@ function! tek_sj#split_haskell_sig() abort "{{{
 endfunction "}}}
 
 function! tek_sj#split_haskell_decl() abort "{{{
-  let pattern = '\v(.* =) (.*)'
+  let pattern = '\v(.* \=) (.*)'
   return tek_sj#single_line(pattern, '\1\n\2')
+endfunction "}}}
+
+function! tek_sj#haskell_import_list_split(imports) abort "{{{
+  let with_trailing_comma = substitute(a:imports, '[^,]\zs$', ',', '')
+  return substitute(with_trailing_comma, '\v%(\([^)]*)@<!,\zs\s*\ze', "\n  ", 'g')
+endfunction "}}}
+
+function! tek_sj#split_haskell_import() abort "{{{
+  let line = getline('.')
+  if line =~ '^import [^(]*(.*)$'
+    let replacement = '\=tek_sj#haskell_import_list_split(submatch(0))'
+    call sj#ReplaceMotion('V', substitute(line, '[^(](\zs.*\ze)', replacement, ''))
+    return 1
+  endif
 endfunction "}}}
