@@ -41,36 +41,6 @@ function! tek_bundle_misc#textobj_function_map() abort "{{{
   xmap <buffer> if <Plug>(textobj-function-i)
 endfunction "}}}
 
-function! tek_bundle_misc#activate_root(index, ...) abort "{{{
-  let g:root_dir = a:index % len(g:root_dirs)
-  let root_dir = g:root_dirs[g:root_dir]
-  " let g:ctrlp_cmd = 'CtrlP ' . root_dir
-  let relative = root_dir[0] != '/'
-  let target = relative ? $PWD . '/' . root_dir : root_dir
-  execute 'cd ' . target
-  if get(a:000, 0)
-    if root_dir == $PWD
-      let g:root_dir_name = ''
-      let root_dir = '.'
-    else
-      let g:root_dir_name = fnamemodify(root_dir, ':t')
-    endif
-    echo 'New root: ' . root_dir
-  endif
-endfunction
-
-function! tek_bundle_misc#home_root() abort "{{{
-  return tek_bundle_misc#activate_root(0, 1)
-endfunction "}}}
-
-function! tek_bundle_misc#cycle_root_dir() abort "{{{
-  call tek_bundle_misc#activate_root(g:root_dir + 1, 1)
-endfunction "}}}
-
-function! tek_bundle_misc#ctrlp() abort "{{{
-  execute g:ctrlp_cmd
-endfunction "}}}
-
 function! tek_bundle_misc#abspath(rel) abort "{{{
   return substitute(fnamemodify(a:rel, ':p'), '/$', '', '')
 endfunction "}}}

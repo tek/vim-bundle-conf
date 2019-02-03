@@ -11,3 +11,5 @@ let g:output_file_patterns += ['\.hs']
 
 set path+=./lib
 set suffixesadd+=.hs
+nnoremap <silent> <leader>e :execute 'CtrlP lib/' . haskell#project#libs_name()<cr>
+nnoremap <silent> <localleader>e :execute 'CtrlP'<cr>
