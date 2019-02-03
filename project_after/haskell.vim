@@ -13,6 +13,7 @@ nnoremap <f7> :MyoRun stack-install<cr>
 let g:ctrlp_custom_ignore['file'] .= '|^codex.tags'
 let g:ctrlp_custom_ignore['dir'] .= '|/temp/'
 let g:myo_test_langs = ['haskell']
+let g:tek_misc#postsave_functions += ['haskell#sort_imports']
 
 let s:source = {
       \ 'word_pattern': '[\w.]*',
