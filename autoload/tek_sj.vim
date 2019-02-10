@@ -168,7 +168,7 @@ endfunction "}}}
 
 function! tek_sj#haskell_import_list_split(imports) abort "{{{
   let with_trailing_comma = substitute(a:imports, '[^,]\zs$', ',', '')
-  return substitute(with_trailing_comma, '\v%(\([^)]*)@<!,\zs\s*\ze', "\n  ", 'g')
+  return "\n  " . substitute(with_trailing_comma, '\v%(\([^)]*)@<!,\zs\s*\ze', "\n  ", 'g')
 endfunction "}}}
 
 function! tek_sj#split_haskell_import() abort "{{{
