@@ -87,11 +87,12 @@ function! haskell#sort_block(block) abort "{{{
   let imports = haskell#import_statements(lines, [])
   let sorted = sort(copy(imports), { l, r -> s:compare_imports(l, r) })
   let formatted = map(copy(sorted), { i, imp -> haskell#format_import(imp) })
+  let updated_lines = list#concat(formatted)
   return {
         \ 'start': start,
         \ 'end': end,
-        \ 'modified': imports != formatted,
-        \ 'data': formatted,
+        \ 'modified': lines != updated_lines,
+        \ 'data': updated_lines,
         \ }
 endfunction "}}}
 
@@ -104,7 +105,7 @@ function! haskell#sort_imports() abort "{{{
     let blocks = map(copy(haskell#import_blocks()), { i, a -> haskell#sort_block(a) })
     for block in blocks
       if block.modified
-        keepjumps silent call setline(block.start, list#concat(block.data))
+        keepjumps silent call setline(block.start, block.data)
       endif
     endfor
   finally
