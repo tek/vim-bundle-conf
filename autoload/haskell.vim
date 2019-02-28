@@ -1,5 +1,5 @@
 let s:import_start_re = '^import '
-let s:import_re = '\v^(import%(\s+qualified)?\s+\S+%(\s+as \S+)?)\s*%(\(\s*(.*)\s*\))?'
+let s:import_re = '\v^(import%(\s+qualified)?\s+\S+%(\s+as \S+)?)\s*%((\(.*\)))?$'
 let s:names_re = '\v%(\([^)]*)@<!,\s*'
 
 function! s:find_block_end(found, current) abort "{{{
@@ -19,7 +19,7 @@ endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
   let names = substitute(a:match, '\v^\((.*)\)$', '\1', '')
-  return split(names, s:names_re)
+  return map(split(names, s:names_re), { i, a -> trim(a) })
 endfunction "}}}
 
 function! haskell#import_statements(block, agg) abort "{{{
@@ -110,5 +110,5 @@ function! haskell#sort_imports() abort "{{{
   finally
     call winrestview(view)
   endtry
-  noautocmd w
+  keepjumps silent noautocmd w
 endfunction "}}}
