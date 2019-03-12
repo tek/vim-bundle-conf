@@ -129,7 +129,8 @@ endsnippet
 
 snippet f "function" b
 $1 :: $2
-$1 = undefined
+$1 =
+  undefined
 endsnippet
 
 snippet id "import Data" b
@@ -139,4 +140,21 @@ endsnippet
 snippet inst "instance" b
 instance $1 where
   $0
+endsnippet
+
+snippet c "class" b
+class $1 where
+  $0
+endsnippet
+
+snippet th "TH pragma" b
+{-# LANGUAGE TemplateHaskell #-}
+endsnippet
+
+snippet ul "import unsafeLog" b
+import Ribosome.Unsafe
+endsnippet
+
+snippet pr "language pragma" b
+{-# LANGUAGE $0 #-}
 endsnippet
