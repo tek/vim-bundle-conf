@@ -52,4 +52,4 @@ let g:sbt_project_map =
 let g:scala_integration_rex = 'integration'
 call MyoAppendPythonPath(g:python_modules_bundle_conf)
 
-let g:tek_misc#postsave_functions += ['tek_bundle_misc#set_sbtserver_address']
+" let g:tek_misc#postsave_functions += ['tek_bundle_misc#set_sbtserver_address']
