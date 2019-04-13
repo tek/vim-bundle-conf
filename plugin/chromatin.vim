@@ -9,7 +9,9 @@ let s:myo_pp = [
       \ ]
 
 if get(g:, 'crm_haskell', 0) || get(g:, 'nvim_hs_vim', 0)
-  let g:chromatin_rplugins += [{ 'spec': 'pip:myo~=1.0.3.a', 'name': 'myo', 'dev': v:false }]
+  if !get(g:, 'myo_hs', 0)
+    let g:chromatin_rplugins += [{ 'spec': 'pip:myo~=1.0.3.a', 'name': 'myo', 'dev': v:false }]
+  endif
 else
   if get(g:, 'myo_dev', 0)
     let g:chromatin_rplugins += [
