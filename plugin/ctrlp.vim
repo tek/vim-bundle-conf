@@ -19,6 +19,6 @@ else
 endif
 
 let g:ctrlp_custom_ignore['dir'] .= '\.git>|/build>|<target>|<vendor>|' . $PWD . '/node_modules'
-let g:ctrlp_custom_ignore['file'] .= '\.%(png|jpg)$'
+let g:ctrlp_custom_ignore['file'] .= '\.%(png|jpg)$|LICENSE'
 
 nnoremap <silent> <leader>e :CtrlP<cr>
