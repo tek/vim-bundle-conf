@@ -5,17 +5,19 @@ let s:switch_definitions =
     \   'return ': 'v = ',
     \ },
     \ {
-    \   'dec\zeod': 'enc',
-    \   'enc\zeod': 'dec',
+    \   'decod': 'encod',
+    \   'encod': 'decod',
     \ },
     \ {
-    \   'Dec\zeod': 'Enc',
-    \   'Enc\zeod': 'Dec',
+    \   'Decod': 'Encod',
+    \   'Encod': 'Decod',
     \ },
     \ ['yes', 'no'],
     \ ['on', 'off'],
     \ ['horizontal', 'vertical'],
     \ ['left', 'right'],
+    \ ['from', 'to'],
+    \ ['stdin', 'stdout', 'stderr'],
     \ ]
 
 if !exists('g:switch_definitions')
