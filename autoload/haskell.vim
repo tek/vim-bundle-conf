@@ -113,3 +113,9 @@ function! haskell#sort_imports() abort "{{{
   endtry
   keepjumps silent noautocmd w
 endfunction "}}}
+
+function! haskell#sort_imports_save() abort "{{{
+  if &ft == 'haskell' && get(g:, 'haskell_sort_imports', 1)
+    return haskell#sort_imports()
+  endif
+endfunction "}}}
