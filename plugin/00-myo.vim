@@ -21,3 +21,8 @@ nnoremap <silent> <f4> :MyoRerun<cr>
 nnoremap <silent> <f9> :call MyoToggleLayout('make')<cr>
 nnoremap <silent> <leader>4 :MyoFocus make<cr>
 nnoremap <silent> <leader>9 :call MyoHistoryMenu()<cr>
+
+if get(g:, 'myo_hs', 0)
+  nnoremap <silent> <m--> :call MyoPrev()<cr>
+  nnoremap <silent> <m-=> :call MyoNext()<cr>
+endif

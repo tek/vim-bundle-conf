@@ -1,3 +1,7 @@
+function! s:test_project() abort "{{{
+  return get(g:, 'htf_project_name', '')
+endfunction "}}}
+
 if get(g:, 'myo_hs', 0)
   call MyoAddSystemCommand({
         \ 'ident': 'stack-build',
@@ -6,9 +10,6 @@ if get(g:, 'myo_hs', 0)
         \ 'lang': 'haskell',
         \ })
 else
-  function! s:test_project() abort "{{{
-    return get(g:, 'htf_project_name', '')
-  endfunction "}}}
   MyoCreatePane { "ident": "ghci", "layout": "make", "min_size": 0.5, "max_size": 35, "position": 0.8 }
   MyoAddSystemCommand { "ident": "ghci", "line": "ghci", "target": "ghci", "langs": ["haskell"], "history": false }
   MyoAddSystemCommand { "ident": "stack-build", "line": "stack build --fast --pedantic", "target": "make", "langs": ["haskell"] }

@@ -12,25 +12,36 @@ command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
 nnoremap <c-f4> :SbtMin<cr>
 
 let g:myo_test_langs = ['scala']
-MyoCreatePane {
-      \ "layout": "make",
-      \ "ident": "sbt",
-      \ "min_size": 0.5,
-      \ "max_size": 35,
-      \ "position": 0.8
-      \ }
-MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
-MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
-MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
-command! -nargs=+ Sbt MyoLine { "ident": "<args>", "shell": "sbt", "line": "<args>" }
-command! -nargs=+ SbtNoHistory MyoLine { "shell": "sbt", "line": "<args>", "history": false }
-command! -nargs=+ SbtPrefixed call MyoLine('{ "shell": "sbt", "line": " ' . tek#bundle#scala#sbt_prefixed(<q-args>) . '" }')
-nnoremap <silent> <f5> :SbtPrefixed test<cr>
-nnoremap <silent> <f6> :SbtPrefixed test:compile<cr>
-nnoremap <silent> <s-f6> :SbtNoHistory clean<cr>
-nnoremap <silent> <f11> :SbtNoHistory reload<cr>
-nnoremap <silent> <f12> :SbtNoHistory r<cr>
-nnoremap <silent> <c-f2> :MyoReboot sbt<cr>
+
+if get(g:, 'myo_hs', 0)
+  call MyoCreatePane({
+        \ 'layout': 'make',
+        \ 'ident': 'sbt',
+        \ 'minSize': 0.5,
+        \ 'maxSize': 35,
+        \ 'position': 0.8
+        \ })
+else
+  MyoCreatePane {
+        \ "layout": "make",
+        \ "ident": "sbt",
+        \ "min_size": 0.5,
+        \ "max_size": 35,
+        \ "position": 0.8
+        \ }
+  MyoAddSystemCommand { "ident": "sbt", "line": "sbt", "target": "sbt", "langs": ["scala"] }
+  MyoAddShellCommand { "ident": "compile", "line": "compile", "target": "sbt" }
+  MyoAddShellCommand { "ident": "release", "line": "release with-defaults", "target": "sbt" }
+  command! -nargs=+ Sbt MyoLine { "ident": "<args>", "shell": "sbt", "line": "<args>" }
+  command! -nargs=+ SbtNoHistory MyoLine { "shell": "sbt", "line": "<args>", "history": false }
+  command! -nargs=+ SbtPrefixed call MyoLine('{ "shell": "sbt", "line": " ' . tek#bundle#scala#sbt_prefixed(<q-args>) . '" }')
+  nnoremap <silent> <f5> :SbtPrefixed test<cr>
+  nnoremap <silent> <f6> :SbtPrefixed test:compile<cr>
+  nnoremap <silent> <s-f6> :SbtNoHistory clean<cr>
+  nnoremap <silent> <f11> :SbtNoHistory reload<cr>
+  nnoremap <silent> <f12> :SbtNoHistory r<cr>
+  nnoremap <silent> <c-f2> :MyoReboot sbt<cr>
+endif
 
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
 let g:ctrlp_custom_ignore['dir'] .= '|<node_modules>|<stylesheets_gen>|<soapui>|<bower_components>|<fonts>|<vendor>'
