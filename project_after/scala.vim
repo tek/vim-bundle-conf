@@ -12,15 +12,34 @@ command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
 nnoremap <c-f4> :SbtMin<cr>
 
 let g:myo_test_langs = ['scala']
+let g:myo_test_lang = 'scala'
 
 if get(g:, 'myo_hs', 0)
-  call MyoCreatePane({
+  let s:sbt_pane =
+        \ {
         \ 'layout': 'make',
         \ 'ident': 'sbt',
         \ 'minSize': 0.5,
         \ 'maxSize': 35,
-        \ 'position': 0.8
-        \ })
+        \ 'position': 8
+        \ }
+  let g:myo_ui = {
+        \ "panes": [s:sbt_pane]
+        \ }
+  let s:sbt_cmd = {
+        \ 'ident': 'sbt',
+        \ 'lines': ['sbt'],
+        \ 'target': 'sbt',
+        \ 'lang': 'scala',
+        \ }
+  let s:compile_cmd = {
+        \ 'ident': 'compile',
+        \ 'lines': ['test:compile'],
+        \ 'target': 'sbt',
+        \ 'lang': 'scala',
+        \ }
+  let g:myo_commands = { 'system': [s:sbt_cmd], 'shell': [s:compile_cmd] }
+  nnoremap <silent> <f6> :MyoRun compile<cr>
 else
   MyoCreatePane {
         \ "layout": "make",
