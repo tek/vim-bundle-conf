@@ -5,7 +5,7 @@ nmap <buffer><silent> <localleader>i <Plug>(coc-implementation)
 nmap <buffer><silent> <localleader>r <Plug>(coc-references)
 
 " Remap for rename current word
-nmap <buffer> <localleader>rn <Plug>(coc-rename)
+nmap <buffer> <localleader>R <Plug>(coc-rename)
 
 " Remap for format selected region
 vmap <buffer> <localleader>f  <Plug>(coc-format-selected)
