@@ -8,7 +8,7 @@ function! test#haskell#htf#build_position(type, position) abort "{{{
     let f = a:position['file']
     let is_unit = f[:6] == 'test/u/'
     let skip = is_unit ? 'functional' : 'unit'
-    let skip_arg = ['--skip', name . '-' . skip, '--skip', name . '-exe']
+    let skip_arg = ['--skip', name . '-exe']
     return test#haskell#htf#nearest_test(a:position) + skip_arg
   else
     return []
