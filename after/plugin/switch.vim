@@ -18,6 +18,7 @@ let s:switch_definitions =
     \ ['left', 'right'],
     \ ['from', 'to'],
     \ ['stdin', 'stdout', 'stderr'],
+    \ switch#NormalizedCase(['sync', 'async']),
     \ ]
 
 if !exists('g:switch_definitions')
