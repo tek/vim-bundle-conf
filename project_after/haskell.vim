@@ -19,11 +19,13 @@ else
   execute 'MyoAddSystemCommand { "ident": "stack-build", "line": "stack build --fast --pedantic ' . Compile_project() . '", "target": "make", "langs": ["haskell"] }'
   execute 'MyoAddSystemCommand { "ident": "stack-build-lenient", "line": "stack build --fast ' . Compile_project() . '", "target": "make", "langs": ["haskell"] }'
   execute 'MyoAddSystemCommand { "ident": "stack-test", "line": "stack test --fast --pedantic ' . Test_project() . '", "target": "make", "langs": ["haskell"] }'
+  execute 'MyoAddSystemCommand { "ident": "stack-clean", "line": "stack clean ' . Compile_project() . '", "target": "make" }'
 endif
 
 nnoremap <silent> <f5> :MyoRun stack-test<cr>
 nnoremap <silent> <f6> :MyoRun stack-build<cr>
 nnoremap <silent> <s-f6> :MyoRun stack-build-lenient<cr>
+nnoremap <silent> <f7> :MyoRun stack-clean<cr>
 nnoremap <silent> <f18> :MyoRun stack-build-lenient<cr>
 
 let g:ctrlp_custom_ignore['file'] .= '|^codex.tags'
