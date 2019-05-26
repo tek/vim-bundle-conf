@@ -96,9 +96,6 @@ endfunction "}}}
 
 command! Splain call <sid>splain()
 
-" highlight clear EnErrorStyle
-" highlight EnErrorStyle ctermbg=0
-
 let g:output_patterns += ['^\s*println\(']
 let g:output_file_patterns += ['\.scala']
 let g:ctags_langs += ['scala']
