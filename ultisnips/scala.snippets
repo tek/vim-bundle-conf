@@ -263,3 +263,13 @@ endsnippet
 snippet iec "implicit ExecutionContext" i
 (implicit ec: ExecutionContext)
 endsnippet
+
+snippet adt "ADT" b
+sealed trait $1
+
+object $1
+{
+  case class $2
+  extends $1
+}
+endsnippet
