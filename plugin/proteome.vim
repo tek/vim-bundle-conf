@@ -19,6 +19,8 @@ let g:proteome_project_config = {
       \ },
       \ 'langsMap': {
       \ },
+      \ 'typeMarkers': {
+      \ }
       \ }
 
 nnoremap <silent> <insert> :ProNext<cr>

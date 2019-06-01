@@ -2,6 +2,7 @@ let g:neomake_haskell_enabled_makers = ['hdevtools']
 let g:proteome_tags_command = 'codex'
 let g:proteome_tags_args = 'update'
 
+let g:myo_test_lang = 'haskell'
 let g:test#runners = {
       \ 'haskell': ['Htf']
       \ }
