@@ -28,7 +28,7 @@ def test_module() -> str:
   pragma = '{-# OPTIONS_GHC -F -pgmF htfpp #-}'
   return f'''{pragma}
 
-module {module_name('u|f')} (htf_thisModulesTests) where
+module {module_name('^(u|f)$')} (htf_thisModulesTests) where
 
 import Test.Framework'''
 
@@ -52,10 +52,16 @@ def test_effect() -> str:
 
 def unit_test_imports() -> str:
   name = test_effect()
-  return f'''import Control.Monad.IO.Class (liftIO)
-import {name}.Data.{name} ({name})
-import {name}.Test.Unit (specWithDef)
-import Config (vars)'''
+  return f'''import {name}.Test.Unit (specWithDef)
+
+import {name}.Data.Env ({name})'''
+
+def tmux_spec_imports() -> str:
+  name = test_effect()
+  return f'''import Ribosome.Test.Tmux (tmuxGuiSpecDef)
+
+import {name}.Data.Env ({name})'''
+
 
 def spec_name() -> str:
   return re.sub('^.', lambda a: a.group(0).lower(), snip.fn.replace('Spec.hs', ''))
@@ -90,6 +96,19 @@ $1Spec = do
 test_$1 :: IO ()
 test_$1 =
   vars >>= specWithDef $1Spec
+endsnippet
+
+snippet mtt "tmux spec" b
+`!p snip.rv = test_module()`
+`!p snip.rv = tmux_spec_imports()`
+
+${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
+$1Spec = do
+  gassertEqual "" ""
+
+test_$1 :: IO ()
+test_$1 =
+  tmuxGuiSpecDef $1Spec
 endsnippet
 
 snippet il "import Log" b
@@ -152,6 +171,10 @@ snippet ul "import unsafeLog" b
 import Ribosome.Unsafe
 endsnippet
 
-snippet pr "language pragma" b
+snippet pr "pragma"
+{-# $0 #-}
+endsnippet
+
+snippet lpr "language pragma"
 {-# LANGUAGE $0 #-}
 endsnippet
