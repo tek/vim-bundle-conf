@@ -152,7 +152,8 @@ function! tek_sj#split_python_do() abort "{{{
 endfunction "}}}
 
 function! tek_sj#haskell_type_param_split(ws, types) abort "{{{
-  return substitute(a:types, '\v%(\([^)]*)@<![-=]\>\zs\s*', "\n  " . a:ws, 'g')
+  let split_quantifiers = substitute(a:types, '\v^%(forall|∀)%(\w|[ ''])+\.\zs\s*', a:ws . '\n  ', '')
+  return substitute(split_quantifiers, '\v%(\([^)]*)@<![-=]\>\zs\s*', '\n  ' . a:ws, 'g')
 endfunction "}}}
 
 function! tek_sj#split_haskell_sig() abort "{{{
