@@ -1,5 +1,6 @@
 nmap gr <plug>(SubversiveSubstitute)
 xmap gr <plug>(SubversiveSubstitute)
+xmap p <plug>(SubversiveSubstitute)
 nmap grr <plug>(SubversiveSubstituteLine)
 nmap gR <plug>(SubversiveSubstituteToEndOfLine)
 
