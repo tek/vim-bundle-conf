@@ -62,6 +62,11 @@ def tmux_spec_imports() -> str:
 
 import {name}.Data.Env ({name})'''
 
+def ribo_spec_imports() -> str:
+  name = test_effect()
+  return f'''import Unit (specDef)
+
+import {name}.Data.Env ({name})'''
 
 def spec_name() -> str:
   return re.sub('^.', lambda a: a.group(0).lower(), snip.fn.replace('Spec.hs', ''))
@@ -109,6 +114,19 @@ $1Spec = do
 test_$1 :: IO ()
 test_$1 =
   tmuxGuiSpecDef $1Spec
+endsnippet
+
+snippet mtr "ribo spec" b
+`!p snip.rv = test_module()`
+`!p snip.rv = ribo_spec_imports()`
+
+${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
+$1Spec = do
+  gassertEqual "" ""
+
+test_$1 :: IO ()
+test_$1 =
+  specDef $1Spec
 endsnippet
 
 snippet il "import Log" b
