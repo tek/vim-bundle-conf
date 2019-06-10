@@ -1,1 +1,2 @@
-nnoremap <silent> p :<c-u>call UraPaste()<cr>
+nnoremap <silent> p <cmd>call UraPaste()<cr>
+xnoremap <silent> p <cmd>call UraPaste()<cr>
