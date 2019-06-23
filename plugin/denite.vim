@@ -1,4 +1,4 @@
-nmap <silent> <leader>b :Denite buffer<cr>
+" nmap <silent> <leader>b :Denite buffer<cr>
 
 call denite#custom#option('_', 'auto_resize', 1)
 call denite#custom#option('_', 'reversed', 1)
@@ -27,12 +27,12 @@ endif
 
 command! -nargs=+ DeniteGrep Denite grep<args>
 
-nnoremap <silent> <leader>aa :DeniteGrep :.:-s:<cr>
-nnoremap <silent> <leader>ai :DeniteGrep :.:-i:<cr>
-nnoremap <silent> <leader>ad :DeniteGrep<cr>
-nnoremap <silent> <leader>aA :DeniteGrep :.:-t:<cr>
+" nnoremap <silent> <leader>aa :DeniteGrep :.:-s:<cr>
+" nnoremap <silent> <leader>ai :DeniteGrep :.:-i:<cr>
+" nnoremap <silent> <leader>ad :DeniteGrep<cr>
+" nnoremap <silent> <leader>aA :DeniteGrep :.:-t:<cr>
 
-nnoremap <silent> <m-y> :Denite miniyank<cr>
+" nnoremap <silent> <m-y> :Denite miniyank<cr>
 
 function! s:denite_mappings() abort
   nnoremap <silent><buffer><expr> <cr>

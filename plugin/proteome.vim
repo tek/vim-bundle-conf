@@ -24,13 +24,11 @@ let g:proteome_project_config = {
       \ }
 let g:proteome_grep_cmdline = 'rg --vimgrep --no-heading --ignore-file ' . $HOME .'/.agignore'
 
+nnoremap <silent> gaa <cmd>call ProGrep('\b' . expand('<cword>' . '\b'))<cr>
+nnoremap <silent> <leader>aa :ProGrep<cr>
+nnoremap <silent> <leader>b :ProBuffers<cr>
 nnoremap <silent> <insert> :ProNext<cr>
 nnoremap <silent> <del> :ProPrev<cr>
-nnoremap <silent> <c-insert> :ProTo 0<cr>
-" nnoremap <silent> <c-PageUp> :ProHistoryNext<cr>
-" nnoremap <silent> <c-PageDown> :ProHistoryPrev<cr>
-nnoremap <silent> <leader>1 :Projects<cr>
-nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
-nnoremap <silent> <leader>@ :ProHistoryFileBrowse<cr>
-
-nnoremap <silent> gaa <cmd>call ProGrep('\b' . expand('<cword>' . '\b'))<cr>
+" nnoremap <silent> <c-insert> :ProTo 0<cr>
+" nnoremap <silent> <leader>1 :Projects<cr>
+" nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
