@@ -22,6 +22,7 @@ let g:proteome_project_config = {
       \ 'typeMarkers': {
       \ }
       \ }
+let g:proteome_grep_cmdline = 'rg --vimgrep --no-heading --ignore-file ' . $HOME .'/.agignore'
 
 nnoremap <silent> <insert> :ProNext<cr>
 nnoremap <silent> <del> :ProPrev<cr>
@@ -31,3 +32,5 @@ nnoremap <silent> <c-insert> :ProTo 0<cr>
 nnoremap <silent> <leader>1 :Projects<cr>
 nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
 nnoremap <silent> <leader>@ :ProHistoryFileBrowse<cr>
+
+nnoremap <silent> gaa <cmd>call ProGrep('\b' . expand('<cword>' . '\b'))<cr>
