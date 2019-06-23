@@ -9,7 +9,7 @@ endfunction
 nmap <silent> gd <Plug>(coc-definition)
 nnoremap <buffer><silent> K :call <SID>show_documentation()<CR>
 
-autocmd CursorHold * silent call CocActionAsync('highlight')
+autocmd CursorHold * silent! call CocActionAsync('highlight')
 
 nmap <leader>ca  <Plug>(coc-codeaction)
 nmap <leader>cf  <Plug>(coc-fix-current)
