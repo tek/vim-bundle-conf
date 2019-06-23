@@ -75,7 +75,7 @@ nnoremap <silent> <f7> :MyoRun stack-clean<cr>
 nnoremap <silent> <s-f7> :MyoRun stack-clean-all<cr>
 nnoremap <silent> <f19> :MyoRun stack-clean-all<cr>
 
-let g:ctrlp_custom_ignore['file'] .= '|^codex.tags'
+let g:ctrlp_custom_ignore['file'] .= '|codex\.tags|.*\.cabal'
 let g:ctrlp_custom_ignore['dir'] .= '|/temp/'
 let g:myo_test_langs = ['haskell']
 let g:tek_misc#postsave_functions += ['haskell#sort_imports_save']
