@@ -52,9 +52,9 @@ def test_effect() -> str:
 
 def unit_test_imports() -> str:
   name = test_effect()
-  return f'''import {name}.Test.Unit (specWithDef)
-
-import {name}.Data.Env ({name})'''
+  return f'''
+import {name}.Data.Env ({name})
+import Unit (specDef)'''
 
 def tmux_spec_imports() -> str:
   name = test_effect()
@@ -96,11 +96,11 @@ snippet mtu "unit test module" b
 
 ${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
 $1Spec = do
-  liftIO $ assertEqual "" ""
+  gassertEqual "" ""
 
 test_$1 :: IO ()
 test_$1 =
-  vars >>= specWithDef $1Spec
+  specDef $1Spec
 endsnippet
 
 snippet mtt "tmux spec" b
@@ -165,6 +165,16 @@ snippet f "function" b
 $1 :: ${2:m ()}
 $1 =
   undefined
+endsnippet
+
+snippet t "test" b
+$1Spec :: m ()
+$1Spec =
+  undefined
+
+test_$1 :: IO ()
+test_$1 =
+  spec $1Spec
 endsnippet
 
 snippet id "import Data" b
