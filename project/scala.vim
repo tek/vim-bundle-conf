@@ -56,3 +56,5 @@ if !get(g:, 'myo_hs', 0)
 endif
 
 " let g:tek_misc#postsave_functions += ['tek_bundle_misc#set_sbtserver_address']
+
+let g:proteome_files_exclude_directories = ['target']

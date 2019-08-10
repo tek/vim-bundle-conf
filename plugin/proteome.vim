@@ -30,6 +30,7 @@ nnoremap <silent> <leader>aa :ProGrep<cr>
 nnoremap <silent> <leader>b :ProBuffers<cr>
 nnoremap <silent> <insert> :ProNext<cr>
 nnoremap <silent> <del> :ProPrev<cr>
+nnoremap <silent> <leader>e :ProFiles<cr>
 " nnoremap <silent> <c-insert> :ProTo 0<cr>
 " nnoremap <silent> <leader>1 :Projects<cr>
 " nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
