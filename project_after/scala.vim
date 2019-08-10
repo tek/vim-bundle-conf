@@ -14,31 +14,13 @@ nnoremap <c-f4> :SbtMin<cr>
 let g:myo_test_langs = ['scala']
 let g:myo_test_lang = 'scala'
 
-let s:sbt_pane =
-      \ {
-      \ 'layout': 'make',
-      \ 'ident': 'sbt',
-      \ 'minSize': 0.5,
-      \ 'maxSize': 35,
-      \ 'position': 8
-      \ }
-let g:myo_ui = {
-      \ "panes": [s:sbt_pane]
-      \ }
-let s:sbt_cmd = {
-      \ 'ident': 'sbt',
-      \ 'lines': ['sbt'],
-      \ 'target': 'sbt',
-      \ 'lang': 'scala',
-      \ }
-let s:compile_cmd = {
-      \ 'ident': 'compile',
-      \ 'lines': ['test:compile'],
-      \ 'target': 'sbt',
-      \ 'lang': 'scala',
-      \ }
-let g:myo_commands = { 'system': [s:sbt_cmd], 'shell': [s:compile_cmd] }
+command! -nargs=+ Sbt call MyoLine({'line': <q-args>, 'target': 'sbt'})
+
+nnoremap <silent> <f5> :MyoRun test<cr>
 nnoremap <silent> <f6> :MyoRun compile<cr>
+nnoremap <silent> <f7> :MyoRun clean<cr>
+nnoremap <silent> <f11> :Sbt reload<cr>
+nnoremap <silent> <f12> :Sbt r<cr>
 
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
 let g:ctrlp_custom_ignore['dir'] .= '|<node_modules>|<stylesheets_gen>|<soapui>|<bower_components>|<fonts>|<vendor>'
