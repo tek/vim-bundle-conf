@@ -102,7 +102,7 @@ snippet mtu "unit test module" b
 
 ${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
 $1Spec = do
-  gassertEqual "" ""
+  gassertEqual True True
 
 test_$1 :: IO ()
 test_$1 =
@@ -115,7 +115,7 @@ snippet mtt "tmux spec" b
 
 ${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
 $1Spec = do
-  gassertEqual "" ""
+  gassertEqual True True
 
 test_$1 :: IO ()
 test_$1 =
@@ -128,7 +128,7 @@ snippet mttg "tmux gui spec" b
 
 ${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
 $1Spec = do
-  gassertEqual "" ""
+  gassertEqual True True
 
 test_$1 :: IO ()
 test_$1 =
@@ -141,7 +141,7 @@ snippet mtr "ribo spec" b
 
 ${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
 $1Spec = do
-  gassertEqual "" ""
+  gassertEqual True True
 
 test_$1 :: IO ()
 test_$1 =
