@@ -34,3 +34,6 @@ nnoremap <silent> <leader>e :ProFiles<cr>
 " nnoremap <silent> <c-insert> :ProTo 0<cr>
 " nnoremap <silent> <leader>1 :Projects<cr>
 " nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
+
+let g:proteome_files_exclude_directories = []
+let g:proteome_files_exclude_files = ['.*\.pyc']
