@@ -20,7 +20,8 @@ let g:proteome_project_config = {
       \ 'langsMap': {
       \ },
       \ 'typeMarkers': {
-      \ }
+      \   'scala': ['*.sbt', '*.sc'],
+      \ },
       \ }
 let g:proteome_grep_cmdline = 'rg --vimgrep --no-heading --ignore-file ' . $HOME .'/.agignore'
 
