@@ -8,6 +8,7 @@ function! s:toggle_sbt_min() abort "{{{
   echo 'cmdline `' . g:scala#sbt_cmdline . '`'
 endfunction "}}}
 
+command! -nargs=+ Sbt call MyoLine({'line': <q-args>, 'target': 'sbt'})
 command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
 nnoremap <c-f4> :SbtMin<cr>
 
