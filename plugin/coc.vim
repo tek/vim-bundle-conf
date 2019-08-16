@@ -16,6 +16,7 @@ autocmd CursorHold * silent! call CocActionAsync('highlight')
 
 nmap <leader>ca  <Plug>(coc-codeaction)
 nmap <leader>cf  <Plug>(coc-fix-current)
+nmap <leader>cS  <cmd>CocList -I symbols<cr>
 
 inoremap <silent><expr> <c-space> coc#refresh()
 
