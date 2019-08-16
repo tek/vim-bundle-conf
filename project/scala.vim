@@ -57,5 +57,6 @@ endif
 
 " let g:tek_misc#postsave_functions += ['tek_bundle_misc#set_sbtserver_address']
 
-
 let g:proteome_files_exclude_directories += ['target', 'out']
+
+command! ImportBuild call CocRequestAsync('scala', 'workspace/executeCommand', { 'command': 'build-import' })
