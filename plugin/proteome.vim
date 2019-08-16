@@ -1,6 +1,3 @@
-let g:proteome_config_path = tek_misc#script_dir(expand('<sfile>')) .
-      \ '/../config/proteome_projects'
-let g:proteome_history_base = '~/usr/var/tmp/vim/history'
 let g:proteome_base_dirs = ['~/code/ext', '~/code/tek', '~/code/spr', '~/code/rec', '/var/tek/lib/repos']
 let g:proteome_project_base_dirs = ['~/code/ext', '~/code/tek', '~/code/spr', '~/code/rec', '/var/tek/lib/repos']
 let g:proteome_type_base_dirs = {
@@ -10,7 +7,11 @@ let g:proteome_type_base_dirs = {
 let g:proteome_all_projects_history = 1
 let tek_misc#postsave_functions += ['tek_bundle_misc#post_save']
 let g:proteome_project_config = {
-      \ 'projectTypes': {},
+      \ 'baseDirs': [$HOME . '/code/ext', $HOME . '/code/tek', $HOME . '/code/spr', '/var/tek/lib/repos'],
+      \ 'projectTypes': {
+      \   'java': [$HOME . '/code/spr/java'],
+      \   'vim': [$VIMPACK],
+      \ },
       \ 'typeMap': {
       \  'python_nvim': ['python'] ,
       \ },
@@ -21,6 +22,7 @@ let g:proteome_project_config = {
       \ },
       \ 'typeMarkers': {
       \   'scala': ['*.sbt', '*.sc'],
+      \ 'java': ['gradlew'],
       \ },
       \ }
 let g:proteome_grep_cmdline = 'rg --vimgrep --no-heading --ignore-file ' . $HOME .'/.agignore'
