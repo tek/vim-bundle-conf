@@ -10,7 +10,7 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> <leader>ct <Plug>(coc-type-definition)
 nmap <silent> <leader>ci <Plug>(coc-implementation)
 nmap <silent> <leader>cr <Plug>(coc-references)
-nnoremap <buffer><silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 autocmd CursorHold * silent! call CocActionAsync('highlight')
 
