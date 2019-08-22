@@ -1,7 +1,7 @@
 let s:import_start_re = '^import '
 let s:import_re = '\v^import\s+(\S+)\.\s*%(\{(.+)\}|(\S+))\s*$'
 
-function! scala#imports#imports() abort "{{{
+function! scala#imports#import_line_range() abort "{{{
   keepjumps normal gg
   keepjumps let start = search(s:import_start_re, 'W')
   keepjumps let found_end = search('\v^(import|\s|\}|$)@!', 'W')
@@ -114,7 +114,8 @@ function! scala#imports#process_lines(prefixes, start, end) abort "{{{
   let nonzero_lines = filter(copy(lines), { i, a -> a !~ '^\s*$' })
   let imports = scala#imports#import_statements(nonzero_lines, [])
   let blocks = scala#imports#split(a:prefixes, imports, [])
-  let sorted_blocks = map(copy(blocks), { i, b -> scala#imports#sort_block(b) + [''] })
+  let nonzero_blocks = filter(copy(blocks), { i, a -> len(a) > 0 })
+  let sorted_blocks = map(copy(nonzero_blocks), { i, b -> scala#imports#sort_block(b) + [''] })
   let sorted = list#concat(sorted_blocks)
   return { 'data': sorted, 'modified': sorted != lines }
 endfunction "}}}
@@ -126,7 +127,7 @@ function! scala#imports#sort() abort "{{{
   let view = winsaveview()
   try
     let prefixes = get(g:, 'scala_import_prefixes', ['^java\.', '^scala\.', '^\U'])
-    let [start, end] = scala#imports#imports()
+    let [start, end] = scala#imports#import_line_range()
     if start > 0
       let updated = scala#imports#process_lines(prefixes, start, end)
       if updated.modified
