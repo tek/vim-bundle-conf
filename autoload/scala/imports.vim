@@ -1,10 +1,11 @@
-let s:import_start_re = '^import '
-let s:import_re = '\v^import\s+(\S+)\.\s*%(\{(.+)\}|(\S+))\s*$'
+let s:comment = '\v^%(//\s*)'
+let s:import_start_re = s:comment . '?import '
+let s:import_re = s:comment . '?import\s+(\S+)\.\s*%(\{(.+)\}|(\S+))\s*$'
 
 function! scala#imports#import_line_range() abort "{{{
   keepjumps normal gg
   keepjumps let start = search(s:import_start_re, 'W')
-  keepjumps let found_end = search('\v^(import|\s|\}|$)@!', 'W')
+  keepjumps let found_end = search('\v^(%(//\s*)?%(import|\s|\}|$))@!', 'W')
   let end = found_end > 1 ? found_end - 1 : line('$')
   return [start, end]
 endfunction "}}}
@@ -27,11 +28,13 @@ function! scala#imports#import_statements(block, agg) abort "{{{
     let head_match = get(import, 1, '')
     let head = len(head_match) > 0 ? head_match : get(import, 0, cur)
     let names_match = get(import, 2, '') . get(import, 3, '')
+    let commented = cur =~ s:comment
     let statement = {
           \ 'head': head,
           \ 'has_names': len(names_match) > 0,
           \ 'names': s:parse_names(names_match),
           \ 'multi': multi,
+          \ 'commented': commented,
           \ }
     return scala#imports#import_statements(remainder, a:agg + [statement])
   endif
@@ -43,25 +46,27 @@ function! s:compare_names(l, r) abort "{{{
   return left_op ? (right_op ? a:l[1:] > a:r[1:] : 1) : (right_op ? -1 : a:l > a:r)
 endfunction "}}}
 
-function! scala#imports#format_single_import(head, names, has_names) abort "{{{
+function! scala#imports#format_single_import(head, names, has_names, prefix) abort "{{{
+  let need_braces = len(a:names) > 1 || match(a:names, ".*=>") != -1
   let head_suf = a:has_names ?
-        \ '.' . (len(a:names) > 1 ? '{' . join(a:names, ', ') . '}' : join(a:names)) :
+        \ '.' . (need_braces ? '{' . join(a:names, ', ') . '}' : join(a:names)) :
         \ ''
-  return ['import ' . a:head . head_suf]
+  return [a:prefix . 'import ' . a:head . head_suf]
 endfunction "}}}
 
-function! scala#imports#format_multi_import(head, names) abort "{{{
+function! scala#imports#format_multi_import(head, names, prefix) abort "{{{
   let names = map(copy(a:names), { i, a -> '  ' . a})
   let with_comma = map(copy(names[:-2]), { i, a -> a . ',' }) + names[-1:]
-  return ['import ' . a:head . '.{'] + with_comma + ['}']
+  return [a:prefix . 'import ' . a:head . '.{'] + with_comma + ['}']
 endfunction "}}}
 
 function! scala#imports#format_import(import) abort "{{{
   let names = sort(copy(a:import.names), { l, r -> s:compare_names(l, r) })
   let head = substitute(a:import.head, '\v\s+', ' ', 'g')
+  let comment_prefix = a:import.commented ? '// ' : ''
   return a:import.multi ?
-        \ scala#imports#format_multi_import(head, names) :
-        \ scala#imports#format_single_import(head, names, a:import.has_names)
+        \ scala#imports#format_multi_import(head, names, comment_prefix) :
+        \ scala#imports#format_single_import(head, names, a:import.has_names, comment_prefix)
 endfunction "}}}
 
 function! s:merge(l, r) abort "{{{
@@ -70,6 +75,7 @@ function! s:merge(l, r) abort "{{{
         \ 'has_names': a:l.has_names && a:r.has_names,
         \ 'names': a:l.names + a:r.names,
         \ 'multi': a:l.multi || a:r.multi,
+        \ 'commented': a:l.commented || a:r.commented,
         \ }
 endfunction "}}}
 
