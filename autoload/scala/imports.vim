@@ -132,7 +132,7 @@ function! scala#imports#sort() abort "{{{
   endif
   let view = winsaveview()
   try
-    let prefixes = get(g:, 'scala_import_prefixes', ['^java\.', '^scala\.', '^\U'])
+    let prefixes = get(g:, 'scala_import_prefixes', ['^javax\?\.', '^scala\.', '^\U'])
     let [start, end] = scala#imports#import_line_range()
     if start > 0
       let updated = scala#imports#process_lines(prefixes, start, end)
