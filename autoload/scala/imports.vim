@@ -5,13 +5,13 @@ let s:import_re = s:comment . '?import\s+(\S+)\.\s*%(\{(.+)\}|(\S+))\s*$'
 function! scala#imports#import_line_range() abort "{{{
   keepjumps normal gg
   keepjumps let start = search(s:import_start_re, 'W')
-  keepjumps let found_end = search('\v^(%(//\s*)?%(import|\s|\}|$))@!', 'W')
+  keepjumps let found_end = search('\v^(%(//\s*)?%(%(import|\s|\}|$))@!|%(object|class|trait|case))', 'W')
   let end = found_end > 1 ? found_end - 1 : line('$')
   return [start, end]
 endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
-  return map(split(a:match, ',\s*'), { i, a -> trim(a) })
+  return uniq(map(split(a:match, ',\s*'), { i, a -> trim(a) }))
 endfunction "}}}
 
 function! scala#imports#import_statements(block, agg) abort "{{{
@@ -132,14 +132,14 @@ function! scala#imports#sort() abort "{{{
   endif
   let view = winsaveview()
   try
-    let prefixes = get(g:, 'scala_import_prefixes', ['^javax\?\.', '^scala\.', '^\U'])
+    let prefixes = get(g:, 'scala_import_prefixes', ['^java\.', '^scala\.', '^\U'])
     let [start, end] = scala#imports#import_line_range()
     if start > 0
       let updated = scala#imports#process_lines(prefixes, start, end)
       if updated.modified
         keepjumps silent call nvim_buf_set_lines(bufnr('%'), start - 1, end, v:false, updated.data)
       endif
-      if getline(start - 1) != ''
+      if getline(1) =~ '^package' && getline(start - 1) != ''
         keepjumps silent call nvim_buf_set_lines(bufnr('%'), start - 1, start - 1, v:false, [''])
       endif
     endif
