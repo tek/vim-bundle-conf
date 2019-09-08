@@ -60,4 +60,6 @@ command! Splain call <sid>splain()
 let g:output_patterns += ['^\s*println\(']
 let g:output_file_patterns += ['\.scala']
 let g:ctags_langs += ['scala']
-let g:tek_misc#postsave_functions += ['haskell#sort_imports_save']
+if !g:readonly_project
+  let g:tek_misc#postsave_functions += ['scala#imports#sort_save']
+endif
