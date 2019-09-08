@@ -252,8 +252,8 @@ endsnippet
 
 snippet f "for comp" b
 for {
-  $1 <- $2
-} yield $3
+  ${1:_} <- $2
+} yield ${3:()}
 endsnippet
 
 snippet pr "println()" b
