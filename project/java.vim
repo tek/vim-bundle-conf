@@ -5,3 +5,4 @@ nnoremap <silent> <m-i> :JCimportAddSmart<cr>
 
 let g:JavaComplete_ImportSortType = 'packageName'
 let g:JavaComplete_ImportOrder = ['java.', 'javax.', 'org.', 'net.', 'com.artnology.']
+let g:proteome_files_exclude_files += ['.*\.class']
