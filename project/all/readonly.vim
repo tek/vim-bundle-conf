@@ -1,4 +1,4 @@
-if $PWD =~ '.*/code/tek/'
+if $PWD =~ '.*/code/\%(tek\|spr\)/'
   let g:readonly_project = v:false
 endif
 
