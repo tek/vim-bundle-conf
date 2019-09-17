@@ -13,5 +13,5 @@ let g:output_file_patterns += ['\.hs']
 set path+=./lib
 set suffixesadd+=.hs
 
-nnoremap <silent> <leader>e :execute 'ProFiles ' . haskell#project#lib_dir()<cr>
+nnoremap <silent> <leader>e :execute 'ProFiles test/u ' . haskell#project#lib_dir()<cr>
 nnoremap <silent> <localleader>e :ProFiles<cr>
