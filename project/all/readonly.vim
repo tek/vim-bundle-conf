@@ -3,7 +3,9 @@ if $PWD =~ '.*/code/\%(tek\|spr\)/'
 endif
 
 function! s:save() abort "{{{
-  noautocmd write
+  if &modifiable && &buftype == ''
+    noautocmd write
+  endif
 endfunction "}}}
 
 if !g:readonly_project
