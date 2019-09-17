@@ -19,7 +19,7 @@ endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
   let names = substitute(a:match, '\v^\((.*)\)$', '\1', '')
-  return map(split(names, s:names_re), { i, a -> trim(a) })
+  return uniq(map(split(names, s:names_re), { i, a -> trim(a) }))
 endfunction "}}}
 
 function! haskell#import_statements(block, agg) abort "{{{
