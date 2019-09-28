@@ -14,7 +14,5 @@ MyoCreatePane { "ident": "purs", "layout": "make", "max_size": 35, "position": 0
 MyoAddShellCommand { "ident": "purs", "line": "npm run purs:dev", "target": "purs" }
 nnoremap <silent> <f7> :MyoRun purs<cr>
 
-let g:test#runners = {
-      \ 'javascript': ['Ava', 'Tape']
-      \ }
+let g:test#enabled_runners = ['javascript#ava', 'javascript#tape']
 let test#javascript#runner = 'ava'

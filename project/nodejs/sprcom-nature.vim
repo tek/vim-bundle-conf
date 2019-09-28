@@ -1,4 +1,2 @@
-let g:test#runners = {
-      \ 'javascript': ['Tape']
-      \ }
+let g:test#enabled_runners = ['javascript#tape']
 let test#javascript#runner = 'tape'
