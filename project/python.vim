@@ -68,7 +68,9 @@ nnoremap <silent> <f5> :MyoRun unit<cr>
 nnoremap <silent> <f6> :MyoRun integration<cr>
 " nnoremap <silent> <f8> :MyoTmuxFocus ipython<cr>
 
+let g:test#runners = { 'python': ['klk', 'spec'] }
 let g:test#enabled_runners = ['python#klk', 'python#spec']
+
 let test#python#runner = 'klk'
 let g:spec_unit = 'klk unit'
 let g:spec_integration = 'klk integration'

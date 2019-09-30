@@ -30,6 +30,7 @@ nnoremap <silent> <s-home> :ActivateSbtProject<cr>
 
 let s:override = exists("g:override_project_scala")
 
+let g:test#runners = { 'scala': ['specs2'] }
 let g:test#enabled_runners = ['scala#specs2']
 let g:myo_test_shell = 'sbt'
 
