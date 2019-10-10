@@ -9,19 +9,18 @@ function! s:toggle_sbt_min() abort "{{{
 endfunction "}}}
 
 command! -nargs=+ Sbt call MyoLine({'line': <q-args>, 'target': 'sbt'})
+command! -nargs=+ SbtNh call MyoLine({'line': <q-args>, 'target': 'sbt', 'skipHistory': v:true})
 command! -bar -nargs=0 SbtMin call <sid>toggle_sbt_min()
 nnoremap <c-f4> :SbtMin<cr>
 
 let g:myo_test_langs = ['scala']
 let g:myo_test_lang = 'scala'
 
-command! -nargs=+ Sbt call MyoLine({'line': <q-args>, 'target': 'sbt'})
-
 nnoremap <silent> <f5> :MyoRun test<cr>
 nnoremap <silent> <f6> :MyoRun compile<cr>
 nnoremap <silent> <f7> :MyoRun clean<cr>
-nnoremap <silent> <f11> :Sbt reload<cr>
-nnoremap <silent> <f12> :Sbt r<cr>
+nnoremap <silent> <f11> :SbtNh reload<cr>
+nnoremap <silent> <f12> :SbtNh r<cr>
 
 let g:ctrlp_custom_ignore['file'] .= '|^hs_err'
 let g:ctrlp_custom_ignore['dir'] .= '|<node_modules>|<stylesheets_gen>|<soapui>|<bower_components>|<fonts>|<vendor>'
