@@ -33,6 +33,7 @@ let s:override = exists("g:override_project_scala")
 let g:test#runners = { 'scala': ['specs2'] }
 let g:test#enabled_runners = ['scala#specs2']
 let g:myo_test_shell = 'sbt'
+let g:myo_output_jump_first = v:true
 
 let g:sbt_project_test = {
       \   'scope': {
