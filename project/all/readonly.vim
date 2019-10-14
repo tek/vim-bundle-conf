@@ -4,7 +4,7 @@ endif
 
 function! s:save() abort "{{{
   if &modifiable && &buftype == ''
-    noautocmd write
+    silent! noautocmd write
   endif
 endfunction "}}}
 
