@@ -13,5 +13,11 @@ let g:output_file_patterns += ['\.hs']
 set path+=./lib
 set suffixesadd+=.hs
 
-nnoremap <silent> <leader>e :execute 'ProFiles test/u ' . haskell#project#lib_dir()<cr>
+function! HaskellFiles() abort "{{{
+  let test_dirs = glob('**/test', 0, 1)
+  let lib_dirs = glob('**/lib/*', 0, 1)
+  execute 'ProFiles ' . join(test_dirs + lib_dirs, ' ')
+endfunction "}}}
+
+nnoremap <silent> <leader>e <cmd>call HaskellFiles()<cr>
 nnoremap <silent> <localleader>e :ProFiles<cr>
