@@ -3,8 +3,9 @@ let s:switch_definitions =
     \   ['val', 'def'],
     \   ['map', 'flatMap'],
     \   ['extends', 'with'],
-    \   ['trait', 'abstract class'],
-    \   ['case class', 'class']
+    \   ['case class', 'case object'],
+    \   ['trait', 'abstract class', 'class'],
+    \   ['object', 'case class'],
     \ ]
 
 if !exists('b:switch_custom_definitions')
