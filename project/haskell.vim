@@ -3,8 +3,9 @@ let g:proteome_tags_command = 'codex'
 let g:proteome_tags_args = 'update'
 
 let g:myo_test_lang = 'haskell'
-let g:test#runners = { 'haskell': ['htf'] }
-let g:test#enabled_runners = ['haskell#htf']
+let g:test#runners = { 'haskell': ['htf', 'tasty'] }
+let g:test#enabled_runners = ['haskell#htf', 'haskell#tasty']
+let g:htf = v:true
 
 let g:output_patterns += ['\bprint\b', '\bdbg[sm]?\b', '\bdbgm?With\b']
 let g:output_file_patterns += ['\.hs']
