@@ -254,8 +254,20 @@ snippet pr "println()" b
 println($0)
 endsnippet
 
-snippet iec "implicit ExecutionContext" i
-(implicit ec: ExecutionContext)
+snippet "\(iec" "implicit ExecutionContext" ir
+(implicit ec: ExecutionContext
+endsnippet
+
+snippet "([^(])iec" "implicit ExecutionContext" ir
+`!p snip.rv = match.group(1)`(implicit ec: ExecutionContext)
+endsnippet
+
+snippet "\(ics" "implicit ContextShift" ir
+(implicit cs: ContextShift[IO]
+endsnippet
+
+snippet "([^(])ics" "implicit ContextShift" ir
+`!p snip.rv = match.group(1)`(implicit cs: ContextShift[IO])
 endsnippet
 
 snippet adt "ADT" b
@@ -270,4 +282,8 @@ endsnippet
 
 snippet ci "cats implicits import" b
 import cats.implicits._
+endsnippet
+
+snippet dur "import duration implicit" b
+import scala.concurrent.duration.DurationInt
 endsnippet
