@@ -17,6 +17,7 @@ let g:myo_test_langs = ['scala']
 let g:myo_test_lang = 'scala'
 
 nnoremap <silent> <f5> :MyoRun test<cr>
+nnoremap <silent> <s-f5> :Sbt it:test<cr>
 nnoremap <silent> <f6> :MyoRun compile<cr>
 nnoremap <silent> <f7> :MyoRun clean<cr>
 nnoremap <silent> <f11> :SbtNh reload<cr>
