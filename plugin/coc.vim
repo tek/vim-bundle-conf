@@ -7,16 +7,17 @@ function! s:show_documentation()
 endfunction
 
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> <leader>ct <Plug>(coc-type-definition)
-nmap <silent> <leader>ci <Plug>(coc-implementation)
-nmap <silent> <leader>cr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 autocmd CursorHold * silent! call CocActionAsync('highlight')
 
-nmap <leader>ca  <Plug>(coc-codeaction)
-nmap <leader>cf  <Plug>(coc-fix-current)
-nmap <leader>cs  <cmd>CocList -I symbols<cr>
+nmap <silent> <leader>ct <Plug>(coc-type-definition)
+nmap <silent> <leader>ci <Plug>(coc-implementation)
+nmap <silent> <leader>cr <Plug>(coc-references)
+nmap <silent> <leader>cR <cmd>CocRestart<cr>
+nmap <leader>ca <Plug>(coc-codeaction)
+nmap <leader>cf <Plug>(coc-fix-current)
+nmap <leader>cs <cmd>CocList -I symbols<cr>
 
 inoremap <silent><expr> <c-space> coc#refresh()
 
