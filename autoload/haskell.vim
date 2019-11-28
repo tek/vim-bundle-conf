@@ -33,7 +33,6 @@ function! haskell#import_statements(block, agg) abort "{{{
           \ )
     let multi = len(tail) > 0
     let import = matchlist(join([cur] + tail, ' '), s:import_re)
-    echom string(import)
     let head_match = get(import, 1, '')
     let head = len(head_match) > 0 ? head_match : get(import, 0, cur)
     let names_match = get(import, 2, '')
@@ -64,7 +63,6 @@ endfunction "}}}
 
 function! haskell#format_multi_import(head, names) abort "{{{
   let names = map(copy(a:names), { i, a -> '  ' . a})
-  echom a:head
   return [a:head . ' ('] + names + ['  )']
 endfunction "}}}
 
