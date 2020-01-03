@@ -1,1 +1,1 @@
-let g:htf = v:false
+let g:htf = v:true
