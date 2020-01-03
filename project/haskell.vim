@@ -14,8 +14,8 @@ set path+=./lib
 set suffixesadd+=.hs
 
 function! HaskellFiles() abort "{{{
-  let test_dirs = glob('**/test', 0, 1)
-  let lib_dirs = glob('**/lib/*', 0, 1)
+  let test_dirs = glob('**/test/', 0, 1)
+  let lib_dirs = glob('**/lib/', 0, 1)
   execute 'ProFiles ' . join(test_dirs + lib_dirs, ' ')
 endfunction "}}}
 
