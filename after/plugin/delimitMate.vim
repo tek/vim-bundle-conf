@@ -1,6 +1,8 @@
-" select completion entries with <cr>
-if len(maparg('<Plug>delimitMateCR', 'i'))
-  imap <expr> <cr> pumvisible() ? "\<c-y>" : "\<plug>delimitMateCR"
-else
-  inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
-endif
+function! s:icr() abort "{{{
+  let co = complete_info(['pum_visible', 'selected'])
+  return co.pum_visible ?
+        \ (co.selected == -1 ? "\<c-n>\<c-y>" : "\<c-y>") :
+        \ "\<plug>delimitMateCR"
+endfunction "}}}
+
+imap <expr><silent> <cr> <sid>icr()
