@@ -18,14 +18,6 @@ nmap <silent> <leader>cR <cmd>CocRestart<cr>
 nmap <leader>ca <Plug>(coc-codeaction)
 nmap <leader>cf <Plug>(coc-fix-current)
 nmap <leader>cs <cmd>CocList -I symbols<cr>
+nnoremap <silent> <leader>cn <cmd>CocCommand document.renameCurrentWord<cr>
 
 inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <C-j> for select text for visual placeholder of snippet.
-" vmap <C-j> <Plug>(coc-snippets-select)
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-" let g:coc_snippet_next = '<c-j>'
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-" let g:coc_snippet_prev = '<c-k>'
-" Use <C-j> for both expand and jump (make expand higher priority.)
-" imap <tab> <Plug>(coc-snippets-expand-jump)
