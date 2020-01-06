@@ -15,11 +15,13 @@ function! test#scala#specs2#build_args(args) abort "{{{
 endfunction "}}}
 
 function! test#scala#specs2#executable() abort "{{{
+  let path = fnamemodify(expand('%'), ':p')
   let cmd = 'testOnly'
-  if fnamemodify(expand('%'), ':p') =~ '.*/it/.*\.scala'
+  if path =~ '.*/it/.*\.scala'
     let cmd = 'it:' . cmd
   endif
-  return tek#bundle#scala#sbt_prefixed(cmd)
+  let module = matchstr(path, '\v%(^|/)\zs[^/]+/\zesrc/')
+  return module . cmd
 endfunction "}}}
 
 function! test#scala#specs2#package() abort "{{{
