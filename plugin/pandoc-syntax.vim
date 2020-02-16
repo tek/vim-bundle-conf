@@ -1,1 +1,1 @@
-let g:pandoc#syntax#codeblocks#embeds#langs = ['scala', 'python', 'vim', 'json', 'javascript', 'java']
+let g:pandoc#syntax#codeblocks#embeds#langs = ['scala', 'python', 'vim', 'json', 'javascript', 'java', 'pdf']
