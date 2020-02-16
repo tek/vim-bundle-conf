@@ -15,7 +15,7 @@ function! test#scala#specs2#build_args(args) abort "{{{
 endfunction "}}}
 
 function! test#scala#specs2#executable() abort "{{{
-  let path = fnamemodify(expand('%'), ':p')
+  let path = fnamemodify(expand('%'), ':.')
   let cmd = 'testOnly'
   if path =~ '.*/it/.*\.scala'
     let cmd = 'it:' . cmd
