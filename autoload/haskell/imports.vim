@@ -12,7 +12,7 @@ function! s:find_blocks(found, previous) abort "{{{
   return (next == 0 || next <= a:previous) ? a:found : s:find_block_end(a:found, next)
 endfunction "}}}
 
-function! haskell#import_blocks() abort "{{{
+function! haskell#imports#import_blocks() abort "{{{
   keepjumps normal gg
   return s:find_blocks([], 1)
 endfunction "}}}
@@ -22,7 +22,7 @@ function! s:parse_names(match) abort "{{{
   return uniq(map(split(names, s:names_re), { i, a -> trim(a) }))
 endfunction "}}}
 
-function! haskell#import_statements(block, agg) abort "{{{
+function! haskell#imports#import_statements(block, agg) abort "{{{
   if len(a:block) == 0
     return a:agg
   else
@@ -42,7 +42,7 @@ function! haskell#import_statements(block, agg) abort "{{{
           \ 'names': s:parse_names(names_match),
           \ 'multi': multi,
           \ }
-    return haskell#import_statements(remainder, a:agg + [statement])
+    return haskell#imports#import_statements(remainder, a:agg + [statement])
   endif
 endfunction "}}}
 
@@ -56,37 +56,60 @@ function! s:compare_names(l, r) abort "{{{
   return left_op ? (right_op ? a:l[1:] > a:r[1:] : 1) : (right_op ? -1 : a:l > a:r)
 endfunction "}}}
 
-function! haskell#format_single_import(head, names, has_names) abort "{{{
+function! haskell#imports#format_single_import(head, names, has_names) abort "{{{
   let head_suf = a:has_names ? ' (' . join(a:names)[:-2] . ')' : ''
   return [a:head . head_suf]
 endfunction "}}}
 
-function! haskell#format_multi_import(head, names) abort "{{{
+function! haskell#imports#format_multi_import(head, names) abort "{{{
   let names = map(copy(a:names), { i, a -> '  ' . a})
   return [a:head . ' ('] + names + ['  )']
 endfunction "}}}
 
-function! haskell#format_import(import) abort "{{{
+function! haskell#imports#format_import(import) abort "{{{
   let names = map(sort(copy(a:import.names), { l, r -> s:compare_names(l, r) }), { i, a -> a . ',' })
   let head = substitute(a:import.head, '\v\s+', ' ', 'g')
   return a:import.multi ?
-        \ haskell#format_multi_import(head, names) :
-        \ haskell#format_single_import(head, names, a:import.has_names)
+        \ haskell#imports#format_multi_import(head, names) :
+        \ haskell#imports#format_single_import(head, names, a:import.has_names)
 endfunction "}}}
 
 function! s:compare_imports(l, r) abort "{{{
   let l = s:strip_import_keywords(a:l.head)
   let r = s:strip_import_keywords(a:r.head)
-  " return l > r
   return l == r ? 0 : (l > r ? 1 : -1)
 endfunction "}}}
 
-function! haskell#sort_block(block) abort "{{{
+function! haskell#imports#merge_imports(imports) abort "{{{
+  function! Folder(z, a) abort "{{{
+    let [result, agg] = a:z
+    if agg.has_names && a:a.has_names && agg.head == a:a.head
+      let new_agg = {
+            \ 'head': agg.head,
+            \ 'has_names': 1,
+            \ 'names': uniq(agg.names + a:a.names),
+            \ 'multi': agg.multi || a:a.multi
+            \ }
+      return [result, new_agg]
+    else
+      return [result + [agg], a:a]
+    endif
+  endfunction "}}}
+  if len(a:imports) > 1
+    let [init, last_] = list#fold_left({ z, a -> Folder(z, a) }, [[], a:imports[0]], a:imports[1:])
+    return init + [last_]
+  else
+    return a:imports
+  endif
+endfunction "}}}
+
+function! haskell#imports#sort_block(block) abort "{{{
   let [start, end] = a:block
   let lines = map(copy(range(start, end)), { i, l -> getline(l) })
-  let imports = haskell#import_statements(lines, [])
+  let imports = haskell#imports#import_statements(lines, [])
   let sorted = sort(copy(imports), { l, r -> s:compare_imports(l, r) })
-  let formatted = map(copy(sorted), { i, imp -> haskell#format_import(imp) })
+  let merged = haskell#imports#merge_imports(sorted)
+  let formatted = map(copy(merged), { i, imp -> haskell#imports#format_import(imp) })
   let updated_lines = list#concat(formatted)
   return {
         \ 'start': start,
@@ -96,16 +119,17 @@ function! haskell#sort_block(block) abort "{{{
         \ }
 endfunction "}}}
 
-function! haskell#sort_imports() abort "{{{
+function! haskell#imports#sort() abort "{{{
   if bufname('%') == ''
     return
   endif
   let view = winsaveview()
   try
-    let blocks = map(copy(haskell#import_blocks()), { i, a -> haskell#sort_block(a) })
-    for block in blocks
+    let blocks = map(copy(haskell#imports#import_blocks()), { i, a -> haskell#imports#sort_block(a) })
+    for block in reverse(blocks)
       if block.modified
-        keepjumps silent call setline(block.start, block.data)
+        keepjumps silent call deletebufline('%', block.start, block.end)
+        keepjumps silent call append(block.start - 1, block.data)
       endif
     endfor
   finally
@@ -114,8 +138,8 @@ function! haskell#sort_imports() abort "{{{
   keepjumps silent noautocmd w
 endfunction "}}}
 
-function! haskell#sort_imports_save() abort "{{{
+function! haskell#imports#sort_save() abort "{{{
   if &ft == 'haskell' && get(g:, 'haskell_sort_imports', 1)
-    return haskell#sort_imports()
+    return haskell#imports#sort()
   endif
 endfunction "}}}

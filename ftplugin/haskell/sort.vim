@@ -1,5 +1,5 @@
-command! -buffer SortImports call haskell#sort_imports()
+command! -buffer SortImports call haskell#impors#sort()
 
 augroup tek_haskell_buffer
-  autocmd BufWrite <buffer> call haskell#sort_imports_save()
+  autocmd BufWrite <buffer> call haskell#imports#sort_save()
 augroup END
