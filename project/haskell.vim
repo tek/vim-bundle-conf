@@ -10,11 +10,22 @@ let g:htf = v:true
 let g:output_patterns += ['\bprint\b', '\bdbg[sm]?\b', '\bdbgm?With\b']
 let g:output_file_patterns += ['\.hs']
 
+function! s:test_dirs() abort "{{{
+  return glob('**/test/', 0, 1)
+endfunction "}}}
+
+function! s:lib_dirs() abort "{{{
+  return glob('**/lib/', 0, 1)
+endfunction "}}}
+
+function! s:base_dirs() abort "{{{
+  return s:test_dirs() + s:lib_dirs()
+endfunction "}}}
+
+let &path .= join(s:base_dirs(), ',')
 
 function! HaskellFiles() abort "{{{
-  let test_dirs = glob('**/test/', 0, 1)
-  let lib_dirs = glob('**/lib/', 0, 1)
-  execute 'ProFiles ' . join(test_dirs + lib_dirs, ' ')
+  execute 'ProFiles ' . join(s:base_dirs(), ' ')
 endfunction "}}}
 
 nnoremap <silent> <leader>e <cmd>call HaskellFiles()<cr>
