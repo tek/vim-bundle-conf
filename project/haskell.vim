@@ -10,8 +10,6 @@ let g:htf = v:true
 let g:output_patterns += ['\bprint\b', '\bdbg[sm]?\b', '\bdbgm?With\b']
 let g:output_file_patterns += ['\.hs']
 
-set path+=./lib
-set suffixesadd+=.hs
 
 function! HaskellFiles() abort "{{{
   let test_dirs = glob('**/test/', 0, 1)
