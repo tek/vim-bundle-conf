@@ -1,14 +1,12 @@
-let s:switch_definitions =
+let b:switch_custom_definitions =
     \ [
     \   ['newtype', 'data'],
-    \   ['<-', '=<<'],
+    \   ['<-', '=<<', '<$>'],
     \   {
-    \     '\v^import (\S+)\.([^. ]+)( \(.*)?': 'import qualified \1.\2 as \2\3',
-    \     '\v^import qualified (\S+)( as \S+)?( \(.*)?': 'import \1\3',
+    \     '\v^import qualified (\S+)( as \S+)?( \(.*)?$': 'import \1\3',
+    \     '\v^import %(qualified )@!(\S+)\.([^. ]+)( \(.*)?$': 'import qualified \1.\2 as \2\3',
+    \   },
+    \   {
+    \     '\v^import %(qualified )@!([^. ]+)( \(.*)?$': 'import qualified \1 as \1\2',
     \   },
     \ ]
-
-if !exists('b:switch_custom_definitions')
-  let b:switch_custom_definitions = []
-endif
-call extend(b:switch_custom_definitions, s:switch_definitions)
