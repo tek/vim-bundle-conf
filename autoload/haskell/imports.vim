@@ -17,9 +17,19 @@ function! haskell#imports#import_blocks() abort "{{{
   return s:find_blocks([], 1)
 endfunction "}}}
 
+function! s:compare_names(l, r) abort "{{{
+  let left_op = a:l[:0] == '('
+  let right_op = a:r[:0] == '('
+  return left_op ? (right_op ? a:l[1:] > a:r[1:] : 1) : (right_op ? -1 : a:l > a:r)
+endfunction "}}}
+
+function! s:sort(names) abort "{{{
+  return uniq(sort(copy(a:names), { l, r -> s:compare_names(l, r) }))
+endfunction "}}}
+
 function! s:parse_names(match) abort "{{{
   let names = substitute(a:match, '\v^\((.*)\)$', '\1', '')
-  return uniq(map(split(names, s:names_re), { i, a -> trim(a) }))
+  return s:sort(map(split(names, s:names_re), { i, a -> trim(a) }))
 endfunction "}}}
 
 function! haskell#imports#import_statements(block, agg) abort "{{{
@@ -50,12 +60,6 @@ function! s:strip_import_keywords(a) abort "{{{
   return substitute(a:a, '\v^import\s+%(qualified\s+)?', '', '')
 endfunction "}}}
 
-function! s:compare_names(l, r) abort "{{{
-  let left_op = a:l[:0] == '('
-  let right_op = a:r[:0] == '('
-  return left_op ? (right_op ? a:l[1:] > a:r[1:] : 1) : (right_op ? -1 : a:l > a:r)
-endfunction "}}}
-
 function! haskell#imports#format_single_import(head, names, has_names) abort "{{{
   let head_suf = a:has_names ? ' (' . join(a:names)[:-2] . ')' : ''
   return [a:head . head_suf]
@@ -67,7 +71,7 @@ function! haskell#imports#format_multi_import(head, names) abort "{{{
 endfunction "}}}
 
 function! haskell#imports#format_import(import) abort "{{{
-  let names = map(sort(copy(a:import.names), { l, r -> s:compare_names(l, r) }), { i, a -> a . ',' })
+  let names = map(s:sort(a:import.names), { i, a -> a . ',' })
   let head = substitute(a:import.head, '\v\s+', ' ', 'g')
   return a:import.multi ?
         \ haskell#imports#format_multi_import(head, names) :
@@ -87,7 +91,7 @@ function! haskell#imports#merge_imports(imports) abort "{{{
       let new_agg = {
             \ 'head': agg.head,
             \ 'has_names': 1,
-            \ 'names': uniq(agg.names + a:a.names),
+            \ 'names': s:sort(agg.names + a:a.names),
             \ 'multi': agg.multi || a:a.multi
             \ }
       return [result, new_agg]
