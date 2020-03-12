@@ -6,8 +6,6 @@ function! tek#bundle#scala#set_project() abort "{{{
   let prefix = g:sbt_project == '' ? g:sbt_project : g:sbt_project . '/'
   let g:sbt_compile = tek#bundle#scala#sbt_prefixed(p_compiler)
   let g:sbt_run = tek#bundle#scala#sbt_prefixed(runner)
-  let g:maque_prefix_test_only = prefix
-  let g:maque_prefix_android_test_only = prefix
   if len(g:sbt_project)
     echo 'sbt project ''' . g:sbt_project . ''''
   else

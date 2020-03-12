@@ -1,7 +1,7 @@
-let g:maque_chef_cookbook = substitute(g:proteome_main_name, '^chef_', '', '')
+let g:chef_cookbook = substitute(g:proteome_main_name, '^chef_', '', '')
 
 function! ChefUploadForce() abort "{{{
-  return 'berks upload --force ' . g:maque_chef_cookbook
+  return 'berks upload --force ' . g:chef_cookbook
 endfunction "}}}
 
 MyoAddShellCommand { "ident": "converge", "line": "kitchen converge" }
