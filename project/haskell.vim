@@ -18,11 +18,17 @@ function! s:lib_dirs() abort "{{{
   return glob('**/lib/', 0, 1)
 endfunction "}}}
 
+function! s:module_dirs() abort "{{{
+  let dirs = s:lib_dirs()
+  return map(dirs, { i, a -> a[:-5] })
+endfunction "}}}
+
 function! s:base_dirs() abort "{{{
   return s:test_dirs() + s:lib_dirs()
 endfunction "}}}
 
-let &path .= join(s:base_dirs(), ',')
+let &path .= ',' . join(s:base_dirs(), ',')
+let &path .= ',' . join(s:module_dirs(), ',')
 
 function! HaskellFiles() abort "{{{
   execute 'ProFiles ' . join(s:base_dirs(), ' ')
