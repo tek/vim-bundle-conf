@@ -1,8 +1,6 @@
 clearsnippets test
 
 global !p
-import tek_vim_py_test
-import tek_vim_py_inspect
 from amino import *
 from amino.util.string import *
 
@@ -189,20 +187,6 @@ else:
 	${6:pass}
 finally:
 	${7:pass}
-endsnippet
-
-snippet sup "super" !i
-super().${1:`!p
-tek_vim_py_test.parse_file()
-snip.rv = tek_vim_py_test.current_function_name()`}(${2:`!p
-f = tek_vim_py_inspect.containing_function()
-if f:
-	args = f.args
-	a = List.wrap(args.args[1:] + args.kwonlyargs) / _.arg
-	s = List(Maybe(args.vararg) / _.arg / '*{}'.format,
-					 Maybe(args.kwarg) / _.arg / '**{}'.format).join
-	snip.rv = ', '.join(a + s)
-`})
 endsnippet
 
 snippet aa "private attribute assignment" !b
