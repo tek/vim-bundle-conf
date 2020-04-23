@@ -30,7 +30,7 @@ let g:proteome_grep_cmdline = 'rg --vimgrep --no-heading --ignore-file ' . $HOME
 let g:proteome_buffers_current_last = v:true
 
 nnoremap <silent> gaa <cmd>call ProGrep('\b' . expand('<cword>') . '\b')<cr>
-xnoremap <silent> gaa "ay<cmd>call ProGrep('\b' . @a)<cr>
+xnoremap <silent> gaa "ay<cmd>call ProGrep(@a)<cr>
 nnoremap <silent> <leader>aa :ProGrep<cr>
 nnoremap <silent> <leader>b :ProBuffers<cr>
 nnoremap <silent> <insert> :ProNext<cr>
