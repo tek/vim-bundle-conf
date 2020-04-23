@@ -28,7 +28,7 @@ def test_module() -> str:
   pragma = '{-# OPTIONS_GHC -F -pgmF htfpp #-}'
   return f'''{pragma}
 
-module {module_name('^(u|f|test)$')} (htf_thisModulesTests) where
+module {module_name('^(u|f|test|integration)$')} (htf_thisModulesTests) where
 
 import Test.Framework'''
 
@@ -192,6 +192,12 @@ $1 =
 endsnippet
 
 snippet t "test" b
+test_$1 :: IO ()
+test_$1 =
+  pure ()
+endsnippet
+
+snippet vt "test" b
 $1Spec :: m ()
 $1Spec =
   undefined
@@ -202,7 +208,16 @@ test_$1 =
 endsnippet
 
 snippet id "import Data" b
-import `!p snip.rv = project_name()`.Data.$1 ($1(..))
+import `!p snip.rv = project_name()`.Data.$1 ($1)
+import qualified `!p snip.rv = project_name()`.Data.$1 as $1
+endsnippet
+
+snippet ih "import hiding" b
+import $1 hiding ($2)
+endsnippet
+
+snippet ihp "import Prelude hiding" b
+import Prelude hiding ($1)
 endsnippet
 
 snippet inst "instance" b
@@ -237,4 +252,12 @@ endsnippet
 
 snippet ud "undefined"
 undefined
+endsnippet
+
+snippet q "quasiquotation" i
+[$1|$0|]
+endsnippet
+
+snippet qt "text quasiquotation" i
+[qt|$0|]
 endsnippet
