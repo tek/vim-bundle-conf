@@ -12,4 +12,7 @@ nnoremap <silent> P <cmd>call SafeUraPaste('P', 'UraPpaste')<cr>
 xnoremap <silent> P <cmd>call SafeUraPaste('P', 'UraPpaste')<cr>
 nnoremap <silent> <m-y> :UraYankMenu<cr>
 
+nnoremap <silent> <leader>p p
+nnoremap <silent> <leader>P P
+
 let g:uracil_paste_timeout = 3
