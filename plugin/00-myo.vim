@@ -12,3 +12,6 @@ nnoremap <silent> <leader>4 :MyoFocus make<cr>
 
 nnoremap <silent> <m--> :call MyoPrev()<cr>
 nnoremap <silent> <m-=> :call MyoNext()<cr>
+
+let g:myo_builtins_loaded = 0
+autocmd User MyoBuiltinsLoaded let g:myo_builtins_loaded = 1
