@@ -51,8 +51,6 @@ let g:sbt_project_map =
 
 let g:scala_integration_rex = 'integration'
 
-" let g:tek_misc#postsave_functions += ['tek_bundle_misc#set_sbtserver_address']
-
 let g:proteome_files_exclude_directories += ['target', 'out']
 
-command! ImportBuild call CocRequestAsync('scala', 'workspace/executeCommand', { 'command': 'build-import' })
+command! ImportBuild call CocRequestAsync('metals', 'workspace/executeCommand', { 'command': 'build-import' })
