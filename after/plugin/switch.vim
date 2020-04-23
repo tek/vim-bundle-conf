@@ -18,6 +18,7 @@ let s:switch_definitions =
     \ ['left', 'right'],
     \ ['from', 'to'],
     \ ['stdin', 'stdout', 'stderr'],
+    \ ['Right', 'Left'],
     \ switch#NormalizedCase(['sync', 'async']),
     \ ]
 
