@@ -3,19 +3,31 @@ let g:proteome_tags_command = 'codex'
 let g:proteome_tags_args = 'update'
 
 let g:myo_test_lang = 'haskell'
-let g:test#runners = { 'haskell': ['htf', 'tasty'] }
-let g:test#enabled_runners = ['haskell#htf', 'haskell#tasty']
+let g:test#runners = { 'haskell': ['htf', 'tasty', 'hedgehog'] }
+let g:test#enabled_runners = ['haskell#htf', 'haskell#tasty', 'haskell#hedgehog']
 let g:htf = v:true
+let g:tasty = v:false
+let g:hedgehog = v:false
 
 let g:output_patterns += ['^ .*\bdbg[sm]?\b', '^ .*\bunsafeLog']
 let g:output_file_patterns += ['\.hs']
 
+let g:haskell_modules = isdirectory('modules') ? 'modules/*/' : '*/'
+
+function! s:subdir(name) abort "{{{
+  return filter([a:name] + glob(g:haskell_modules . a:name . '/', 0, 1), { i, n -> isdirectory(n) })
+endfunction "}}}
+
+function! s:subdirs(names) abort "{{{
+  return list#concat(map(a:names, { i, n -> s:subdir(n) }))
+endfunction "}}}
+
 function! s:test_dirs() abort "{{{
-  return ['test', 'integration'] + glob('modules/*/test/', 0, 1) + glob('modules/*/integration/', 0, 1)
+  return s:subdirs(['test', 'integration'])
 endfunction "}}}
 
 function! s:lib_dirs() abort "{{{
-  return ['lib', 'app'] + glob('modules/*/lib/', 0, 1) + glob('modules/*/app/', 0, 1)
+  return s:subdirs(['src', 'lib', 'src-bin', 'app'])
 endfunction "}}}
 
 function! s:module_dirs() abort "{{{
