@@ -28,3 +28,6 @@ autocmd User MyoBuiltinsLoaded call s:setup()
 if g:myo_builtins_loaded
   call s:setup()
 endif
+
+let g:proteome_tags_command = 'ops/tags.zsh'
+let g:proteome_tags_args = '{tagFile}'
