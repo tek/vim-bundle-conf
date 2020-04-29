@@ -12,10 +12,18 @@ let g:hedgehog = v:false
 let g:output_patterns += ['^ .*\bdbg[sm]?\b', '^ .*\bunsafeLog']
 let g:output_file_patterns += ['\.hs']
 
-let g:haskell_modules = isdirectory('modules') ? 'modules/*/' : '*/'
+let g:haskell_packages = isdirectory('modules') ? 'modules/*/' : '*/'
+
+function! s:ispackage(path) abort "{{{
+  return !empty(glob(a:path . '/*.cabal')) || filereadable(a:path . '/package.yaml')
+endfunction "}}}
+
+function! s:packages() abort "{{{
+  return ['.'] + filter(glob(g:haskell_packages, 0, 1), { i, n -> s:ispackage(n) })
+endfunction "}}}
 
 function! s:subdir(name) abort "{{{
-  return filter([a:name] + glob(g:haskell_modules . a:name . '/', 0, 1), { i, n -> isdirectory(n) })
+  return filter(map(s:packages(), { i, p -> p . '/' . a:name }), { i, n -> isdirectory(n) })
 endfunction "}}}
 
 function! s:subdirs(names) abort "{{{
