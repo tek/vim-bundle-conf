@@ -1,4 +1,6 @@
-let g:htf = v:true
+let g:htf = v:false
+let g:hedgehog = v:true
+let g:hedgehog_runner = 'ops/dev/ghcid-test.zsh'
 
 let g:haskell_project_map = {
       \ 'core': 'bodhi-core',
