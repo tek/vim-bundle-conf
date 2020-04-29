@@ -1,5 +1,5 @@
 function! test#haskell#tasty#test_file(file) abort "{{{
-  return !g:htf && fnamemodify(a:file, ':p') =~ '\v.*(test|unit).*\.hs'
+  return g:tasty && fnamemodify(a:file, ':p') =~ '\v.*(test|unit).*\.hs'
 endfunction "}}}
 
 function! test#haskell#tasty#build_position(type, position) abort "{{{

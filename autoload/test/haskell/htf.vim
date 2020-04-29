@@ -4,15 +4,8 @@ endfunction "}}}
 
 function! test#haskell#htf#build_position(type, position) abort "{{{
   if a:type == 'nearest'
-    let project_map = get(g:, 'haskell_project_map', {})
-    let name = get(g:, 'htf_project_name', g:proteome_main_name)
-    let meta = matchlist(a:position['file'], '\vmodules/\zs%(bodhi-)?[^/]+\ze/(test|unit|integration)')
-    let module = get(meta, 0, '')
-    let type = get(meta, 1, 'test')
-    let test_skip = type == 'integration' ? 'unit' : 'integration'
-    let real_module = get(project_map, module, module)
-    let suite = empty(real_module) ? name : real_module
-    let general = [suite, '--fast', '--skip', name . '-exe', '--skip', real_module . '-' . test_skip, '--ta']
+    let meta = test#haskell#lib#meta(a:position['file'])
+    let general = [meta.suite, '--fast', '--skip', meta.name . '-exe', '--skip', meta.package . '-' . meta.test_skip, '--ta']
     let test = test#haskell#htf#nearest_test(a:position)
     return empty(test) ? [] : general + test
   else
