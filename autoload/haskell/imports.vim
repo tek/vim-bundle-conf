@@ -1,5 +1,6 @@
 let s:import_start_re = '^import '
-let s:import_re = '\v^(import%(\s+qualified)?\s+\S+%(%(\s+as \S+)|\s+hiding)?)\s*%((\(.*\)))?$'
+let s:import_prefix_re = '\vimport%(\s+qualified)?%(\s+"[^"]+")?'
+let s:import_re = '\v^(' . s:import_prefix_re . '\s+\S+%(%(\s+as \S+)|\s+hiding)?)\s*%((\(.*\)))?$'
 let s:names_re = '\v%(\([^)]*)@<!,\s*'
 
 function! s:find_block_end(found, current) abort "{{{
@@ -57,7 +58,7 @@ function! haskell#imports#import_statements(block, agg) abort "{{{
 endfunction "}}}
 
 function! s:strip_import_keywords(a) abort "{{{
-  return substitute(a:a, '\v^import\s+%(qualified\s+)?', '', '')
+  return substitute(a:a, '^' . s:import_prefix_re, '', '')
 endfunction "}}}
 
 function! haskell#imports#format_single_import(head, names, has_names) abort "{{{
