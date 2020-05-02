@@ -8,6 +8,7 @@ augroup END
 
 nnoremap <silent> <f3> :SaveAll<cr>:MyoParse<cr>
 nnoremap <silent> <f9> :call MyoToggleLayout('make')<cr>
+nnoremap <silent> <leader>1 :MyoCommands<cr>
 nnoremap <silent> <leader>4 :MyoFocus make<cr>
 
 nnoremap <silent> <m--> :call MyoPrev()<cr>
