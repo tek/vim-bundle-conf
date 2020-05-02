@@ -1,7 +1,3 @@
-let g:htf = v:false
-let g:hedgehog = v:true
-let g:hedgehog_runner = 'ops/dev/ghcid-test.zsh'
-
 let g:haskell_project_map = {
       \ 'core': 'bodhi-core',
       \ 'api': 'bodhi-api',
@@ -15,14 +11,14 @@ let g:haskell_project_map = {
 
 let g:proteome_files_exclude_directories = ['result', 'build-output']
 
-let g:myo_command_ob_run = {
-      \ 'ident': 'ob-run',
-      \ 'lines': ['ob run'],
-      \ 'target': 'ghci'
+let g:myo_command_frontend = {
+      \ 'ident': 'frontend',
+      \ 'lines': ['ops/dev/ghcid-frontend.zsh'],
+      \ 'target': 'ghci',
       \ }
 
 function! s:setup() abort "{{{
-  let g:myo_commands['system'] += [g:myo_command_ob_run]
+  let g:myo_commands['system'] += [g:myo_command_frontend]
 endfunction "}}}
 
 autocmd User MyoBuiltinsLoaded call s:setup()
@@ -31,5 +27,4 @@ if g:myo_builtins_loaded
   call s:setup()
 endif
 
-let g:proteome_tags_command = 'ops/tags.zsh'
-let g:proteome_tags_args = '{tagFile}'
+let g:haskell_nix_project = v:true
