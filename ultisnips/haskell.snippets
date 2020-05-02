@@ -185,6 +185,12 @@ newtype $1 =
   deriving (Eq, Show)
 endsnippet
 
+snippet ntr "newtype record" b
+newtype $1 =
+  $1 { un$1 :: $2 }
+  deriving (Eq, Show)
+endsnippet
+
 snippet f "function" b
 $1 :: ${2:m ()}
 $1 =
@@ -260,4 +266,8 @@ endsnippet
 
 snippet qt "text quasiquotation" i
 [qt|$0|]
+endsnippet
+
+snippet olb "overlappable" i
+{-# OVERLAPPABLE #-}
 endsnippet
