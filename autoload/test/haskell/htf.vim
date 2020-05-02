@@ -5,7 +5,7 @@ endfunction "}}}
 function! test#haskell#htf#build_position(type, position) abort "{{{
   if a:type == 'nearest'
     let meta = test#haskell#lib#meta(a:position['file'])
-    let general = [meta.suite, '--fast', '--skip', meta.name . '-exe', '--skip', meta.package . '-' . meta.test_skip, '--ta']
+    let general = [meta.suite, '--fast', '--skip', meta.name . '-exe', '--skip', meta.suite . '-' . meta.skip, '--ta']
     let test = test#haskell#htf#nearest_test(a:position)
     return empty(test) ? [] : general + test
   else
