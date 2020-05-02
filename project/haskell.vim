@@ -63,9 +63,15 @@ function! GrepImport(query) abort "{{{
   execute 'ProGrep ^import \S+ .*' . a:query
 endfunction "}}}
 
+function! GrepFuncDef(query) abort "{{{
+  execute 'ProGrep ^\s*' . a:query . '( ::|$)'
+endfunction "}}}
+
 nnoremap <silent> <leader>e <cmd>call HaskellFiles()<cr>
 nnoremap <silent> <localleader>e :ProFiles<cr>
 nnoremap <silent> gai <cmd>call GrepImport('\b' . expand('<cword>') . '\b')<cr>
 xnoremap <silent> gai "ay<cmd>call GrepImport(@a)<cr>
+nnoremap <silent> gaf <cmd>call GrepFuncDef('\b' . expand('<cword>') . '\b')<cr>
+xnoremap <silent> gaf "ay<cmd>call GrepFuncDef(@a)<cr>
 
 let g:haskell_sort_imports = match(getcwd(), 'code/tek/haskell') != -1
