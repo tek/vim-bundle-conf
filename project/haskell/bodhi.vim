@@ -17,8 +17,14 @@ let g:myo_command_frontend = {
       \ 'target': 'ghci',
       \ }
 
+let g:myo_command_collect = {
+      \ 'ident': 'build-collect',
+      \ 'lines': ['ops/build.zsh'],
+      \ 'target': 'make',
+      \ }
+
 function! s:setup() abort "{{{
-  let g:myo_commands['system'] += [g:myo_command_frontend]
+  let g:myo_commands['system'] += [g:myo_command_frontend, g:myo_command_collect]
 endfunction "}}}
 
 autocmd User MyoBuiltinsLoaded call s:setup()
@@ -28,3 +34,4 @@ if g:myo_builtins_loaded
 endif
 
 let g:haskell_nix_project = v:true
+let g:myo_haskell_nix_hpack = $PWD . '/ops/hpack.zsh'
