@@ -3,11 +3,10 @@ let g:proteome_tags_command = 'codex'
 let g:proteome_tags_args = 'update'
 
 let g:myo_test_lang = 'haskell'
-let g:test#runners = { 'haskell': ['htf', 'tasty', 'hedgehog'] }
-let g:test#enabled_runners = ['haskell#htf', 'haskell#tasty', 'haskell#hedgehog']
-let g:htf = v:true
-let g:tasty = v:false
-let g:hedgehog = v:false
+let g:test#runners = { 'haskell': ['htf', 'nix'] }
+let g:test#enabled_runners = ['haskell#htf', 'haskell#nix']
+let g:htf = v:false
+let g:hs_test_nix = v:true
 
 let g:output_patterns += ['^ .*\bdbg[sm]?\b', '^ .*\bunsafeLog']
 let g:output_file_patterns += ['\.hs']
