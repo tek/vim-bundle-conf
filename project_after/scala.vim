@@ -61,5 +61,5 @@ let g:output_patterns += ['^\s*println\(']
 let g:output_file_patterns += ['\.scala']
 let g:ctags_langs += ['scala']
 if !g:readonly_project
-  let g:tek_misc#postsave_functions += ['scala#imports#sort_save']
+  let g:postsave += ['scala#imports#sort_save']
 endif

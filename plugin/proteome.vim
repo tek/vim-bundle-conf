@@ -5,7 +5,7 @@ let g:proteome_type_base_dirs = {
       \ '/home/tek/code/tek/python/external': ['python']
       \ }
 let g:proteome_all_projects_history = 1
-let tek_misc#postsave_functions += ['tek_bundle_misc#post_save']
+let g:postsave += ['tek_bundle_misc#post_save']
 let g:proteome_project_config = {
       \ 'baseDirs': [$HOME . '/code/ext', $HOME . '/code/tek', $HOME . '/code/spr', '/var/tek/lib/repos'],
       \ 'projectTypes': {
