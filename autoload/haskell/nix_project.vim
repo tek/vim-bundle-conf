@@ -1,15 +1,9 @@
-let g:myo_haskell_nix_default_hpack = g:vbc_dir . '/project/haskell/nix-project/hpack.zsh'
-
 let g:myo_command_hpack = {
       \ 'ident': 'hpack',
       \ 'lines': [get(g:, 'myo_haskell_nix_hpack', g:myo_haskell_nix_default_hpack)],
       \ 'skipHistory': v:true,
       \ 'displayName': 'hpack',
       \ }
-
-function! Hpack() abort "{{{
-  MyoRun hpack
-endfunction "}}}
 
 function! haskell#nix_project#setup_commands() abort "{{{
   let g:postsave += ['Hpack']
