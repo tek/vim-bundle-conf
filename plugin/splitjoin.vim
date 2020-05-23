@@ -1,6 +1,11 @@
 let g:splitjoin_split_mapping = ''
 let g:splitjoin_join_mapping = ''
 
-nnoremap <silent> <leader><c-j> :SplitjoinSplit<cr>
-nnoremap <silent> gJ :SplitjoinSplit<cr>
+function! SplitjoinSplitWrap() abort "{{{
+  let g:uracil_skip_yank = v:true
+  SplitjoinSplit
+endfunction "}}}
+
+nnoremap <silent> <leader><c-j> :call SplitjoinSplitWrap()<cr>
+nnoremap <silent> gJ :call SplitjoinSplitWrap()<cr>
 nnoremap <silent> <leader><c-k> :SplitjoinJoin<cr>
