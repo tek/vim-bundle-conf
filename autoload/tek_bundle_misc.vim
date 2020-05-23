@@ -59,6 +59,7 @@ endfunction "}}}
 
 function! tek_bundle_misc#post_save() abort "{{{
   silent! call ProSave()
+  silent! call MyoSave()
 endfunction "}}}
 
 function! tek_bundle_misc#set_sbtserver_address() abort "{{{
