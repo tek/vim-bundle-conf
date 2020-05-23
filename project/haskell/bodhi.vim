@@ -15,16 +15,28 @@ let g:myo_command_frontend = {
       \ 'ident': 'frontend',
       \ 'lines': ['ops/dev/ghcid-frontend.zsh'],
       \ 'target': 'ghci',
+      \ 'kill': v:true,
       \ }
 
 let g:myo_command_collect = {
+      \ 'ident': 'collect',
+      \ 'lines': ['ops/dev/ghcid-collect.zsh'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ }
+
+let g:myo_command_build_collect = {
       \ 'ident': 'build-collect',
       \ 'lines': ['ops/build.zsh'],
       \ 'target': 'make',
       \ }
 
 function! s:setup() abort "{{{
-  let g:myo_commands['system'] += [g:myo_command_frontend, g:myo_command_collect]
+  let g:myo_commands['system'] += [
+        \ g:myo_command_frontend,
+        \ g:myo_command_collect,
+        \ g:myo_command_build_collect,
+        \ ]
 endfunction "}}}
 
 autocmd User MyoBuiltinsLoaded call s:setup()
