@@ -5,12 +5,12 @@ let s:switch_definitions =
     \   'return ': 'v = ',
     \ },
     \ {
-    \   'decod': 'encod',
-    \   'encod': 'decod',
-    \ },
-    \ {
     \   'Decod': 'Encod',
     \   'Encod': 'Decod',
+    \ },
+    \ {
+    \   'decod': 'encod',
+    \   'encod': 'decod',
     \ },
     \ ['yes', 'no'],
     \ ['on', 'off'],
