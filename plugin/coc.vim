@@ -18,7 +18,7 @@ nmap <silent> <leader>ci <Plug>(coc-implementation)
 nmap <silent> <leader>cr <Plug>(coc-references)
 nmap <silent> <leader>cR <cmd>CocRestart<cr>
 nmap <leader>ca <Plug>(coc-codeaction)
-nmap <silent> <leader>cf <Plug>(coc-fix-current)
+nmap <silent> <m-f> <Plug>(coc-fix-current)
 nmap <leader>cs <cmd>CocList -I symbols<cr>
 nnoremap <silent> <leader>cn <cmd>CocCommand document.renameCurrentWord<cr>
 
