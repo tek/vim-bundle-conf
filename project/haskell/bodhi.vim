@@ -18,9 +18,23 @@ let g:myo_command_frontend = {
       \ 'kill': v:true,
       \ }
 
+let g:myo_command_api_dev = {
+      \ 'ident': 'api-dev',
+      \ 'lines': ['ops/dev/ghcid-api-dev.zsh'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ }
+
 let g:myo_command_collect = {
-      \ 'ident': 'collect',
+      \ 'ident': 'ghcid-collect',
       \ 'lines': ['ops/dev/ghcid-collect.zsh'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ }
+
+let g:myo_command_collect_exe = {
+      \ 'ident': 'collect-exe',
+      \ 'lines': ['nix-build --no-link -A ghc.bodhi'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
@@ -34,7 +48,9 @@ let g:myo_command_build_collect = {
 function! s:setup() abort "{{{
   let g:myo_commands['system'] += [
         \ g:myo_command_frontend,
+        \ g:myo_command_api_dev,
         \ g:myo_command_collect,
+        \ g:myo_command_collect_exe,
         \ g:myo_command_build_collect,
         \ ]
 endfunction "}}}
