@@ -4,7 +4,11 @@ endif
 
 function! s:save() abort "{{{
   if &modifiable && &buftype == '' && &modified
-    call repeat#wrap("\<cmd>silent! noautocmd write\<cr>", '')
+    let preserve = (get(g:, 'repeat_tick', -1) == b:changedtick)
+    silent! noautocmd write
+    if preserve
+      let g:repeat_tick = b:changedtick
+    endif
   endif
 endfunction "}}}
 
