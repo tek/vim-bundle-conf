@@ -4,7 +4,7 @@ endif
 
 function! s:save() abort "{{{
   if &modifiable && &buftype == '' && &modified
-    call repeat#wrap('<cmd>silent! noautocmd write<cr>', '')
+    call repeat#wrap("\<cmd>silent! noautocmd write\<cr>", '')
   endif
 endfunction "}}}
 
