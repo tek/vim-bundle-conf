@@ -129,10 +129,12 @@ function! haskell#imports#sort() abort "{{{
     return
   endif
   let view = winsaveview()
+  let modified = v:false
   try
     let blocks = map(copy(haskell#imports#import_blocks()), { i, a -> haskell#imports#sort_block(a) })
     for block in reverse(blocks)
       if block.modified
+        let modified = v:true
         keepjumps silent call deletebufline('%', block.start, block.end)
         keepjumps silent call append(block.start - 1, block.data)
       endif
@@ -140,7 +142,9 @@ function! haskell#imports#sort() abort "{{{
   finally
     call winrestview(view)
   endtry
-  keepjumps silent noautocmd w
+  if modified
+    keepjumps silent noautocmd w
+  endif
 endfunction "}}}
 
 function! haskell#imports#sort_save() abort "{{{
