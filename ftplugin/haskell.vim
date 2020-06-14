@@ -7,3 +7,5 @@ call haskell#marks#set()
 augroup tek_haskell
   autocmd BufWritePost <buffer> call haskell#marks#set()
 augroup END
+
+setlocal indentexpr=haskell#indent#indentexpr()
