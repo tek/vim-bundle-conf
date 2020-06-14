@@ -152,3 +152,98 @@ function! haskell#imports#sort_save() abort "{{{
     return haskell#imports#sort()
   endif
 endfunction "}}}
+
+function! haskell#imports#import_grep_query(import_type, identifier) abort "{{{
+  if a:import_type == 'qualified'
+    return '^import \S+ .* as ' . a:identifier
+  elseif a:import_type == 'ctor'
+    return '^import \S+ .*\b' . a:identifier . '\(' . a:identifier . '\)'
+  else
+    return '^import \S+ .*' . '\(' . a:identifier . '\)'
+  endif
+endfunction "}}}
+
+function! haskell#imports#prompt_format(index, import) abort "{{{
+  return string(a:index + 1) . ': ' . a:import
+endfunction "}}}
+
+function! haskell#imports#ask_match(results) abort "{{{
+  let lines = ['Multiple matches:'] +
+        \ map(copy(a:results), 'haskell#imports#prompt_format(v:key, v:val)')
+  return inputlist(lines)
+endfunction "}}}
+
+function! haskell#imports#insert_into(import, local, module_base, module_line) abort "{{{
+  let blocks = haskell#imports#import_blocks()
+  if len(blocks) >= 2
+    let lnum = (a:local ? blocks[1][0] : blocks[0][0]) - 1
+    let matching = 1
+  elseif len(blocks) == 1
+    let block_lnum = blocks[0][0]
+    let local_block = match(getline(block_lnum), '\v^import %(qualified )?' . a:module_base) != -1
+    let matching = local_block == a:local
+    let nonmatching_line = a:local ? blocks[0][-1] + 1 : block_lnum - 1
+    let lnum = matching || ! a:local ? block_lnum - 1 : blocks[0][-1] + 1
+  else
+    keepjumps silent call cursor(module_line, 0)
+    keepjumps silent let lnum = search('^$', 'Wn') + 1
+    let matching = 0
+  endif
+  keepjumps silent call append(lnum, [a:import] + (matching ? [] : ['']))
+  return 1
+endfunction "}}}
+
+function! haskell#imports#insert(import) abort "{{{
+  let import_base = matchstr(a:import, '\v^import %(qualified )?\zs\k+\ze')
+  echom import_base
+  keepjumps silent let module_line = search('^module', 'c')
+  if module_line == -1
+    return 0
+  endif
+  let module_base = matchstr(getline(module_line), '\v^module \zs\k+\ze')
+  return haskell#imports#insert_into(a:import, module_base == import_base, module_base, module_line)
+endfunction "}}}
+
+function! haskell#imports#add_import() abort "{{{
+  let view = winsaveview()
+  let message = 'Inserting import failed'
+  let success = 0
+  try
+    let ln = getline('.')
+    let identifier = expand('<cword>')
+    let col = getcurpos()[2]
+    let qualified = match(ln, '.*\k*\%' . col . 'c\k*\..*') != -1
+    let inline_sig = match(ln, ':: .*\%' . col . 'c') != -1
+    let import_type =
+          \ qualified ? 'qualified' :
+          \ (haskell#indent#line_is_in_function_signature(line('.')) || inline_sig) ? 'type' :
+          \ 'ctor'
+    let query = haskell#imports#import_grep_query(import_type, identifier)
+    let results = uniq(sort(map(ProGrepList(getcwd(), query), { i, a -> a.text })))
+    if len(results) == 0
+      let message = 'No matches'
+      return 0
+    elseif len(results) == 1
+      let import = results[0]
+    else
+      let response = haskell#imports#ask_match(results)
+      if response > 0 && response <= len(results)
+        let import = results[response - 1]
+      else
+        let success = 0
+        let message = 'No result selected'
+        return 0
+      endif
+    endif
+    let success = haskell#imports#insert(import)
+  finally
+    call winrestview(view)
+    silent redraw
+    if success
+      echo 'Added ' . import
+    else
+      echo message
+    endif
+  endtry
+  return success
+endfunction "}}}

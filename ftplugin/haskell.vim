@@ -9,3 +9,5 @@ augroup tek_haskell
 augroup END
 
 setlocal indentexpr=haskell#indent#indentexpr()
+
+nnoremap <buffer> <m-i> <cmd>call haskell#imports#add_import()<cr>
