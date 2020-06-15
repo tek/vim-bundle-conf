@@ -185,8 +185,8 @@ function! haskell#imports#insert_into(import, local, module_base, module_line) a
     let nonmatching_line = a:local ? blocks[0][-1] + 1 : block_lnum - 1
     let lnum = matching || ! a:local ? block_lnum - 1 : blocks[0][-1] + 1
   else
-    keepjumps silent call cursor(module_line, 0)
-    keepjumps silent let lnum = search('^$', 'Wn') + 1
+    keepjumps silent call cursor(a:module_line, 0)
+    keepjumps silent let lnum = search('^$', 'Wn')
     let matching = 0
   endif
   keepjumps silent call append(lnum, [a:import] + (matching ? [] : ['']))
@@ -212,9 +212,9 @@ function! s:import_module(result) abort "{{{
   return substitute(a:result, '\v^import %(qualified )?(\S+).*', '\1', '')
 endfunction "}}}
 
-function! s:trim_import_results(results) abort "{{{
+function! haskell#imports#trim_import_results(results) abort "{{{
   function! Contained(results, a) abort "{{{
-    return empty(filter(copy(a:results), { i, b -> a:a[:len(b)+1] == b . '.' })) ? [a:a] : []
+    return empty(filter(copy(a:results), { i, b -> a:a[:len(b)] == (b . '.') })) ? [a:a] : []
   endfunction "}}}
   return list#fold_left({ z, a -> z + Contained(a:results, a) }, [], a:results)
 endfunction "}}}
@@ -235,8 +235,8 @@ function! haskell#imports#add_import() abort "{{{
           \ haskell#indent#line_is_in_function_equation(line('.')) ? 'ctor' : 'type'
     let query = haskell#imports#import_grep_query(import_type, identifier)
     let all_results = uniq(sort(map(ProGrepList(getcwd(), query), { i, a -> s:import_module(a.text) })))
-    let results = s:trim_import_results(all_results)
-    if len(results) == 0
+    let results = haskell#imports#trim_import_results(all_results)
+    if empty(results)
       let message = 'No matches'
       return 0
     elseif len(results) == 1
