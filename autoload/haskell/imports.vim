@@ -159,7 +159,7 @@ function! haskell#imports#import_grep_query(import_type, identifier) abort "{{{
   elseif a:import_type == 'ctor'
     return '^import \S+ .*\b' . a:identifier . '\(' . a:identifier . '\)'
   else
-    return '^import \S+ .*' . '\(' . a:identifier . '\)'
+    return '^import \S+ .*' . '\(.*\b' . a:identifier . '\b.*\)'
   endif
 endfunction "}}}
 
@@ -193,15 +193,24 @@ function! haskell#imports#insert_into(import, local, module_base, module_line) a
   return 1
 endfunction "}}}
 
-function! haskell#imports#insert(import) abort "{{{
-  let import_base = matchstr(a:import, '\v^import %(qualified )?\zs\k+\ze')
+function! haskell#imports#insert(module, identifier, import_type) abort "{{{
+  let import_base = matchstr(a:module, '\v^\k+\ze')
   echom import_base
   keepjumps silent let module_line = search('^module', 'c')
   if module_line == -1
     return 0
   endif
   let module_base = matchstr(getline(module_line), '\v^module \zs\k+\ze')
-  return haskell#imports#insert_into(a:import, module_base == import_base, module_base, module_line)
+  let prefix = a:import_type == 'qualified' ? 'qualified ' : ''
+  let infix = a:import_type == 'qualified' ? ' as ' . a:identifier : ''
+  let names = a:import_type == 'ctor' ? ' (' . a:identifier . '(' . a:identifier . '))' :
+        \ a:import_type == 'type' ? ' (' . a:identifier . ')' : ''
+  let import = 'import ' . prefix . a:module . infix . names
+  return haskell#imports#insert_into(import, module_base == import_base, module_base, module_line)
+endfunction "}}}
+
+function! s:import_module(result) abort "{{{
+  return substitute(a:result, '\v^import %(qualified )?(\S+).*', '\1', '')
 endfunction "}}}
 
 function! haskell#imports#add_import() abort "{{{
@@ -217,9 +226,10 @@ function! haskell#imports#add_import() abort "{{{
     let import_type =
           \ qualified ? 'qualified' :
           \ (haskell#indent#line_is_in_function_signature(line('.')) || inline_sig) ? 'type' :
-          \ 'ctor'
+          \ haskell#indent#line_is_in_function_equation(line('.')) ? 'ctor' : 'type'
     let query = haskell#imports#import_grep_query(import_type, identifier)
-    let results = uniq(sort(map(ProGrepList(getcwd(), query), { i, a -> a.text })))
+    let results = uniq(sort(map(ProGrepList(getcwd(), query), { i, a -> s:import_module(a.text) })))
+    echom string(results)
     if len(results) == 0
       let message = 'No matches'
       return 0
@@ -235,8 +245,11 @@ function! haskell#imports#add_import() abort "{{{
         return 0
       endif
     endif
-    let success = haskell#imports#insert(import)
+    let success = haskell#imports#insert(import, identifier, import_type)
   finally
+    if success
+      keepjumps silent write
+    endif
     call winrestview(view)
     silent redraw
     if success

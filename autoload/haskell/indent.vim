@@ -19,7 +19,7 @@ function! haskell#indent#function_signature(lnum) abort "{{{
 endfunction "}}}
 
 function! haskell#indent#function_equation(lnum) abort "{{{
-  return s:find_backwards_while(a:lnum, '\v^\s*\S+.* \=($| )', '\v\s*\S.*$')
+  return s:find_backwards_while(a:lnum, '\v^\s*%(type )@!\S+.* \=($| )', '\v\s*\S.*$')
 endfunction "}}}
 
 function! s:line_is(lnum, rex) abort "{{{
@@ -40,6 +40,10 @@ endfunction "}}}
 
 function! haskell#indent#line_is_in_function_signature(lnum) abort "{{{
   return haskell#indent#function_signature(a:lnum) != -1 && haskell#indent#function_equation(a:lnum) == -1
+endfunction "}}}
+
+function! haskell#indent#line_is_in_function_equation(lnum) abort "{{{
+  return haskell#indent#function_equation(a:lnum) != -1
 endfunction "}}}
 
 function! haskell#indent#line_is_block_start_with_arrow(lnum) abort "{{{
