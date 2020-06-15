@@ -195,7 +195,6 @@ endfunction "}}}
 
 function! haskell#imports#insert(module, identifier, import_type) abort "{{{
   let import_base = matchstr(a:module, '\v^\k+\ze')
-  echom import_base
   keepjumps silent let module_line = search('^module', 'c')
   if module_line == -1
     return 0
@@ -213,6 +212,13 @@ function! s:import_module(result) abort "{{{
   return substitute(a:result, '\v^import %(qualified )?(\S+).*', '\1', '')
 endfunction "}}}
 
+function! s:trim_import_results(results) abort "{{{
+  function! Contained(results, a) abort "{{{
+    return empty(filter(copy(a:results), { i, b -> a:a[:len(b)+1] == b . '.' })) ? [a:a] : []
+  endfunction "}}}
+  return list#fold_left({ z, a -> z + Contained(a:results, a) }, [], a:results)
+endfunction "}}}
+
 function! haskell#imports#add_import() abort "{{{
   let view = winsaveview()
   let message = 'Inserting import failed'
@@ -228,8 +234,8 @@ function! haskell#imports#add_import() abort "{{{
           \ (haskell#indent#line_is_in_function_signature(line('.')) || inline_sig) ? 'type' :
           \ haskell#indent#line_is_in_function_equation(line('.')) ? 'ctor' : 'type'
     let query = haskell#imports#import_grep_query(import_type, identifier)
-    let results = uniq(sort(map(ProGrepList(getcwd(), query), { i, a -> s:import_module(a.text) })))
-    echom string(results)
+    let all_results = uniq(sort(map(ProGrepList(getcwd(), query), { i, a -> s:import_module(a.text) })))
+    let results = s:trim_import_results(all_results)
     if len(results) == 0
       let message = 'No matches'
       return 0
@@ -253,7 +259,7 @@ function! haskell#imports#add_import() abort "{{{
     call winrestview(view)
     silent redraw
     if success
-      echo 'Added ' . import
+      echo 'Added import of ' . import
     else
       echo message
     endif
