@@ -1,10 +1,10 @@
-let s:import_start_re = '^import '
-let s:import_prefix_re = '\vimport%(\s+qualified)?%(\s+"[^"]+")?'
-let s:import_re = '\v^(' . s:import_prefix_re . '\s+\S+%(%(\s+as \S+)|\s+hiding)?)\s*%((\(.*\)))?$'
+let s:import_start_re = '\v^%(--\s*)?import '
+let s:import_prefix_re = '\vimport(\s+qualified)?(\s+"[^"]+")?\s+'
+let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)|\s+hiding)?)\s*%((\(.*\)))?$'
 let s:names_re = '\v%(\([^)]*)@<!,\s*'
 
 function! s:find_block_end(found, current) abort "{{{
-  keepjumps let end = search('\v^(import|\s)@!', 'W')
+  keepjumps let end = search('\v^(%(--\s*)?import|\s)@!', 'W')
   return end > 0 ? s:find_blocks(a:found + [[a:current, end - 1]], end) : a:found + [[a:current, line('$')]]
 endfunction "}}}
 
@@ -44,12 +44,17 @@ function! haskell#imports#import_statements(block, agg) abort "{{{
           \ )
     let multi = len(tail) > 0
     let import = matchlist(join([cur] + tail, ' '), s:import_re)
-    let head_match = get(import, 1, '')
+    let head_match = get(import, 2, '')
     let head = len(head_match) > 0 ? head_match : get(import, 0, cur)
-    let names_match = get(import, 2, '')
+    let names_match = get(import, 7, '')
     let statement = {
           \ 'head': head,
+          \ 'comment': ! empty(get(import, 1, '')),
+          \ 'qualified': ! empty(get(import, 3, '')),
+          \ 'package': get(import, 4, ''),
+          \ 'module': get(import, 5, ''),
           \ 'has_names': len(names_match) > 0,
+          \ 'suffix': get(import, 6, ''),
           \ 'names': s:parse_names(names_match),
           \ 'multi': multi,
           \ }
@@ -57,13 +62,17 @@ function! haskell#imports#import_statements(block, agg) abort "{{{
   endif
 endfunction "}}}
 
-function! s:strip_import_keywords(a) abort "{{{
-  return substitute(a:a, '^' . s:import_prefix_re, '', '')
+function! s:format_head(import) abort "{{{
+  let comment = a:import.comment ? '-- ' : ''
+  let qualified = a:import.qualified ? 'qualified ' : ''
+  let head = comment . 'import ' . qualified . a:import.package . ' ' . a:import.module . ' ' . a:import.suffix
+  return substitute(head, '\v\s+', ' ', 'g')
 endfunction "}}}
 
 function! haskell#imports#format_single_import(head, names, has_names) abort "{{{
   let head_suf = a:has_names ? ' (' . join(a:names)[:-2] . ')' : ''
-  return [a:head . head_suf]
+  let head = a:head . head_suf
+  return [substitute(head, '\v\s+', ' ', 'g')]
 endfunction "}}}
 
 function! haskell#imports#format_multi_import(head, names) abort "{{{
@@ -73,25 +82,39 @@ endfunction "}}}
 
 function! haskell#imports#format_import(import) abort "{{{
   let names = map(s:sort(a:import.names), { i, a -> a . ',' })
-  let head = substitute(a:import.head, '\v\s+', ' ', 'g')
+  let head = s:format_head(a:import)
   return a:import.multi ?
         \ haskell#imports#format_multi_import(head, names) :
         \ haskell#imports#format_single_import(head, names, a:import.has_names)
 endfunction "}}}
 
 function! s:compare_imports(l, r) abort "{{{
-  let l = s:strip_import_keywords(a:l.head)
-  let r = s:strip_import_keywords(a:r.head)
+  let l = a:l.module
+  let r = a:r.module
   return l == r ? 0 : (l > r ? 1 : -1)
+endfunction "}}}
+
+function! s:mergable(agg, a) abort "{{{
+  return a:agg.has_names &&
+        \ a:a.has_names &&
+        \ a:agg.comment == a:a.comment &&
+        \ a:agg.qualified == a:a.qualified &&
+        \ a:agg.module == a:a.module &&
+        \ a:agg.suffix == a:a.suffix
 endfunction "}}}
 
 function! haskell#imports#merge_imports(imports) abort "{{{
   function! Folder(z, a) abort "{{{
     let [result, agg] = a:z
-    if agg.has_names && a:a.has_names && agg.head == a:a.head
+    if s:mergable(agg, a:a)
       let new_agg = {
             \ 'head': agg.head,
+            \ 'comment': agg.comment,
+            \ 'qualified': agg.qualified,
+            \ 'package': empty(agg.package) ? a:a.package : agg.package,
+            \ 'module': agg.module,
             \ 'has_names': 1,
+            \ 'suffix': agg.suffix,
             \ 'names': s:sort(agg.names + a:a.names),
             \ 'multi': agg.multi || a:a.multi
             \ }
@@ -180,7 +203,7 @@ function! haskell#imports#insert_into(import, local, module_base, module_line) a
     let matching = 1
   elseif len(blocks) == 1
     let block_lnum = blocks[0][0]
-    let local_block = match(getline(block_lnum), '\v^import %(qualified )?' . a:module_base) != -1
+    let local_block = match(getline(block_lnum), s:import_prefix_re . a:module_base) != -1
     let matching = local_block == a:local
     let nonmatching_line = a:local ? blocks[0][-1] + 1 : block_lnum - 1
     let lnum = matching || ! a:local ? block_lnum - 1 : blocks[0][-1] + 1
@@ -209,7 +232,7 @@ function! haskell#imports#insert(module, identifier, import_type) abort "{{{
 endfunction "}}}
 
 function! s:import_module(result) abort "{{{
-  return substitute(a:result, '\v^import %(qualified )?(\S+).*', '\1', '')
+  return substitute(a:result, s:import_prefix_re . '(\S+).*', '\3', '')
 endfunction "}}}
 
 function! haskell#imports#trim_import_results(results) abort "{{{
