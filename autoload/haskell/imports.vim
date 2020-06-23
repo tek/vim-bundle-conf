@@ -21,7 +21,7 @@ endfunction "}}}
 function! s:compare_names(l, r) abort "{{{
   let left_op = a:l[:0] == '('
   let right_op = a:r[:0] == '('
-  return left_op ? (right_op ? a:l[1:] > a:r[1:] : 1) : (right_op ? -1 : a:l > a:r)
+  return left_op ? (right_op ? a:l[1:] ># a:r[1:] : 1) : (right_op ? -1 : a:l ># a:r)
 endfunction "}}}
 
 function! s:sort(names) abort "{{{
@@ -66,7 +66,7 @@ function! s:format_head(import) abort "{{{
   let comment = a:import.comment ? '-- ' : ''
   let qualified = a:import.qualified ? 'qualified ' : ''
   let head = comment . 'import ' . qualified . a:import.package . ' ' . a:import.module . ' ' . a:import.suffix
-  return substitute(head, '\v\s+', ' ', 'g')
+  return trim(substitute(head, '\v\s+', ' ', 'g'))
 endfunction "}}}
 
 function! haskell#imports#format_single_import(head, names, has_names) abort "{{{
@@ -94,7 +94,7 @@ function! s:compare_imports(l, r) abort "{{{
   return l == r ? 0 : (l > r ? 1 : -1)
 endfunction "}}}
 
-function! s:mergable(agg, a) abort "{{{
+function! s:mergeable(agg, a) abort "{{{
   return a:agg.has_names &&
         \ a:a.has_names &&
         \ a:agg.comment == a:a.comment &&
@@ -106,7 +106,7 @@ endfunction "}}}
 function! haskell#imports#merge_imports(imports) abort "{{{
   function! Folder(z, a) abort "{{{
     let [result, agg] = a:z
-    if s:mergable(agg, a:a)
+    if s:mergeable(agg, a:a)
       let new_agg = {
             \ 'head': agg.head,
             \ 'comment': agg.comment,
@@ -115,7 +115,7 @@ function! haskell#imports#merge_imports(imports) abort "{{{
             \ 'module': agg.module,
             \ 'has_names': 1,
             \ 'suffix': agg.suffix,
-            \ 'names': s:sort(agg.names + a:a.names),
+            \ 'names': agg.names + a:a.names,
             \ 'multi': agg.multi || a:a.multi
             \ }
       return [result, new_agg]
@@ -196,10 +196,11 @@ function! haskell#imports#ask_match(results) abort "{{{
   return inputlist(lines)
 endfunction "}}}
 
-function! haskell#imports#insert_into(import, local, module_base, module_line) abort "{{{
+function! haskell#imports#insert_into(import, local, module_base, module_line, import_base) abort "{{{
   let blocks = haskell#imports#import_blocks()
   if len(blocks) >= 2
-    let lnum = (a:local ? blocks[1][0] : blocks[0][0]) - 1
+    let local_base = matchstr(getline(blocks[1][0]), s:import_prefix_re . '\zs\k+\ze')
+    let lnum = (local_base == a:import_base || a:local ? blocks[1][0] : blocks[0][0]) - 1
     let matching = 1
   elseif len(blocks) == 1
     let block_lnum = blocks[0][0]
@@ -226,9 +227,9 @@ function! haskell#imports#insert(module, identifier, import_type) abort "{{{
   let prefix = a:import_type == 'qualified' ? 'qualified ' : ''
   let infix = a:import_type == 'qualified' ? ' as ' . a:identifier : ''
   let names = a:import_type == 'ctor' ? ' (' . a:identifier . '(' . a:identifier . '))' :
-        \ a:import_type == 'type' ? ' (' . a:identifier . ')' : ''
+        \ a:import_type == 'type' || a:import_type == 'function' ? ' (' . a:identifier . ')' : ''
   let import = 'import ' . prefix . a:module . infix . names
-  return haskell#imports#insert_into(import, module_base == import_base, module_base, module_line)
+  return haskell#imports#insert_into(import, module_base == import_base, module_base, module_line, import_base)
 endfunction "}}}
 
 function! s:import_module(result) abort "{{{
@@ -242,22 +243,50 @@ function! haskell#imports#trim_import_results(results) abort "{{{
   return list#fold_left({ z, a -> z + Contained(a:results, a) }, [], a:results)
 endfunction "}}}
 
-function! haskell#imports#add_import() abort "{{{
+function! haskell#imports#current_word() abort "{{{
+  let ln = getline('.')
+  let identifier = expand('<cword>')
+  let col = getcurpos()[2]
+  let qualified = match(ln, '.*\k*\%' . col . 'c\k*\..*') != -1
+  let inline_sig = match(ln, ':: .*\%' . col . 'c') != -1
+  let import_type =
+        \ qualified ? 'qualified' :
+        \ identifier =~# '^[a-z]' ? 'function' :
+        \ (haskell#indent#line_is_in_function_signature(line('.')) || inline_sig) ? 'type' :
+        \ haskell#indent#line_is_in_function_equation(line('.')) ? 'ctor' : 'type'
+  return [identifier, import_type]
+endfunction "}}}
+
+function! s:file_module(path) abort "{{{
+  let contents = readfile(a:path)
+  let mod = matchlist(contents, '\v^module ([^( ]+)')
+  return empty(mod) ? [] : [mod[1]]
+endfunction "}}}
+
+function! haskell#imports#find_definition(identifier, import_type) abort "{{{
+  if a:import_type == 'qualified'
+    return []
+  else
+    let query = a:import_type == 'function' ? '^' . a:identifier . ' ::$' :
+          \ a:import_type == 'ctor' || a:import_type == 'type' ? '^data ' . a:identifier . ' ' :
+          \ '^class (.* => )?\b' . a:identifier . ' '
+    return list#concat(map(ProGrepList(getcwd(), query), { i, a -> s:file_module(a.path) }))
+  endif
+endfunction "}}}
+
+function! haskell#imports#search_existing(identifier, import_type) abort "{{{
+  let query = haskell#imports#import_grep_query(a:import_type, a:identifier)
+  return map(ProGrepList(getcwd(), query), { i, a -> s:import_module(a.text) })
+endfunction "}}}
+
+function! haskell#imports#add_import_with(find_info) abort "{{{
   let view = winsaveview()
   let message = 'Inserting import failed'
   let success = 0
   try
-    let ln = getline('.')
-    let identifier = expand('<cword>')
-    let col = getcurpos()[2]
-    let qualified = match(ln, '.*\k*\%' . col . 'c\k*\..*') != -1
-    let inline_sig = match(ln, ':: .*\%' . col . 'c') != -1
-    let import_type =
-          \ qualified ? 'qualified' :
-          \ (haskell#indent#line_is_in_function_signature(line('.')) || inline_sig) ? 'type' :
-          \ haskell#indent#line_is_in_function_equation(line('.')) ? 'ctor' : 'type'
-    let query = haskell#imports#import_grep_query(import_type, identifier)
-    let all_results = uniq(sort(map(ProGrepList(getcwd(), query), { i, a -> s:import_module(a.text) })))
+    let [identifier, import_type] = call(a:find_info, [])
+    let import_search_results = haskell#imports#search_existing(identifier, import_type)
+    let all_results = uniq(sort(import_search_results))
     let results = haskell#imports#trim_import_results(all_results)
     if empty(results)
       let message = 'No matches'
@@ -288,4 +317,8 @@ function! haskell#imports#add_import() abort "{{{
     endif
   endtry
   return success
+endfunction "}}}
+
+function! haskell#imports#add_import_cword() abort "{{{
+  return haskell#imports#add_import_with('haskell#imports#current_word')
 endfunction "}}}
