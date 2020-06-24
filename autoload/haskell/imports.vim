@@ -286,7 +286,8 @@ function! haskell#imports#add_import_with(find_info) abort "{{{
   try
     let [identifier, import_type] = call(a:find_info, [])
     let import_search_results = haskell#imports#search_existing(identifier, import_type)
-    let all_results = uniq(sort(import_search_results))
+    let definition_results = haskell#imports#find_definition(identifier, import_type)
+    let all_results = uniq(sort(import_search_results + definition_results))
     let results = haskell#imports#trim_import_results(all_results)
     if empty(results)
       let message = 'No matches'
