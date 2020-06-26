@@ -8,7 +8,7 @@ function! s:repeat_wrap_undo() abort "{{{
   endif
 endfunction "}}}
 
-function! Undo(it) abort "{{{
+function! UndoSkip(it) abort "{{{
   function! Lines() abort "{{{
     return nvim_buf_get_lines(0, 0, g:undo_skip_max_lines, v:false)
   endfunction "}}}
@@ -17,12 +17,20 @@ function! Undo(it) abort "{{{
     call s:repeat_wrap_undo()
     let post = Lines()
     if pre == post
-      return Undo(a:it + 1)
+      return UndoSkip(a:it + 1)
     endif
   else
     call s:repeat_wrap_undo()
   endif
 endfunction "}}}
 
+function! Undo() abort "{{{
+  if v:count > 0
+    execute 'normal! ' . v:count . 'u'
+  else
+    return UndoSkip(0)
+  endif
+endfunction "}}}
+
 nmap <nop> <Plug>(RepeatUndo)
-nnoremap u <cmd>call Undo(0)<cr>
+nnoremap u <cmd>call Undo()<cr>
