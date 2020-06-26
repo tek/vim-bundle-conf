@@ -34,7 +34,7 @@ let g:myo_command_collect = {
 
 let g:myo_command_collect_exe = {
       \ 'ident': 'collect-exe',
-      \ 'lines': ['nix-build --no-link -A ghc.bodhi'],
+      \ 'lines': ['nix-build -A ghc.bodhi'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
