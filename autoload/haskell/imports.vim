@@ -91,7 +91,7 @@ endfunction "}}}
 function! s:compare_imports(l, r) abort "{{{
   let l = a:l.module
   let r = a:r.module
-  return l == r ? 0 : (l > r ? 1 : -1)
+  return l == r ? (a:r.has_names && a:l.has_names ? 0 : (a:r.has_names ? -1 : a:l.has_names)) : (l > r ? 1 : -1)
 endfunction "}}}
 
 function! s:mergeable(agg, a) abort "{{{
