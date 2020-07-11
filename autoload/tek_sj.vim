@@ -157,7 +157,7 @@ function! tek_sj#haskell_type_param_split(ws, types) abort "{{{
 endfunction "}}}
 
 function! tek_sj#split_haskell_sig() abort "{{{
-  let pattern = '\v((\s*)^\S+ ::) (.*)'
+  let pattern = '\v(^(\s*)%(pattern\s*)?\S+ ::) (.*)'
   let replacement = '\=submatch(1) . "\n" . tek_sj#haskell_type_param_split(submatch(2), submatch(3))'
   return tek_sj#single_line(pattern, replacement)
 endfunction "}}}
