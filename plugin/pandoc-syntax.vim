@@ -1,4 +1,5 @@
 let g:pandoc#syntax#codeblocks#embeds#langs = [
+      \ 'haskell',
       \ 'scala', 
       \ 'python', 
       \ 'vim', 
