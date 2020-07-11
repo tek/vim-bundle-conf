@@ -35,7 +35,7 @@ function! haskell#indent#line_is_single_arrow(lnum) abort "{{{
 endfunction "}}}
 
 function! haskell#indent#line_is_definite_block_start(lnum) abort "{{{
-  return s:line_is(a:lnum, '\v.*%(<of| \=| \&|<rec|<mdo|<do|<where|<let|<class|<instance| ::|\{|\[|\\case)\s*$')
+  return s:line_is(a:lnum, '\v.*%(<of| \=| \&|<rec|<mdo|<do|<where|<let|<class|<instance| ::|\{|\[|\\case|\>--?|\\)\s*$')
 endfunction "}}}
 
 function! haskell#indent#line_is_in_function_signature(lnum) abort "{{{
