@@ -177,12 +177,17 @@ function! haskell#imports#sort_save() abort "{{{
 endfunction "}}}
 
 function! haskell#imports#import_grep_query(import_type, identifier) abort "{{{
+  let ident = '[a-zA-Z0-9_.]+'
+  let name = '(?:' . ident . '|\([^)]+\))'
+  let elem = '\s*(?:' . ident . '(?:\((?:' . name . '(?:, )?)+\))?(?:,\n?)?\s*)'
+  let pre = '^import(?:\s+qualified)?(?:\s+"[^"]+")?\s+(\S+)'
+  let type = pre . '(?:\s+as)?\s+' . '\((?m:\n?' . elem . '*?\s*)'
   if a:import_type == 'qualified'
-    return '^import \S+ .* as ' . a:identifier
+    return pre . '\s+as\s+' . a:identifier . '\b.*'
   elseif a:import_type == 'ctor'
-    return '^import \S+ .*\b' . a:identifier . '\(' . a:identifier . '\)'
+    return type . ident . '\s*\(' . a:identifier . '\).*'
   else
-    return '^import \S+ .*' . '\(.*\b' . a:identifier . '\b.*\)'
+    return type . '\b' . a:identifier . '\b.*'
   endif
 endfunction "}}}
 
@@ -264,19 +269,19 @@ function! s:file_module(path) abort "{{{
 endfunction "}}}
 
 function! haskell#imports#find_definition(identifier, import_type) abort "{{{
-  if a:import_type == 'qualified'
-    return []
-  else
-    let query = a:import_type == 'function' ? '^' . a:identifier . ' ::$' :
-          \ a:import_type == 'ctor' || a:import_type == 'type' ? '^data ' . a:identifier . ' ' :
-          \ '^class (.* => )?\b' . a:identifier . ' '
-    return list#concat(map(ProGrepList(getcwd(), query), { i, a -> s:file_module(a.path) }))
-  endif
+  let query =
+        \ a:import_type == 'function' ? '^' . a:identifier . ' ::' :
+        \ a:import_type == 'qualified' ? '^data ' . a:identifier . ' ' :
+        \ a:import_type == 'ctor' ? '^(data|newtype) ' . a:identifier . ' ' :
+        \ a:import_type == 'type' ? '^(data|newtype|class|type( family)?) ' . a:identifier . ' ' :
+        \ '^class (.* => )?\b' . a:identifier . ' '
+  return list#concat(map(ProGrepList('.', '', query), { i, a -> s:file_module(a.path) }))
 endfunction "}}}
 
 function! haskell#imports#search_existing(identifier, import_type) abort "{{{
   let query = haskell#imports#import_grep_query(a:import_type, a:identifier)
-  return map(ProGrepList(getcwd(), query), { i, a -> s:import_module(a.text) })
+  let opt = '--multiline -r $1'
+  return map(ProGrepList('.', opt, query), { i, a -> a.text })
 endfunction "}}}
 
 function! haskell#imports#add_import_with(find_info) abort "{{{
