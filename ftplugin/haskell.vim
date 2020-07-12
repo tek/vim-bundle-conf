@@ -11,3 +11,5 @@ augroup END
 setlocal indentexpr=haskell#indent#indentexpr()
 
 nnoremap <buffer> <m-i> <cmd>call haskell#imports#add_import_cword()<cr>
+
+command! -buffer HRename call haskell#buffer#rename()
