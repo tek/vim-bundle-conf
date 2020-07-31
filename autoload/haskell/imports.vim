@@ -253,7 +253,7 @@ function! haskell#imports#current_word() abort "{{{
   let identifier = expand('<cword>')
   let col = getcurpos()[2]
   let qualified = match(ln, '.*\k*\%' . col . 'c\k*\..*') != -1
-  let inline_sig = match(ln, ':: .*\%' . col . 'c') != -1
+  let inline_sig = match(ln, ':: .*\%' . col . 'c') != -1 || match(ln, '@\k*\%' . col . 'c\k*') != -1
   let import_type =
         \ qualified ? 'qualified' :
         \ identifier =~# '^[a-z]' ? 'function' :
