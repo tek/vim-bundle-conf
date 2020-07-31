@@ -87,7 +87,7 @@ import qualified $1 as `!p snip.rv = name_of(t[1])` (${2:`!p snip.rv = name_of(t
 endsnippet
 
 snippet m "module declaration" b
-module `!p snip.rv = module_name('(lib|test)$')` where
+module `!p snip.rv = module_name('(lib|test|integration|app)$')` where
 $0
 endsnippet
 
@@ -198,7 +198,7 @@ $1 =
 endsnippet
 
 snippet t "test" b
-test_$1 :: IO ()
+test_$1 :: UnitTest
 test_$1 =
   pure ()
 endsnippet
@@ -278,4 +278,11 @@ endsnippet
 
 snippet inl "inline pragma" b
 {-# INLINE $0 #-}
+endsnippet
+
+snippet eff "polysemy effect GADT" b
+data $1 :: Effect where
+  $0 :: $1 m a
+
+makeSem ''$1
 endsnippet
