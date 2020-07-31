@@ -32,6 +32,13 @@ let g:myo_command_collect = {
       \ 'kill': v:true,
       \ }
 
+let g:myo_command_cinema = {
+      \ 'ident': 'ghcid-cinema',
+      \ 'lines': ['ops/dev/ghcid-cinema.zsh'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ }
+
 let g:myo_command_collect_exe = {
       \ 'ident': 'collect-exe',
       \ 'lines': ['nix-build -A ghc.bodhi'],
@@ -50,6 +57,7 @@ function! s:setup() abort "{{{
         \ g:myo_command_frontend,
         \ g:myo_command_api_dev,
         \ g:myo_command_collect,
+        \ g:myo_command_cinema,
         \ g:myo_command_collect_exe,
         \ g:myo_command_build_collect,
         \ ]
