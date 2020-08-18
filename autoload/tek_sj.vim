@@ -111,12 +111,16 @@ function! tek_sj#split_scala_params() abort "{{{
   endif
 endfunction "}}}
 
-function! tek_sj#single_line(pattern, replacement) abort "{{{
+function! tek_sj#single_line_with(pattern, replacement, flags) abort "{{{
   let line = getline('.')
   if line =~ a:pattern
-    call sj#ReplaceMotion('V', substitute(line, a:pattern, a:replacement, ''))
+    call sj#ReplaceMotion('V', substitute(line, a:pattern, a:replacement, a:flags))
     return 1
   endif
+endfunction "}}}
+
+function! tek_sj#single_line(pattern, replacement) abort "{{{
+  return tek_sj#single_line_with(a:pattern, a:replacement, '')
 endfunction "}}}
 
 function! tek_sj#multi_line(pattern, replacement) abort "{{{
