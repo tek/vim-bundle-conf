@@ -11,16 +11,16 @@ let g:haskell_project_map = {
 
 let g:proteome_files_exclude_directories = ['result', 'build-output']
 
-let g:myo_command_frontend = {
-      \ 'ident': 'frontend',
-      \ 'lines': ['ops/dev/ghcid-frontend.zsh'],
-      \ 'target': 'ghci',
-      \ 'kill': v:true,
-      \ }
-
 let g:myo_command_api_dev = {
       \ 'ident': 'api-dev',
       \ 'lines': ['ops/dev/ghcid-api-dev.zsh'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ }
+
+let g:myo_command_cinema_api_dev = {
+      \ 'ident': 'cinema-api-dev',
+      \ 'lines': ['ops/dev/ghcid-cinema-api-dev.zsh'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
@@ -46,6 +46,13 @@ let g:myo_command_collect_exe = {
       \ 'kill': v:true,
       \ }
 
+let g:myo_command_cinema_exe = {
+      \ 'ident': 'cinema-exe',
+      \ 'lines': ['nix-build -A ghc.bodhi-cinema'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ }
+
 let g:myo_command_build_collect = {
       \ 'ident': 'build-collect',
       \ 'lines': ['ops/build.zsh'],
@@ -54,11 +61,12 @@ let g:myo_command_build_collect = {
 
 function! s:setup() abort "{{{
   let g:myo_commands['system'] += [
-        \ g:myo_command_frontend,
         \ g:myo_command_api_dev,
+        \ g:myo_command_cinema_api_dev,
         \ g:myo_command_collect,
         \ g:myo_command_cinema,
         \ g:myo_command_collect_exe,
+        \ g:myo_command_cinema_exe,
         \ g:myo_command_build_collect,
         \ ]
 endfunction "}}}
