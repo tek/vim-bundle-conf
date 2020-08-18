@@ -98,7 +98,7 @@ function! haskell#indent#indent_in_block(lnum) abort "{{{
 endfunction "}}}
 
 function! haskell#indent#function_name(lnum) abort "{{{
-  return get(matchlist(getline(a:lnum), '\v^\s*(\S+) .* \='), 1, '')
+  return get(matchlist(getline(a:lnum), '\v^\s*(\S+) .*\=$'), 1, '')
 endfunction "}}}
 
 function! haskell#indent#indent_function_equation(lnum) abort "{{{
