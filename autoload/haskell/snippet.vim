@@ -1,3 +1,13 @@
+function! haskell#snippet#derive_json() abort "{{{
+  let datadef = search('\v^%(data|newtype) ', 'Wbn')
+  if datadef != 0
+    let name = matchstr(getline(datadef), '\v^%(data|newtype) \zs\w+\ze')
+    return "defaultJson ''" . name
+  else
+    return 'no data declaration'
+  endif
+endfunction "}}}
+
 function! haskell#snippet#derive_json_generic() abort "{{{
   let datadef = search('\v^%(data|newtype) ', 'Wbn')
   if datadef != 0
