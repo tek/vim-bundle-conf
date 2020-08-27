@@ -4,7 +4,6 @@ function! haskell#buffer#rename() abort "{{{
     return 0
   endif
   let module = matchlist(getline(module_line), '\v^module %(\k+\.)*(\k+)%([ (]|$)')
-  echom string(module)
   if empty(module[1])
     return 0
   endif

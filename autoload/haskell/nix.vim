@@ -10,7 +10,7 @@ endfunction "}}}
 function! haskell#nix#guess_version(pkg, prefix) abort "{{{
   let all = haskell#nix#versions(a:pkg)
   let matching = filter(all, { i, v -> v =~ '^' . a:prefix . '.*' })
-  return get(matching, -1, '')
+  return get(matching, 0, '')
 endfunction "}}}
 
 function! haskell#nix#hash(pkg) abort "{{{
