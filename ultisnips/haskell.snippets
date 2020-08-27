@@ -183,6 +183,13 @@ newtype $1 =
   deriving (Eq, Show)
 endsnippet
 
+snippet ntrt "Text newtype record" b
+newtype $1 =
+  $1 { un$1 :: Text }
+  deriving (Eq, Show)
+  deriving newtype (IsString)
+endsnippet
+
 snippet f "function" b
 $1 :: ${2:m ()}
 $1 =
