@@ -1,6 +1,6 @@
 let g:myo_command_build = {
       \ 'ident': 'build',
-      \ 'lines': ['nix-build --no-link -A ghc.polysemy-http'],
+      \ 'lines': ['nix-build --no-link -A ghc.polysemy-hasql'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
