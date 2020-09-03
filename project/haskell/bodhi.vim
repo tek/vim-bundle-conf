@@ -41,7 +41,7 @@ let g:myo_command_cinema = {
 
 let g:myo_command_collect_exe = {
       \ 'ident': 'collect-exe',
-      \ 'lines': ['nix-build -A ghc.bodhi'],
+      \ 'lines': ['nix-build -A ghc.bodhi-collect'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
