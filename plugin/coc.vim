@@ -8,11 +8,12 @@ endfunction
 
 nmap <silent> gd <Plug>(coc-definition)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+xnoremap <silent> K :call <SID>show_documentation()<CR>
 
 autocmd CursorHold * silent! call CocActionAsync('highlight')
 
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nmap <silent> ( <Plug>(coc-diagnostic-prev)
+nmap <silent> ) <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>ct <Plug>(coc-type-definition)
 nmap <silent> <leader>ci <Plug>(coc-implementation)
 nmap <silent> <leader>cr <Plug>(coc-references)
