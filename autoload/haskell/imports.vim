@@ -33,7 +33,6 @@ endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
   let names = substitute(a:match, '\v^\((.*)\)$', '\1', '')
-  echom (string(map(split(names, s:names_re), { i, a -> trim(a) })))
   return s:sort(map(split(names, s:names_re), { i, a -> trim(a) }))
 endfunction "}}}
 
