@@ -111,6 +111,14 @@ function! tek_sj#split_scala_params() abort "{{{
   endif
 endfunction "}}}
 
+function! tek_sj#single_line_with_match(match, pattern, replacement, flags) abort "{{{
+  let line = getline('.')
+  if line =~ a:match
+    call sj#ReplaceMotion('V', substitute(line, a:pattern, a:replacement, a:flags))
+    return 1
+  endif
+endfunction "}}}
+
 function! tek_sj#single_line_with(pattern, replacement, flags) abort "{{{
   let line = getline('.')
   if line =~ a:pattern
@@ -177,10 +185,10 @@ function! tek_sj#haskell_import_list_split(imports) abort "{{{
 endfunction "}}}
 
 function! tek_sj#split_haskell_import() abort "{{{
-  let line = getline('.')
-  if line =~ '^import [^(]*(.*)$'
-    let replacement = '\=tek_sj#haskell_import_list_split(submatch(0))'
-    call sj#ReplaceMotion('V', substitute(line, '[^(](\zs.*\ze)', replacement, ''))
-    return 1
-  endif
+  return tek_sj#single_line_with_match(
+        \ '^import [^(]*(.*)$',
+        \ '[^(](\zs.*\ze)',
+        \ '\=tek_sj#haskell_import_list_split(submatch(0))',
+        \ '',
+        \ )
 endfunction "}}}
