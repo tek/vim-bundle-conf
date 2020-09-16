@@ -1,3 +1,5 @@
+let s:indented_line = '\v\s*\S.*$'
+
 function! s:find_backwards_while(lnum, target, accept) abort "{{{
   let line = getline(a:lnum)
   return line =~ a:target ? a:lnum :
@@ -15,11 +17,15 @@ function! haskell#indent#is_comment(line) abort "{{{
 endfunction "}}}
 
 function! haskell#indent#function_signature(lnum) abort "{{{
-  return s:find_backwards_while(a:lnum, '\v^\s*\S+\s+::.*$', '\v\s*\S.*$')
+  return s:find_backwards_while(a:lnum, '\v^\s*\S+\s+::.*$', s:indented_line)
 endfunction "}}}
 
 function! haskell#indent#function_equation(lnum) abort "{{{
-  return s:find_backwards_while(a:lnum, '\v^\s*%(type |data |class |instance )@!\S+.* \=($| )', '\v\s*\S.*$')
+  return s:find_backwards_while(a:lnum, '\v^\s*%(type |data |class |instance )@!\S+.* \=($| )', s:indented_line)
+endfunction "}}}
+
+function! haskell#indent#class_or_instance(lnum) abort "{{{
+  return s:find_backwards_while(a:lnum, '\v^\s*%(class |instance )', s:indented_line)
 endfunction "}}}
 
 function! s:line_is(lnum, rex) abort "{{{
@@ -85,6 +91,12 @@ function! haskell#indent#line_is_first_guard(lnum) abort "{{{
   return haskell#indent#line_is_guard(a:lnum) && (!haskell#indent#line_is_guard(a:lnum - 1))
 endfunction "}}}
 
+function! haskell#indent#line_is_in_class_or_instance(lnum) abort "{{{
+  return haskell#indent#function_signature(a:lnum) == -1 &&
+        \ haskell#indent#function_equation(a:lnum) == -1 &&
+        \ haskell#indent#class_or_instance(a:lnum) != -1
+endfunction "}}}
+
 function! haskell#indent#keep_indent(lnum) abort "{{{
   return indent(a:lnum)
 endfunction "}}}
@@ -121,6 +133,15 @@ function! haskell#indent#indent_function_signature(lnum) abort "{{{
         \ indent(a:lnum - 1)
 endfunction "}}}
 
+function! haskell#indent#indent_class_or_instance(lnum) abort "{{{
+  let current = indent(a:lnum)
+  let line = getline(a:lnum)
+  let start_re = '^(instance|class) .*'
+  return line =~ start_re ?  0 :
+        \ line =~ '\s*) => .*' ?  2 :
+        \ 4
+endfunction "}}}
+
 function! haskell#indent#indent_function_body(lnum) abort "{{{
   return haskell#indent#function_equation(a:lnum) == a:lnum ?
         \ haskell#indent#indent_function_equation(a:lnum) :
@@ -132,6 +153,8 @@ endfunction "}}}
 function! haskell#indent#indent_decl(lnum) abort "{{{
   return haskell#indent#line_is_in_function_signature(a:lnum) ?
         \ haskell#indent#indent_function_signature(a:lnum) :
+        \ haskell#indent#line_is_in_class_or_instance(a:lnum) ?
+        \ haskell#indent#indent_class_or_instance(a:lnum) :
         \ haskell#indent#indent_function_body(a:lnum)
 endfunction "}}}
 
