@@ -25,12 +25,7 @@ def name_of(ident: str) -> str:
     return 'error'
 
 def test_module() -> str:
-  pragma = '{-# OPTIONS_GHC -F -pgmF htfpp #-}'
-  return f'''{pragma}
-
-module {module_name('^(u|f|test|integration)$')} (htf_thisModulesTests) where
-
-import Test.Framework'''
+  return f'''module {module_name('^(u|f|test|integration)$')} where'''
 
 def project_name() -> str:
   try:
@@ -49,6 +44,11 @@ def test_effect() -> str:
   except Exception as e:
     print(e)
     return 'error'
+
+def test_imports() -> str:
+  return f'''import Polysemy.Test (UnitTest)
+
+import {project_name()}.Test (runTest)'''
 
 def unit_test_imports() -> str:
   name = test_effect()
@@ -76,6 +76,18 @@ import {name}.Data.Env ({name})'''
 
 def spec_name() -> str:
   return re.sub('^.', lambda a: a.group(0).lower(), snip.fn.replace('Spec.hs', ''))
+
+def first_word(index: int) -> str:
+  try:
+    from amino import Lists
+    return Lists.tokens(t[index]).head.get_or_strict('')
+  except Exception as e:
+    print(e)
+    return 'error'
+
+def newtype(index: int) -> str:
+  n = first_word(index)
+  return f'{n} {{ un{n} ::'
 endglobal
 
 snippet i "import" b
@@ -93,20 +105,13 @@ endsnippet
 
 snippet mt "test module declaration" b
 `!p snip.rv = test_module()`
-$0
-endsnippet
 
-snippet mtu "unit test module" b
-`!p snip.rv = test_module()`
-`!p snip.rv = unit_test_imports()`
+`!p snip.rv = test_imports()`
 
-${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
-$1Spec = do
-  gassertEqual True True
-
-test_$1 :: IO ()
+test_$1 :: UnitTest
 test_$1 =
-  specDef $1Spec
+  runTest do
+    unit
 endsnippet
 
 snippet mtt "tmux spec" b
@@ -130,22 +135,9 @@ ${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
 $1Spec = do
   gassertEqual True True
 
-test_$1 :: IO ()
+test_$1 :: UnitTest
 test_$1 =
   tmuxGuiSpecDef $1Spec
-endsnippet
-
-snippet mtr "ribo spec" b
-`!p snip.rv = test_module()`
-`!p snip.rv = ribo_spec_imports()`
-
-${1:`!p snip.rv = spec_name()`}Spec :: `!p snip.rv = test_effect()` ()
-$1Spec = do
-  gassertEqual True True
-
-test_$1 :: IO ()
-test_$1 =
-  specDef $1Spec
 endsnippet
 
 snippet il "import Log" b
@@ -179,7 +171,7 @@ endsnippet
 
 snippet ntr "newtype record" b
 newtype $1 =
-  $1 { un$1 :: $2 }
+  `!p snip.rv = newtype(1)` $2 }
   deriving (Eq, Show)
 endsnippet
 
@@ -188,6 +180,13 @@ newtype $1 =
   $1 { un$1 :: Text }
   deriving (Eq, Show)
   deriving newtype (IsString)
+endsnippet
+
+snippet ntri "Int newtype record" b
+newtype $1 =
+  $1 { un$1 :: Int }
+  deriving (Eq, Show)
+  deriving newtype (Num, Real, Enum, Integral, Ord)
 endsnippet
 
 snippet f "function" b
@@ -272,7 +271,7 @@ snippet qti "text quasiquotation with i" i
 endsnippet
 
 snippet olb "overlappable" i
-{-# OVERLAPPABLE #-}
+{-# overlappable #-}
 endsnippet
 
 snippet orp "orphans pragma" b
@@ -296,6 +295,10 @@ endsnippet
 
 snippet djg "derive json and Generic" b
 `!v haskell#snippet#derive_json_generic()`
+endsnippet
+
+snippet dl "derive lenses" b
+`!v haskell#snippet#derive_lenses()`
 endsnippet
 
 snippet "\s*inl" "inline pragma" rb

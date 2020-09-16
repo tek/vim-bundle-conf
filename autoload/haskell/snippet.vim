@@ -20,6 +20,10 @@ function! haskell#snippet#derive_json_generic() abort "{{{
   return haskell#snippet#derive({ n -> "defaultJson ''" . n . "\nderiveGeneric ''" . n })
 endfunction "}}}
 
+function! haskell#snippet#derive_lenses() abort "{{{
+  return haskell#snippet#derive({ n -> "makeClassy ''" . n })
+endfunction "}}}
+
 function! haskell#snippet#current_function() abort "{{{
   let eq = haskell#indent#function_equation(line('.'))
   if eq != -1
