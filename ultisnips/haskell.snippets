@@ -274,6 +274,10 @@ snippet olb "overlappable" i
 {-# overlappable #-}
 endsnippet
 
+snippet inc "incoherent" i
+{-# incoherent #-}
+endsnippet
+
 snippet orp "orphans pragma" b
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 endsnippet
@@ -303,4 +307,9 @@ endsnippet
 
 snippet "\s*inl" "inline pragma" rb
 {-# INLINE `!v haskell#snippet#current_function()` #-}
+endsnippet
+
+snippet tf "type family" b
+type family $1 :: * where
+  $1 = $2
 endsnippet
