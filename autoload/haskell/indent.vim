@@ -28,6 +28,10 @@ function! haskell#indent#class_or_instance(lnum) abort "{{{
   return s:find_backwards_while(a:lnum, '\v^\s*%(class |instance )', s:indented_line)
 endfunction "}}}
 
+function! haskell#indent#family(lnum) abort "{{{
+  return s:find_backwards_while(a:lnum, '\v^\s*%(type family )', s:indented_line)
+endfunction "}}}
+
 function! s:line_is(lnum, rex) abort "{{{
   return getline(a:lnum) =~ a:rex
 endfunction "}}}
@@ -50,6 +54,10 @@ endfunction "}}}
 
 function! haskell#indent#line_is_in_function_equation(lnum) abort "{{{
   return haskell#indent#function_equation(a:lnum) != -1
+endfunction "}}}
+
+function! haskell#indent#line_is_in_family(lnum) abort "{{{
+  return haskell#indent#family(a:lnum) != -1
 endfunction "}}}
 
 function! haskell#indent#line_is_block_start_with_arrow(lnum) abort "{{{
