@@ -88,6 +88,14 @@ def first_word(index: int) -> str:
 def newtype(index: int) -> str:
   n = first_word(index)
   return f'{n} {{ un{n} ::'
+
+def type_family_match(value: str) -> str:
+  try:
+    import re
+    return re.sub(r'\((\w+) :: [^)]*\)', r'\1', value)
+  except Exception as e:
+    print(e)
+    return 'error'
 endglobal
 
 snippet i "import" b
@@ -311,5 +319,5 @@ endsnippet
 
 snippet tf "type family" b
 type family $1 :: * where
-  $1 = $2
+  `!p snip.rv = type_family_match(t[1])` = $2
 endsnippet
