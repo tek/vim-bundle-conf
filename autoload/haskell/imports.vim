@@ -289,7 +289,7 @@ function! haskell#imports#find_definition(identifier, import_type) abort "{{{
         \ a:import_type == 'function' ? '^\s*' . a:identifier . ' ::' :
         \ a:import_type == 'qualified' ? '^data ' . a:identifier . ' ' :
         \ a:import_type == 'ctor' ? '^(data|newtype) ' . a:identifier . ' ' :
-        \ '^\s*(data|newtype|class (.*=>)?|type( family)?) \b' . a:identifier . ' '
+        \ '^\s*(data|newtype|class(.*=>)?|type( family)?) \b' . a:identifier . ' '
   return list#concat(map(ProGrepList('.', '', query), { i, a -> s:file_module(a.path) }))
 endfunction "}}}
 
