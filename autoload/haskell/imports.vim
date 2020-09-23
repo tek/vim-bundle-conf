@@ -251,19 +251,30 @@ function! haskell#imports#trim_import_results(results) abort "{{{
   return list#fold_left({ z, a -> z + Contained(a:results, a) }, [], a:results)
 endfunction "}}}
 
+function! haskell#imports#type_application(ln, col) abort "{{{
+  let nearest_at = match(a:ln, '\v\@[^@]*%' . a:col . 'c')
+  let between = a:ln[nearest_at : a:col]
+  return nearest_at > 0 && (
+        \ between =~ '^\k*$' ||
+        \ substitute(between, '[^(]', '', 'g') > substitute(between, '[^)]', '', 'g')
+        \ )
+endfunction "}}}
+
 function! haskell#imports#current_word() abort "{{{
   let ln = getline('.')
   let identifier = expand('<cword>')
   let col = getcurpos()[2]
   let qualified = match(ln, '.*\k*\%' . col . 'c\k*\..*') != -1
   let sig = haskell#indent#line_is_in_function_signature(line('.'))
-  let inline_sig = match(ln, ':: .*\%' . col . 'c') != -1 || match(ln, '\v\@\(?\k*%' . col . 'c\k*') != -1
+  let inline_sig = match(ln, ':: .*\%' . col . 'c') != -1
+  let equation = haskell#indent#line_is_in_function_equation(line('.'))
+  let app = equation && haskell#imports#type_application(ln, col)
   let family = haskell#indent#line_is_in_family(line('.'))
   let import_type =
         \ qualified ? 'qualified' :
         \ identifier =~# '^[a-z]' ? 'function' :
-        \ (sig || inline_sig || family) ? 'type' :
-        \ haskell#indent#line_is_in_function_equation(line('.')) ? 'ctor' : 'type'
+        \ (sig || inline_sig || app || family) ? 'type' :
+        \ equation ? 'ctor' : 'type'
   return [identifier, import_type]
 endfunction "}}}
 
@@ -278,8 +289,7 @@ function! haskell#imports#find_definition(identifier, import_type) abort "{{{
         \ a:import_type == 'function' ? '^\s*' . a:identifier . ' ::' :
         \ a:import_type == 'qualified' ? '^data ' . a:identifier . ' ' :
         \ a:import_type == 'ctor' ? '^(data|newtype) ' . a:identifier . ' ' :
-        \ a:import_type == 'type' ? '^\s*(data|newtype|class|type( family)?) ' . a:identifier . ' ' :
-        \ '^class (.* => )?\b' . a:identifier . ' '
+        \ '^\s*(data|newtype|class (.*=>)?|type( family)?) \b' . a:identifier . ' '
   return list#concat(map(ProGrepList('.', '', query), { i, a -> s:file_module(a.path) }))
 endfunction "}}}
 
