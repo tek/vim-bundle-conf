@@ -2,10 +2,9 @@ nmap r <plug>(SubversiveSubstitute)
 xmap r <plug>(SubversiveSubstitute)
 xmap p <plug>(SubversiveSubstitute)
 nmap rr <plug>(SubversiveSubstituteLine)
-nmap R <plug>(SubversiveSubstituteToEndOfLine)
 
-nnoremap gr r
-xnoremap gr r
+nnoremap R r
+xnoremap R r
 nnoremap gR R
 
 " nmap cr <plug>(SubversiveSubstituteRange)
