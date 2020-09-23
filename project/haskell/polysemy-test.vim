@@ -19,4 +19,4 @@ endif
 
 let g:haskell_nix_project = v:true
 let g:myo_haskell_stack = v:false
-let g:myo_haskell_nix_hpack = $PWD . '/ops/hpack.zsh'
+let g:myo_haskell_nix_hpack = 'nix-shell -A hpack --run exit'
