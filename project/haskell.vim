@@ -8,7 +8,7 @@ let g:test#enabled_runners = ['haskell#htf', 'haskell#nix']
 let g:htf = v:false
 let g:hs_test_nix = v:true
 
-let g:output_patterns += ['^ .*\bdbg[sm]?\b', '^ .*\bunsafeLog']
+let g:output_patterns += ['^ .*\bdbg[sm]?\b', '^ .*\bunsafeLog', '^ .*\btr(s''?)?\b ']
 let g:output_file_patterns += ['\.hs']
 
 let g:haskell_packages =
