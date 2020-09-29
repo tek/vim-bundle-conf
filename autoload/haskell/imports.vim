@@ -253,7 +253,7 @@ endfunction "}}}
 
 function! haskell#imports#type_application(ln, col) abort "{{{
   let nearest_at = match(a:ln, '\v\@[^@]*%' . a:col . 'c')
-  let between = a:ln[nearest_at + 1 : a:col]
+  let between = a:ln[nearest_at + 1 : a:col - 1]
   return nearest_at > 0 && (
         \ between =~ '^\k*$' ||
         \ substitute(between, '[^(]', '', 'g') > substitute(between, '[^)]', '', 'g')
