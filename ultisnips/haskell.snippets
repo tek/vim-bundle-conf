@@ -180,21 +180,28 @@ endsnippet
 snippet ntr "newtype record" b
 newtype $1 =
   `!p snip.rv = newtype(1)` $2 }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
 endsnippet
 
 snippet ntrt "Text newtype record" b
 newtype $1 =
   $1 { un$1 :: Text }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
   deriving newtype (IsString)
 endsnippet
 
 snippet ntri "Int newtype record" b
 newtype $1 =
   $1 { un$1 :: Int }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
   deriving newtype (Num, Real, Enum, Integral, Ord)
+endsnippet
+
+snippet ntrd "Double newtype record" b
+newtype $1 =
+  $1 { un$1 :: Double }
+  deriving (Eq, Show, Generic)
+  deriving newtype (Num, Ord, Enum, Real, Fractional)
 endsnippet
 
 snippet f "function" b
