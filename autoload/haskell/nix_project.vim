@@ -18,3 +18,5 @@ function! haskell#nix_project#setup() abort "{{{
   let g:haskell_nix_test_runner = 'ops/dev/ghcid-test.zsh'
   autocmd User MyoBuiltinsLoaded call haskell#nix_project#setup_commands()
 endfunction "}}}
+
+autocmd! BufWritePost *.yaml call Hpack()
