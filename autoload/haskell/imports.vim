@@ -1,10 +1,9 @@
 let s:import_start_re = '\v^%(--\s*)?import '
 let s:import_prefix_re = '\vimport(\s+qualified)?(\s+"[^"]+")?\s+'
 let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)|\s+hiding)?)\s*%((\(.*\)))?$'
-" NS((.*), Nil)
 let s:name_re = '%([^,()]+|\([^,()]+\))'
 let s:ctor_re = s:name_re . ',?'
-let s:names_re = '\v' . s:name_re . '%(\(%(' . s:ctor_re . ')*\))?\zs,\s*'
+let s:names_re = '\v^' . s:name_re . '%(\(%(' . s:ctor_re . ')*\))?\zs,\s*'
 
 function! s:find_block_end(found, current) abort "{{{
   keepjumps let end = search('\v^(%(--\s*)?import|\s)@!', 'W')
