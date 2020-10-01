@@ -10,10 +10,8 @@ let b:switch_custom_definitions =
       \     '\v^import %(qualified )@!([^. ]+)( \(.*)?$': 'import qualified \1 as \1\2',
       \   },
       \   {
-      \     '^\v\s+Members? .*': {
-      \       '\vMembers \[([^,]*)\]': 'Member (\1)',
-      \       '\vMember \((.*)\)': 'Members [\1]',
-      \     },
+      \     '\vMembers \[([^,]*)\]': 'Member (\1)',
+      \     '\vMember \((.*)\)': 'Members [\1]',
       \   },
       \ ]
 
