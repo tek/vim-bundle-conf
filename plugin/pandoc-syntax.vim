@@ -9,7 +9,6 @@ let g:pandoc#syntax#codeblocks#embeds#langs = [
       \ 'pdf', 
       \ 'sh', 
       \ 'zsh', 
-      \ 'bash', 
       \ 'nix',
       \ ]
 let g:pandoc#filetypes#pandoc_markdown = 1
