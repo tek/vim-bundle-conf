@@ -53,6 +53,7 @@ endfunction "}}}
 
 let &path .= ',' . join(s:base_dirs(), ',')
 let &path .= ',' . join(s:module_dirs(), ',')
+let &path .= ',' . 'ops/hpack'
 
 function! HaskellFiles() abort "{{{
   execute 'ProFiles ' . join(s:base_dirs(), ' ')
