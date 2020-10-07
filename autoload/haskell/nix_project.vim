@@ -16,6 +16,7 @@ function! haskell#nix_project#setup() abort "{{{
   let g:htf = v:false
   let g:nix = v:true
   let g:haskell_nix_test_runner = 'ops/dev/ghcid-test.zsh'
+  let g:myo_test_capture = v:true
   autocmd User MyoBuiltinsLoaded call haskell#nix_project#setup_commands()
 endfunction "}}}
 
