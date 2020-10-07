@@ -224,30 +224,39 @@ function! haskell#imports#insert_into(import, local, module_base, module_line, i
   return 1
 endfunction "}}}
 
-function! haskell#imports#insert(module, identifier, import_type) abort "{{{
-  let import_base = matchstr(a:module, '\v^\k+\ze')
-  keepjumps silent let module_line = search('^module', 'c')
-  if module_line == -1
-    return 0
-  endif
-  let module_base = matchstr(getline(module_line), '\v^module \zs\k+\ze')
+function! haskell#imports#current_module() abort "{{{
+  keepjumps silent let module_line = search('^module', 'cnbw')
+  return [module_line, matchstr(getline(module_line), '\v^module \zs\S+\ze')]
+endfunction "}}}
+
+function! haskell#imports#insert(module_line, file_module, import_module, identifier, import_type) abort "{{{
+  let import_base = matchstr(a:import_module, '\v^\k+\ze')
+  let module_base = matchstr(a:file_module, '\v^\k+\ze')
   let prefix = a:import_type == 'qualified' ? 'qualified ' : ''
   let infix = a:import_type == 'qualified' ? ' as ' . a:identifier : ''
   let names = a:import_type == 'ctor' ? ' (' . a:identifier . '(' . a:identifier . '))' :
         \ a:import_type == 'type' || a:import_type == 'function' ? ' (' . a:identifier . ')' : ''
-  let import = 'import ' . prefix . a:module . infix . names
-  return haskell#imports#insert_into(import, module_base == import_base, module_base, module_line, import_base)
+  let import = 'import ' . prefix . a:import_module . infix . names
+  return haskell#imports#insert_into(import, module_base == import_base, module_base, a:module_line, import_base)
 endfunction "}}}
 
 function! s:import_module(result) abort "{{{
   return substitute(a:result, s:import_prefix_re . '(\S+).*', '\3', '')
 endfunction "}}}
 
-function! haskell#imports#trim_import_results(results) abort "{{{
-  function! Contained(results, a) abort "{{{
-    return empty(filter(copy(a:results), { i, b -> a:a[:len(b)] == (b . '.') })) ? [a:a] : []
+function! haskell#imports#trim_import_results(file_module, results) abort "{{{
+  function! StartsWith(a, b) abort "{{{
+    return a:a[:len(a:b)] == (a:b . '.')
   endfunction "}}}
-  return list#fold_left({ z, a -> z + Contained(a:results, a) }, [], a:results)
+  function! Valid(results, a) abort "{{{
+    return empty(filter(copy(a:results), { i, b -> StartsWith(a:a, b) })) ? [a:a] : []
+  endfunction "}}}
+  function! FilterExports(results) abort "{{{
+    return list#fold_left({ z, a -> z + Valid(a:results, a) }, [], a:results)
+  endfunction "}}}
+  let non_cyclical = filter(copy(a:results), { i, a -> !StartsWith(a:file_module, a) })
+  let safe = FilterExports(non_cyclical)
+  return empty(safe) ? FilterExports(a:results) : safe
 endfunction "}}}
 
 function! haskell#imports#type_application(ln, col) abort "{{{
@@ -303,11 +312,16 @@ function! haskell#imports#add_import_with(find_info) abort "{{{
   let message = 'Inserting import failed'
   let success = 0
   try
+    let [module_line, file_module] = haskell#imports#current_module()
+    if empty(file_module)
+      let message = 'No module declaration'
+      return 0
+    endif
     let [identifier, import_type] = call(a:find_info, [])
     let import_search_results = haskell#imports#search_existing(identifier, import_type)
     let definition_results = haskell#imports#find_definition(identifier, import_type)
     let all_results = uniq(sort(import_search_results + definition_results))
-    let results = haskell#imports#trim_import_results(all_results)
+    let results = haskell#imports#trim_import_results(file_module, all_results)
     if empty(results)
       let message = 'No matches'
       return 0
@@ -318,12 +332,11 @@ function! haskell#imports#add_import_with(find_info) abort "{{{
       if response > 0 && response <= len(results)
         let import = results[response - 1]
       else
-        let success = 0
         let message = 'No result selected'
         return 0
       endif
     endif
-    let success = haskell#imports#insert(import, identifier, import_type)
+    let success = haskell#imports#insert(module_line, file_module, import, identifier, import_type)
   finally
     if success
       keepjumps silent write
