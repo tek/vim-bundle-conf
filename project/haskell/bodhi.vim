@@ -16,6 +16,7 @@ let g:myo_command_api_dev = {
       \ 'lines': ['ops/dev/ghcid-api-dev.zsh'],
       \ 'target': 'make',
       \ 'kill': v:true,
+      \ 'capture': v:true,
       \ }
 
 let g:myo_command_cinema_api_dev = {
@@ -23,6 +24,7 @@ let g:myo_command_cinema_api_dev = {
       \ 'lines': ['ops/dev/ghcid-cinema-api-dev.zsh'],
       \ 'target': 'make',
       \ 'kill': v:true,
+      \ 'capture': v:true,
       \ }
 
 let g:myo_command_collect = {
@@ -30,6 +32,7 @@ let g:myo_command_collect = {
       \ 'lines': ['ops/dev/ghcid-collect.zsh'],
       \ 'target': 'make',
       \ 'kill': v:true,
+      \ 'capture': v:true,
       \ }
 
 let g:myo_command_cinema = {
@@ -37,6 +40,7 @@ let g:myo_command_cinema = {
       \ 'lines': ['ops/dev/ghcid-cinema.zsh'],
       \ 'target': 'make',
       \ 'kill': v:true,
+      \ 'capture': v:true,
       \ }
 
 let g:myo_command_collect_exe = {

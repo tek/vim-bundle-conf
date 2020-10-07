@@ -3,8 +3,9 @@ let g:proteome_files_exclude_directories = ['result', 'build-output']
 let g:myo_command_frontend = {
       \ 'ident': 'frontend',
       \ 'lines': ['ops/dev/ghcid-frontend.zsh'],
-      \ 'target': 'ghci',
+      \ 'target': 'make',
       \ 'kill': v:true,
+      \ 'capture': v:true,
       \ }
 
 let g:myo_command_android = {
