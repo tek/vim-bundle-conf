@@ -88,7 +88,7 @@ xnoremap <silent> gaf "ay<cmd>call GrepFuncDef(@a)<cr>
 
 let g:haskell_sort_imports = match(getcwd(), 'code/tek/haskell') != -1
 
-let g:myo_haskell_nix_default_hpack = g:vbc_dir . '/project/haskell/nix-project/hpack.zsh'
+let g:myo_haskell_nix_default_hpack = 'ops/hpack.zsh'
 
 function! Hpack() abort "{{{
   MyoRun hpack
