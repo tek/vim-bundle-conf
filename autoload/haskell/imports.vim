@@ -1,5 +1,5 @@
 let s:import_start_re = '\v^%(--\s*)?import '
-let s:import_prefix_re = '\vimport(\s+qualified)?(\s+"[^"]+")?\s+'
+let s:import_prefix_re = '\vimport\s+(%("[^"]+"\s+|[a-z]+\s+)*)'
 let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)|\s+hiding)?)\s*%((\(.*\)))?$'
 let s:name_re = '%([^,()]+|\([^,()]+\))'
 let s:ctor_re = s:name_re . ',?'
@@ -48,15 +48,14 @@ function! haskell#imports#import_statements(block, agg) abort "{{{
     let import = matchlist(join([cur] + tail, ' '), s:import_re)
     let head_match = get(import, 2, '')
     let head = len(head_match) > 0 ? head_match : get(import, 0, cur)
-    let names_match = get(import, 7, '')
+    let names_match = get(import, 6, '')
     let statement = {
           \ 'head': head,
           \ 'comment': ! empty(get(import, 1, '')),
-          \ 'qualified': ! empty(get(import, 3, '')),
-          \ 'package': get(import, 4, ''),
-          \ 'module': get(import, 5, ''),
+          \ 'qualifiers': get(import, 3, ''),
+          \ 'module': get(import, 4, ''),
           \ 'has_names': len(names_match) > 0,
-          \ 'suffix': get(import, 6, ''),
+          \ 'suffix': get(import, 5, ''),
           \ 'names': s:parse_names(names_match),
           \ 'multi': multi,
           \ }
@@ -66,8 +65,7 @@ endfunction "}}}
 
 function! s:format_head(import) abort "{{{
   let comment = a:import.comment ? '-- ' : ''
-  let qualified = a:import.qualified ? 'qualified ' : ''
-  let head = comment . 'import ' . qualified . a:import.package . ' ' . a:import.module . ' ' . a:import.suffix
+  let head = comment . 'import ' . a:import.qualifiers . ' ' . a:import.module . ' ' . a:import.suffix
   return trim(substitute(head, '\v\s+', ' ', 'g'))
 endfunction "}}}
 
@@ -100,7 +98,7 @@ function! s:mergeable(agg, a) abort "{{{
   return a:agg.has_names &&
         \ a:a.has_names &&
         \ a:agg.comment == a:a.comment &&
-        \ a:agg.qualified == a:a.qualified &&
+        \ a:agg.qualifiers == a:a.qualifiers &&
         \ a:agg.module == a:a.module &&
         \ a:agg.suffix == a:a.suffix
 endfunction "}}}
@@ -112,8 +110,7 @@ function! haskell#imports#merge_imports(imports) abort "{{{
       let new_agg = {
             \ 'head': agg.head,
             \ 'comment': agg.comment,
-            \ 'qualified': agg.qualified,
-            \ 'package': empty(agg.package) ? a:a.package : agg.package,
+            \ 'qualifiers': agg.qualifiers,
             \ 'module': agg.module,
             \ 'has_names': 1,
             \ 'suffix': agg.suffix,
@@ -182,7 +179,7 @@ function! haskell#imports#import_grep_query(import_type, identifier) abort "{{{
   let ident = '[a-zA-Z0-9_.]+'
   let name = '(?:' . ident . '|\([^)]+\))'
   let elem = '\s*(?:' . ident . '(?:\((?:' . name . '(?:, )?)+\))?(?:,\n?)?\s*)'
-  let pre = '^import(?:\s+qualified)?(?:\s+"[^"]+")?\s+(\S+)'
+  let pre = '^import\s+(?:"[^"]+"\s+|[a-z]+\s+)*\s+(\S+)'
   let type = pre . '(?:\s+as)?\s+' . '\((?m:\n?' . elem . '*?\s*)'
   if a:import_type == 'qualified'
     return pre . '\s+as\s+' . a:identifier . '\b.*'
