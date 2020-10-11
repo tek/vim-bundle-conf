@@ -10,11 +10,11 @@ highlight! KeywordBold gui=bold guifg=#719e07
 
 highlight! link HsType HaskellType
 highlight! link HsFunParamType FunParamType
-highlight! link HsModuleName Type
+highlight! link HsModId Type
 highlight! link HsModuleDot DiscreetSymbol2
 highlight! link HsImportParens DiscreetSymbol2
 highlight! link HsPatternParens DiscreetSymbol2
-highlight! link HsParens DiscreetSymbol2
+highlight! link HsBrackets DiscreetSymbol2
 highlight! link HsImportType HsType
 highlight! link HsImportSymbolicTypeName HsType
 highlight! link HsClassName Class

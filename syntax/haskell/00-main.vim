@@ -2,11 +2,6 @@ if exists("b:current_syntax")
   finish
 endif
 
-if get(g:, 'haskell_backpack', 0)
-  syntax keyword HsBackpackStructure unit signature
-  syntax keyword HsBackpackDependency dependency
-endif
-
 function! s:q(a) abort "{{{
   return " '" . a:a . "' "
 endfunction "}}}
@@ -15,8 +10,10 @@ function! s:qv(key, value) abort "{{{
   return ' ' . a:key . "='" . a:value . "' "
 endfunction "}}}
 
+let s:keyword_re = '\v<(where|let|in|deriving|via|import|module|class|type|data|family|instance|case|of|foreign)>'
+let s:no_keyword = '\v(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
-let s:var_re = '\v[a-z_]\k*'
+let s:var_re = s:no_keyword . '\v<[a-z_]\k*>'
 let s:var_re_q = s:q(s:var_re)
 let s:conid_re = '\v[A-Z]\k*'
 let s:conid_re_q = s:q(s:conid_re)
@@ -27,9 +24,6 @@ function! s:optional(name, value) abort "{{{
 endfunction "}}}
 
 function! s:syn(main, contains, nextgroup) abort "{{{
-  echom 'syntax ' . a:main .
-        \ (empty(a:contains) ? '' : ' contains=' . a:contains) .
-        \ (empty(a:nextgroup) ? '' : ' nextgroup=' . a:nextgroup)
   execute 'syntax ' . a:main .
         \ (empty(a:contains) ? '' : ' contains=' . a:contains) .
         \ (empty(a:nextgroup) ? '' : ' nextgroup=' . a:nextgroup)
@@ -73,32 +67,40 @@ function! s:indent_region(name, matchgroup, pre, start, extra, contains, nextgro
         \ )
 endfunction "}}}
 
-function! s:parens_top(name, extra, contains, nextgroup) abort "{{{
+function! s:brak_top(name, l, r, extra, contains, nextgroup) abort "{{{
   return s:region_top(
         \ a:name,
-        \ 'matchgroup=HsParens',
-        \ '(',
-        \ ')',
+        \ 'matchgroup=HsBrackets',
+        \ a:l,
+        \ a:r,
         \ a:extra,
         \ a:contains,
         \ a:nextgroup,
         \ )
 endfunction "}}}
 
+function! s:parens_top(name, extra, contains, nextgroup) abort "{{{
+  return s:brak_top(a:name, '(', ')', a:extra, a:contains, a:nextgroup)
+endfunction "}}}
+
 function! s:parens(name, contains, nextgroup) abort "{{{
   return s:parens_top(a:name, s:opts, a:contains, a:nextgroup)
 endfunction "}}}
 
+function! s:braces_top(name, extra, contains, nextgroup) abort "{{{
+  return s:brak_top(a:name, '{', '}', a:extra, a:contains, a:nextgroup)
+endfunction "}}}
+
 function! s:braces(name, contains, nextgroup) abort "{{{
-  return s:region_top(
-        \ a:name,
-        \ 'matchgroup=HsParens',
-        \ '{',
-        \ '}',
-        \ s:opts,
-        \ a:contains,
-        \ a:nextgroup,
-        \ )
+  return s:braces_top(a:name, s:opts, a:contains, a:nextgroup)
+endfunction "}}}
+
+function! s:brackets_top(name, extra, contains, nextgroup) abort "{{{
+  return s:brak_top(a:name, '\[', '\]', a:extra, a:contains, a:nextgroup)
+endfunction "}}}
+
+function! s:brackets(name, contains, nextgroup) abort "{{{
+  return s:brackets_top(a:name, s:opts, a:contains, a:nextgroup)
 endfunction "}}}
 
 function! s:NameWith(name, extra, contains, nextgroup) abort "{{{
@@ -138,11 +140,11 @@ highlight def link HsResultType Type
 syntax match HsConId '\<[A-Z]\k*\>' contained
 highlight def link HsConId Type
 
-syntax match HsParens '[()]' contained
+syntax match HsBrackets '[({})]' contained
 
 syntax match HsInlineSig '\v::\s*<.*' contained contains=HsType
 
-syntax match HsQualifyingModule '\v<[A-Z]\k*\ze\.' contained contains=HsModuleName,HsModuleDot
+syntax match HsQualifyingModule '\v<[A-Z]\k*\ze\.' contained contains=HsModId,HsModuleDot
 highlight def link HsQualifyingModule Type
 
 syntax match HsQualifiedCtor '\v([A-Z]\k*\.)*[A-Z]\k*' contained contains=HsQualifyingModule,HsConId
@@ -151,16 +153,22 @@ syntax match HsQualifiedType '\v([A-Z]\k*\.)*[A-Z]\k*' contained contains=HsQual
 
 syntax match HsQualifiedVar '\v([A-Z]\k*\.)+[a-z_]\k*' contains=HsQualifyingModule,HsVar
 
-syntax match HsOperators "[-!#$%&*+/<=>?@\\^|~:.]\+\|\<_\>" containedin=ALL
+syntax match HsOperators "[-!#$%&*+/<=>?@\\^|~:.]\+\|\<_\>" containedin=ALLBUT,HsImportSymbolicCtorName
 highlight def link HsOperators Operator
 
-syntax keyword HsKeyword do case of in default containedin=ALL
+syntax keyword HsKeywordBasic
+      \ case class data default deriving do else foreign if import in infix infixl infixr
+      \ instance module newtype of then type family role mdo rec qualified pattern
+      \ contained
+highlight def link HsKeywordBasic HsKeyword
+
+syntax keyword HsKeywordLetWhere where let contained
+highlight def link HsKeywordLetWhere HsKeyword
+
+syntax cluster HsKeyword contains=HsKeywordBasic,HsKeywordLetWhere
 highlight def link HsKeyword Keyword
 
-syntax keyword HsLetWhereKeyword where let contained
-highlight def link HsLetWhereKeyword Keyword
-
-syntax cluster HsKeywords contains=HsKeyword,HsLetWhereKeyword
+" literals
 
 syntax match HsNumber "\<[0-9]\+\>\|\<0[xX][0-9a-fA-F]\+\>\|\<0[oO][0-7]\+\>\|\<0[bB][10]\+\>" containedin=ALL
 highlight def link HsNumber Number
@@ -171,9 +179,6 @@ highlight def link HsFloat Float
 syntax region HsString start='"' skip='\v\\\\|\\"' end='"' containedin=ALLBUT,HsString
   \ contains=@Spell
 highlight def link HsString String
-
-syntax keyword HsDeclKeyword module class instance newtype in
-syntax keyword HsDefault default
 
 call s:Name('HsClassName', '', '')
 
@@ -222,6 +227,20 @@ call s:name(
       \ 'HsInlineSigParens,HsInlineSigType,HsInlineSigTypeParam',
       \ )
 
+" module
+
+call s:match_top('HsModule', '\v\s*\zsmodule>', 'skipwhite skipnl', 'HsKeyword', 'HsModuleId')
+
+call s:match(
+      \ 'HsModuleId',
+      \ s:conid_re . '\v(\.' . s:conid_re . ')*',
+      \ '',
+      \ 'HsModId,HsModuleDot',
+      \ 'HsExports,HsKeywordLetWhere',
+      \ )
+
+call s:parens('HsExports', 'HsType', 'HsKeywordLetWhere')
+
 " imports
 
 syntax match HsImport '\v^\s*import>' skipwhite skipnl
@@ -229,7 +248,7 @@ syntax match HsImport '\v^\s*import>' skipwhite skipnl
       \ nextgroup=HsImportModule,HsImportPreQualifier,HsImportPackage
 
 syntax match HsImportModule '\v[A-Z]\k*(\.[A-Z]\k*)*' contained skipwhite skipnl
-      \ contains=HsModuleName,HsModuleDot
+      \ contains=HsModId,HsModuleDot
       \ nextgroup=HsImportAs,HsImportHiding,HsImportList
 
 syntax match HsImportPreQualifier '\v[a-z]+' contained skipwhite skipnl
@@ -240,7 +259,7 @@ syntax match HsImportPackage '\v"[^"]+"' contained skipwhite skipnl
       \ contains=HsString
       \ nextgroup=HsImportModule
 
-syntax match HsModuleName '\v<[A-Z]\k*>' contained
+syntax match HsModId '\v<[A-Z]\k*>' contained
 syntax match HsModuleDot '\.' contained
 
 syntax region HsImportList matchgroup=HsImportParens start='(' end=')' contained
@@ -251,7 +270,7 @@ syntax match HsImportAs 'as\>' contained skipwhite skipnl
       \ nextgroup=HsImportAsName
 
 syntax match HsImportAsName '\v[A-Z]\k*' contained skipwhite skipnl
-      \ contains=HsModuleName
+      \ contains=HsModId
       \ nextgroup=HsImportList
 
 syntax match HsImportHiding 'hiding\>' contained skipwhite skipnl
@@ -295,45 +314,46 @@ syntax match HsImportSymbolicCtorName '[^\k()]' contained
 
 syntax keyword HsImportKeyword import contained
 syntax keyword HsImportQualifier qualified safe as hiding contained
-syntax keyword HsImportItemKeyword type pattern
+syntax keyword HsImportItemKeyword type pattern contained
 
 highlight def link HsImportKeyword Include
 highlight def link HsImportQualifier Keyword
 highlight def link HsImportModule Type
-highlight def link HsModuleName Type
+highlight def link HsModId Type
 highlight def link HsImportCtor HsConId
 highlight def link HsImportType Type
 highlight def link HsImportItemKeyword Keyword
 highlight def link HsImportSymbolicTypeName Type
 highlight def link HsImportSymbolicCtorName HsConId
-highlight def link HsImportParens HsParens
+highlight def link HsImportParens HsBrackets
 
 " function signature
 
 syntax match HsDecl '\v\s*(default\s*)?\zs\ze[_a-z]\k*#?(,\s*[_a-z]\k*#?)*\_s*::\_s'
-      \ contains=@HsKeywords
+      \ contains=HsKeyword
       \ nextgroup=HsDeclName
 
 syntax match HsDeclName '\v\S+#?' contained skipwhite skipnl
       \ nextgroup=HsDeclComma,HsSig
 
 syntax match HsSig '::' contained skipwhite skipnl
-      \ nextgroup=HsSigRhs
+      \ nextgroup=@HsSigRhs
 
-syntax match HsSigRhs '' contained skipwhite skipnl
-      \ nextgroup=HsSigForall,HsSigConstraints,HsSigConstraint,HsSigParam,@HsSigResultType
+syntax cluster HsSigRhs contains=HsSigForall,HsSigConstraints,HsSigConstraint,HsSigParam,@HsSigResultType
 
 call s:match('HsSigResultTypeEnd', '\v($|,)', '', '', 'HsFun')
 
 call s:NameWith('HsSigResultTypeAtype', 'contained skipwhite', 'HsType', '@HsSigResultType')
 call s:nameWith('HsSigResultTypeTyvar', 'contained skipwhite', 'HsTypeParam', '@HsSigResultType')
 call s:parens_top('HsSigResultTypeParens', 'contained skipwhite extend', '@HsSigResultType', '@HsSigResultType')
+call s:brackets_top('HsSigResultTypeSquareBrackets', 'contained skipwhite extend', '@HsSigResultType', '@HsSigResultType')
 
-syntax cluster HsSigResultType contains=HsSigResultTypeTyvar,HsSigResultTypeAtype,HsSigResultTypeParens
+syntax cluster HsSigResultType
+      \ contains=HsSigResultTypeTyvar,HsSigResultTypeAtype,HsSigResultTypeParens,HsSigResultTypeSquareBrackets
 
 call s:Name('HsSigConstraintClass', 'HsClassName', 'HsSigConstraintRest')
 
-let s:constraint_rest = '\v((::)@!..){-}.?(\n\s*)?(\([^)]*)@<!\=\>'
+let s:constraint_rest = '\v((::|\_s\=\_s)@!.){-}(\n\s*)?(\([^)]*)@<!\=\>'
 
 call s:match(
       \ 'HsSigConstraintRest',
@@ -344,18 +364,12 @@ call s:match(
       \ )
 
 syntax match HsTypeArg '\ze\S' contained
-      \ nextgroup=HsType,HsParensSig
+      \ nextgroup=HsType,HsParensSig,HsBracketsSig
 
-syntax region HsParensSig matchgroup=HsParens start='(' end=')' contained skipwhite
-      \ contains=HsType,HsForall,HsOperators
+call s:parens('HsParensSig', 'HsType,HsForall,HsOperators', '')
+call s:brackets('HsBracketsSig', 'HsType,HsForall,HsOperators', '')
 
-syntax match HsSigConstraintParam '\v[a-z_]\k*' contained skipwhite skipnl
-      \ nextgroup=HsSigConstraintParam,HsSigConstraintArg,HsSigConstraintParen,HsSigConstraintBrack
-
-syntax match HsSigConstraintArg '\v[A-Z]\k*' contained skipwhite skipnl
-      \ nextgroup=HsSigConstraintParam,HsSigConstraintArg,HsSigConstraintParen,HsSigConstraintBrack
-
-syntax match HsSigParam '\v\S((::)@!..){-}.?(\n\s*)?-\>' contained skipwhite skipnl
+syntax match HsSigParam '\v\S((::|\_s\=\_s)@!.){-}(\n\s*)?-\>' contained skipwhite skipnl
       \ contains=HsFunParamType,HsOperators
       \ nextgroup=HsSigConstraint,HsSigParam,@HsSigResultType
 
@@ -379,7 +393,7 @@ highlight def link HsForall Keyword
 " function equation
 
 syntax match HsFun '\v\s*(default\s*)?\ze.*(\{[^}]*)@<!\=\_s'
-      \ contains=HsKeyword
+      \ contains=HsKeywordBasic
       \ nextgroup=HsFunName
 
 syntax match HsFunName '\v\S+#?' contained skipwhite skipnl
@@ -387,7 +401,7 @@ syntax match HsFunName '\v\S+#?' contained skipwhite skipnl
 
 call s:match('HsFunArgs', '\v.*(\{[^}]*)@<!\ze\=\_s', '', '@HsExp', 'HsFunBody')
 
-call s:indent_region('HsFunBody', '', '\S.*', '\=', '', 'HsStmt,HsLetWhere,@HsExp', '')
+call s:indent_region('HsFunBody', '', '\S.*', '\=', '', 'HsStmt,HsKeywordBasic,@HsExp,HsLetWhere', '')
 
 syntax cluster HsExp contains=HsExpVar,HsExpCtor,HsExpParens
 
@@ -395,12 +409,12 @@ call s:match('HsStmt', '\v\s*\zs.{-1,}\s+\ze\<-\_s', '', '@HsExp', 'HsStmtArrow'
 
 call s:indent_region('HsStmtArrow', 'HsOperators', '\S.*', '\<-\s*\_s\s*', '', '@HsExp', '')
 
-call s:indent_region('HsLetWhere', 'HsKeyword', '', '<(where|let)>', '', 'HsDecl,HsFun', '')
+call s:indent_region('HsLetWhere', 'HsKeywordLetWhere', '', '<(where|let)>', '', 'HsDecl,HsFun', '')
 
 syntax match HsPatternParens '[()]' contained
 
 highlight def link HsFunName HsIdentifier
-highlight def link HsPatternParens HsParens
+highlight def link HsPatternParens HsBrackets
 
 " data
 
@@ -410,17 +424,40 @@ call s:region_top(
       \ '\v^\s*data',
       \ '\_s=\_s',
       \ 'keepend skipwhite skipnl',
-      \ 'HsSigRhs,HsOperators,HsTopDeclKeyword',
+      \ '@HsSigRhs,HsOperators,HsTopDeclKeyword',
       \ 'HsTopDeclCon,HsDataDeriving',
       \ )
 
-call s:Name('HsTopDeclCon', 'HsConId', 'HsConRecord,HsTopDeclConTypes')
+call s:Name('HsTopDeclCon', 'HsConId', 'HsConRecord,HsConAtypes,HsConOp')
 
 call s:braces('HsConRecord', 'HsConRecordField', 'HsConSum,HsDataDeriving')
 
-call s:region('HsConRecordField', '', '[a-z_]', 'HsDelimiter', '\v(,|\ze\s*})', s:opts . 'keepend', 'HsDecl', 'HsConRecordField')
+call s:region(
+      \ 'HsConRecordField',
+      \ '',
+      \ '[a-z_]',
+      \ 'HsDelimiter',
+      \ '\v(,|\ze\s*})',
+      \ s:opts . 'keepend',
+      \ 'HsDecl',
+      \ 'HsConRecordField'
+      \ )
+
+call s:match('HsConAtypes', '\v[A-Z].{-}\ze($|\|)', 'keepend', '@HsSigResultType', 'HsConSum,HsDataDeriving')
 
 call s:match('HsConSum', '|', '', 'HsOperators', 'HsTopDeclCon')
+
+call s:match_top(
+      \ 'HsTopDeclGadt',
+      \ '\v^\s*data>.*\ze<where>',
+      \ '',
+      \ 'HsSig,@HsSigRhs,HsOperators,HsTopDeclKeyword',
+      \ 'HsGadtConBody',
+      \ )
+
+call s:indent_region('HsGadtConBody', 'HsKeyword', '.*', 'where', '', 'HsGadtCon,HsDataDeriving', '')
+
+call s:Name('HsGadtCon', 'HsConId', 'HsSig')
 
 call s:match(
       \ 'HsDataDeriving',
@@ -437,6 +474,58 @@ highlight def link HsTopDeclKeyword HsKeyword
 
 syntax keyword HsDataDerivingKeyword deriving anyclass stock newtype via contained
 highlight def link HsDataDerivingKeyword HsKeyword
+
+" type
+
+call s:region_top(
+      \ 'HsTopDeclType',
+      \ '',
+      \ '\v^\s*type',
+      \ '\_s=\_s',
+      \ 'keepend skipwhite skipnl',
+      \ '@HsSigRhs,HsOperators,HsTopDeclKeyword',
+      \ '@HsSigRhs',
+      \ )
+
+call s:match_top(
+      \ 'HsTopDeclOpenTypeFamily',
+      \ '\v^\s*type family.*',
+      \ 'skipwhite skipnl',
+      \ '@HsSigRhs,HsOperators,HsTopDeclKeyword',
+      \ '',
+      \ )
+
+call s:match_top(
+      \ 'HsTopDeclClosedTypeFamily',
+      \ '\v^\s*type family.*where',
+      \ 'keepend skipwhite skipnl',
+      \ '@HsSigRhs,HsOperators,HsTopDeclKeyword,HsKeywordLetWhere',
+      \ 'HsTypeFamilyEqn',
+      \ )
+
+call s:match('HsTypeFamilyEqn', '.*', 'skipwhite skipnl', '@HsSigRhs', 'HsTypeFamilyEqn')
+
+" class
+
+call s:match_top(
+      \ 'HsTopDeclClass',
+      \ '\v^\s*class>.*\ze<where>',
+      \ '',
+      \ 'HsSig,@HsSigRhs,HsOperators,HsTopDeclKeyword',
+      \ 'HsClassBody',
+      \ )
+
+call s:indent_region('HsClassBody', 'HsKeywordLetWhere', '.*', 'where', '', 'HsTopDeclType,HsDecl', '')
+
+call s:match_top(
+      \ 'HsTopDeclInstance',
+      \ '\v^\s*instance>.*\ze<where>',
+      \ '',
+      \ 'HsSig,@HsSigRhs,HsOperators,HsTopDeclKeyword',
+      \ 'HsInstanceBody',
+      \ )
+
+call s:indent_region('HsInstanceBody', 'HsKeywordLetWhere', '.*', 'where', '', 'HsTopDeclType,HsDecl', '')
 
 " misc
 
@@ -458,10 +547,10 @@ syntax match HsSeparator  "[,;]"
 "   \ HsIdentifier,
 "   \ HsOperators,
 "   \ HsSeparator,
-"   \ HsParens
+"   \ HsBrackets
 " syntax region HsBlock matchgroup=HsDelimiter start="{" end="}" contains=TOP,@Spell
 syntax keyword HsInfix infix infixl infixr
-syntax keyword HsBottom undefined
+syntax keyword HsBottom undefined containedin=ALL
 syntax match HsQuote "\<'\+" contained
 syntax match HsQuotedType "[A-Z][a-zA-Z0-9_']*\>" contained
 syntax region HsQuoted start="\<'\+" end="\>"
@@ -470,7 +559,7 @@ syntax region HsQuoted start="\<'\+" end="\>"
   \ HsQuote,
   \ HsQuotedType,
   \ HsSeparator,
-  \ HsParens,
+  \ HsBrackets,
   \ HsOperators,
   \ HsIdentifier
 syntax match HsLineComment "---*\([^-!#$%&\*\+./<=>\?@\\^|~].*\)\?$"
