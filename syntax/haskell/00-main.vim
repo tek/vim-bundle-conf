@@ -209,7 +209,7 @@ syntax match HsQualifiedType '\v(\u\k*\.)*\u\k*' contained contains=HsQualifying
 
 syntax match HsQualifiedVar '\v(\u\k*\.)+[a-z_]\k*' contains=HsQualifyingModule,HsVar
 
-call s:match('HsOperator', s:operator, '', '', '')
+call s:match('HsOperator', s:operator, s:exclude_strings, '', '')
 highlight def link HsOperator Operator
 
 syntax keyword HsKeywordBasic
@@ -228,8 +228,7 @@ call s:Name('HsClassName', '', '')
 
 " comments
 
-" TODO use exclude_strings
-call s:match('HsComment', s:comment_re, '', 'HsTODO,@Spell', '')
+call s:match_top('HsComment', s:comment_re, s:exclude_strings, 'HsTODO,@Spell', '')
 highlight def link HsComment Comment
 
 call s:region_top('HsBlockComment', '', '{-', '', '-}', '', 'HsBlockComment,HsTodo,@Spell', '')
@@ -257,17 +256,9 @@ highlight def link HsString String
 
 " expressions
 
-call s:parens(
-  \ 'HsExpParens',
-  \ 'HsExpParens,HsExpCtor,HsExpVar',
-  \ '',
-  \ )
+call s:parens('HsExpParens', 'HsExpParens,HsExpCtor,HsExpVar', '')
 
-call s:Name(
-  \ 'HsExpCtor',
-  \ 'HsQualifiedCtor',
-  \ '',
-  \ )
+call s:Name( 'HsExpCtor', 'HsQualifiedCtor', '')
 
 call s:syn(
   \ 'match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts,
@@ -275,7 +266,13 @@ call s:syn(
   \ 'HsInlineSig',
   \ )
 
-syntax cluster HsExp contains=HsExpVar,HsExpCtor,HsExpParens,HsComment
+call s:match('HsExpTypeApp', '\v\@\ze\k', 'keepend', '', 'HsQualifiedType')
+
+call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', '', '@HsType', '')
+
+call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', '', '@HsType', '')
+
+syntax cluster HsExp contains=HsExpVar,HsExpCtor,HsExpParens,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets
 
 highlight def link HsKind HsTycon
 
@@ -540,11 +537,8 @@ call s:indent_region('HsGadtBody', 'HsKeyword', '\S.*', 'where', '', 'HsGadtCon,
 call s:indent_region('HsGadtCon', 'HsConId', '', s:conid_re, '', 'HsGadtSig', '')
 
 call s:match('HsGadtSig', '::', '', 'HsSig', 'HsGadtConRecord,@HsType,HsComment')
-" call s:indent_region_zero('HsGadtSig', 'HsSig', '::', '', 'HsGadtConRecord,@HsType,HsComment', '')
 
-call s:braces('HsGadtConRecord', 'extend', 'HsConRecordField,HsComment', 'HsGadtConRecordResult')
-
-call s:match('HsGadtConRecordResult', '\s*->.*', '', 'HsOperator,@HsType', '')
+call s:braces('HsGadtConRecord', 'extend', 'HsConRecordField,HsComment', '@HsType')
 
 call s:match(
   \ 'HsDataDeriving',
@@ -556,7 +550,7 @@ call s:match(
 
 call s:parens('HsDataDerivingClassParens', 'HsClassName,HsDelimiter', '')
 
-syntax keyword HsTopDeclKeyword data type class instance family contained
+syntax keyword HsTopDeclKeyword data newtype type class instance family contained
 highlight def link HsTopDeclKeyword HsKeyword
 
 syntax keyword HsDataDerivingKeyword deriving anyclass stock newtype via contained
