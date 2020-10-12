@@ -20,7 +20,7 @@ let s:conid_re_q = s:q(s:conid_re)
 let s:wli = '\v(<(where|let|in)>\s+)'
 let s:comment_re = '\v\s*--+(\k|\s).*$'
 let s:till_comment = '.*\ze' . s:comment_re
-let s:op_char = '[-!#$%&*+/<=>?@\\^|~:.]'
+let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
 let s:operator = '\v(--|::|<-)@!' . s:op_char . '+'
 
 function! s:optional(name, value) abort "{{{
@@ -209,19 +209,24 @@ highlight def link HsKeywordLetWhere HsKeyword
 syntax cluster HsKeyword contains=HsKeywordBasic,HsKeywordLetWhere
 highlight def link HsKeyword Keyword
 
+call s:Name('HsClassName', '', '')
+
 " literals
 
-syntax match HsNumber "\<[0-9]\+\>\|\<0[xX][0-9a-fA-F]\+\>\|\<0[oO][0-7]\+\>\|\<0[bB][10]\+\>" containedin=ALL
+let s:exclude_lit = 'containedin=ALLBUT,HsComment,HsQQ,HsString'
+
+function! s:lit(name, pattern) abort "{{{
+  call s:match(a:name, a:pattern, s:exclude_lit, '', '')
+endfunction "}}}
+
+call s:lit('HsNumber', '\v<[0-9]+>|<0[xX][0-9a-fA-F]+>|<0[oO][0-7]+>|<0[bB][10]+>')
 highlight def link HsNumber Number
 
-syntax match HsFloat "\<[0-9]\+\.[0-9]\+\([eE][-+]\=[0-9]\+\)\=\>" containedin=ALL
+call s:lit('HsFloat', '\v<\d+\.\d+([eE][-+]=[0-9]+)=>')
 highlight def link HsFloat Float
 
-syntax region HsString start='"' skip='\v\\\\|\\"' end='"' containedin=ALLBUT,HsString
-  \ contains=@Spell
+call s:region_top('HsString', '', '"', '', '"', 'skip=/\v\\\\|\\"/ contains=@Spell ' . s:exclude_lit, '', '')
 highlight def link HsString String
-
-call s:Name('HsClassName', '', '')
 
 " expressions
 
@@ -578,6 +583,16 @@ syntax cluster HsClassContent contains=HsClassAssocType,HsTopDeclType,HsDecl,HsF
 
 call s:indent_region('HsClassBody', 'HsKeywordLetWhere', '.*', 'where', '', '@HsClassContent,HsComment', '')
 
+" TH
+
+call s:region_top('HsQQ', '', '\v\[\K\k*\|', '', '\v\|\]', 'containedin=ALL', 'HsQQInterpolate', '')
+highligh def link HsQQ HsString
+
+call s:region('HsQQInterpolate', 'Delimiter', '\v#\{', 'Delimiter', '\}', '', '@HsExp,HsInlineSig', '')
+
+syntax region HsTHBlock matchgroup=HsTH start="\[\(d\|t\|p\)\?|" end="|]" contains=TOP
+syntax region HsTHDoubleBlock matchgroup=HsTH start="\[||" end="||]" contains=TOP
+
 " misc
 
 syntax keyword HsForeignKeywords foreign export import ccall safe unsafe interruptible capi prim contained
@@ -607,18 +622,12 @@ syntax region HsBlockComment start="{-" end="-}"
   \ HsBlockComment,
   \ HsTodo,
   \ @Spell
-syntax region HsPragma start="{-#" end="#-}" keepend
-syntax region HsLiquid start="{-@" end="@-}" keepend
+syntax region HsPragma start='{-#' end='#-}' keepend
+syntax region HsLiquid start='{-@' end='@-}' keepend
 syntax match HsPreProc "^#.*$" keepend
 syntax keyword HsTodo TODO FIXME contained
 " Treat a shebang line at the start of the file as a comment
 syntax match HsShebang "\%^#!.*$"
-if !get(g:, 'haskell_disable_TH', 0)
-    syntax match HsQuasiQuoted "." containedin=HsQuasiQuote contained
-    syntax region HsQuasiQuote matchgroup=HsTH start="\[[_a-zA-Z][a-zA-z0-9._']*|" end="|\]"
-    syntax region HsTHBlock matchgroup=HsTH start="\[\(d\|t\|p\)\?|" end="|]" contains=TOP
-    syntax region HsTHDoubleBlock matchgroup=HsTH start="\[||" end="||]" contains=TOP
-endif
 if get(g:, 'haskell_enable_typeroles', 0)
   syntax keyword HsTypeRoles phantom representational nominal contained
   syntax region HsTypeRoleBlock matchgroup=HsTypeRoles start="type\s\+role" end="$" keepend
@@ -637,7 +646,7 @@ if get(g:, 'haskell_enable_pattern_synonyms', 0)
 endif
 
 highlight def link HsBottom Macro
-highlight def link HsTH Boolean
+highlight def link HsTH HsString
 highlight def link HsIdentifier Identifier
 highlight def link HsForeignKeywords Structure
 highlight def link HsDefault Keyword
@@ -650,10 +659,10 @@ highlight def link HsShebang Comment
 highlight def link HsLineComment Comment
 highlight def link HsBlockComment Comment
 highlight def link HsPragma SpecialComment
-highlight def link HsLiquid SpecialComment
-highlight def link HsChar String
+highlight def link HsLiquid HsPragma
+highlight def link HsChar HsString
 highlight def link HsBacktick Operator
-highlight def link HsQuasiQuoted String
+highlight def link HsQuasiQuoted HsString
 highlight def link HsTodo Todo
 highlight def link HsPreProc PreProc
 highlight def link HsAssocType Type

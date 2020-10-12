@@ -19,6 +19,7 @@ highlight! link HsConId Constructor
 highlight! link HsCtorModule ModuleName
 highlight! link HsDeclName IdentifierBold
 highlight! link HsImportKeyword Keyword
+highlight! link HsPragma HsString
 
 " debug
 
