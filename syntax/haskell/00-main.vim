@@ -19,6 +19,7 @@ let s:conid_re = '\v<''?''?\u\k*>'
 let s:conid_re_q = s:q(s:conid_re)
 let s:wli = '\v(<(where|let|in)>\s+)'
 let s:comment_re = '\v\s*--+(\k|\s).*$'
+let s:inline_comment = '\v(\s*--+(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
 let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
 let s:operator = '\v(--|::|<-)@!' . s:op_char . '+'
@@ -155,7 +156,7 @@ function! s:parens(name, contains, nextgroup) abort "{{{
 endfunction "}}}
 
 function! s:braces_top(name, extra, contains, nextgroup) abort "{{{
-  return s:brak_top(a:name, '{', '}', a:extra, a:contains, a:nextgroup)
+  return s:brak_top(a:name, '{\ze[^-]', '}', a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
 function! s:braces(name, contains, nextgroup) abort "{{{
@@ -195,9 +196,6 @@ syntax sync fromstart
 
 " fallbacks and generics
 
-call s:match('HsComment', s:comment_re, '', '', '')
-highlight def link HsComment Comment
-
 call s:Name('HsTycon', '', '')
 highlight def link HsTycon Type
 
@@ -235,12 +233,25 @@ highlight def link HsKeyword Keyword
 
 call s:Name('HsClassName', '', '')
 
+" comments
+
+call s:match('HsComment', s:comment_re, '', 'HsTODO,@Spell', '')
+highlight def link HsComment Comment
+
+call s:region_top('HsBlockComment', '', '{-', '', '-}', '', 'HsBlockComment,HsTodo,@Spell', '')
+
+call s:region_top('HsPragma', '', '{-#', '', '#-}', 'keepend ' . s:exclude_strings, '', '')
+highlight def link HsPragma SpecialComment
+
+call s:region_top('HsPragma', '', '{-#', '', '#-}', 'keepend ' . s:exclude_strings, '', '')
+highlight def link HsLiquid HsPragma
+
 " literals
 
-let s:exclude_lit = 'containedin=ALLBUT,HsComment,HsQQ,HsString'
+let s:exclude_strings = 'containedin=ALLBUT,HsComment,HsQQ,HsString'
 
 function! s:lit(name, pattern) abort "{{{
-  call s:match(a:name, a:pattern, s:exclude_lit, '', '')
+  call s:match(a:name, a:pattern, s:exclude_strings, '', '')
 endfunction "}}}
 
 call s:lit('HsNumber', '\v<[0-9]+>|<0[xX][0-9a-fA-F]+>|<0[oO][0-7]+>|<0[bB][10]+>')
@@ -249,7 +260,7 @@ highlight def link HsNumber Number
 call s:lit('HsFloat', '\v<\d+\.\d+([eE][-+]=[0-9]+)=>')
 highlight def link HsFloat Float
 
-call s:region_top('HsString', '', '"', '', '"', 'skip=/\v\\\\|\\"/ contains=@Spell ' . s:exclude_lit, '', '')
+call s:region_top('HsString', '', '"', '', '"', 'skip=/\v\\\\|\\"/ contains=@Spell ' . s:exclude_strings, '', '')
 highlight def link HsString String
 
 " expressions
@@ -431,7 +442,7 @@ call s:indent_region(
   \ '.*',
   \ '::\s*',
   \ '',
-  \ '@HsType,HsOperator,HsComment',
+  \ '@HsType,HsOperator,HsComment,HsContext',
   \ 'HsFun',
   \ )
 
@@ -441,7 +452,7 @@ call s:indent_region_eq(
   \ '\s+',
   \ '::',
   \ '',
-  \ '@HsType,HsOperator,HsComment',
+  \ '@HsType,HsOperator,HsComment,HsContext',
   \ 'HsFun',
   \ )
 
@@ -467,7 +478,10 @@ call s:indent_region_top(
   \ '',
   \ )
 
+" TODO HsConOp, doesn't work like this since HsCon already parses a Name
 call s:Name('HsCon', 'HsConId', 'HsConRecord,HsConAtypes,HsConOp')
+
+call s:match('HsConAtypes', '\v(\s*\{[^-])@!\S.{-}\ze($|\|)', 'keepend', 'HsPragma,HsTycon', 'HsConSum,HsDataDeriving')
 
 call s:braces('HsConRecord', 'HsConRecordField,HsComment', 'HsConSum,HsDataDeriving')
 
@@ -476,13 +490,11 @@ call s:region(
   \ '',
   \ '[a-z_]',
   \ 'HsDelimiter',
-  \ '\v(,|\ze\s*})',
+  \ '\v(,\ze' . s:inline_comment . s:var_re . '\_s+::\_s|\ze\s*(-)@<!})',
   \ 'keepend',
   \ 'HsDecl',
   \ 'HsConRecordField'
   \ )
-
-call s:match('HsConAtypes', '\v\u.{-}\ze($|\|)', 'keepend', 'HsTycon', 'HsConSum,HsDataDeriving')
 
 call s:match('HsConSum', '|', '', 'HsOperator', 'HsCon')
 
@@ -524,6 +536,7 @@ call s:indent_region('HsGadtBody', 'HsKeyword', '\S.*', 'where', '', 'HsGadtCon,
 
 call s:indent_region('HsGadtCon', 'HsConId', '', s:conid_re, '', 'HsInlineSig', 'HsGadtCon,HsComment')
 
+" TODO
 " call s:indent_region('HsGadtConRecord', 'HsConId', '', s:conid_re, '', 'HsInlineSigRecord', 'HsGadtCon,HsComment')
 
 call s:match(
@@ -603,21 +616,10 @@ endfunction "}}}
 call s:top_decl1(
   \ 'Class',
   \ '\v(class|instance)',
-  \ 'HsPragma,HsClassContext,HsClassHead,HsComment',
+  \ 'HsClassContext,HsClassHead,HsComment',
   \ 'HsClassBody',
   \ '',
   \ )
-
-" call s:region_top(
-"       \ 'HsTopDeclClass',
-"       \ 'HsTopDeclKeyword',
-"       \ '\v^\s*(class|instance)>',
-"       \ '',
-"       \ '\v\ze<where>',
-"       \ 'keepend',
-"       \ 'HsPragma,HsClassContext,HsClassHead,HsComment',
-"       \ 'HsClassBody',
-"       \ )
 
 call s:match('HsClassAssocType', '\v^\s+type\s+\ze.*::.*', '', '@HsKeyword', 'HsClassAssocTypeLhs')
 
@@ -658,20 +660,9 @@ syntax match HsSeparator  '[,;]'
 syntax keyword HsInfix infix infixl infixr
 syntax keyword HsBottom undefined containedin=ALL
 syntax match HsQuote "\<'\+" contained
-syntax match HsLineComment "---*\([^-!#$%&\*\+./<=>\?@\\^|~].*\)\?$"
-  \ contains=
-  \ HsTodo,
-  \ @Spell
 syntax match HsBacktick "`[A-Za-z_][A-Za-z0-9_\.']*#\?`"
 " syntax match HsIdentifier "[_a-z][a-zA-z0-9_']*" contained
 syntax match HsChar "\<'[^'\\]'\|'\\.'\|'\\u[0-9a-fA-F]\{4}'\>"
-syntax region HsBlockComment start="{-" end="-}"
-  \ contains=
-  \ HsBlockComment,
-  \ HsTodo,
-  \ @Spell
-syntax region HsPragma start='{-#' end='#-}' keepend
-syntax region HsLiquid start='{-@' end='@-}' keepend
 syntax match HsPreProc "^#.*$" keepend
 syntax keyword HsTodo TODO FIXME contained
 " Treat a shebang line at the start of the file as a comment
@@ -700,8 +691,6 @@ highlight def link HsQuote Operator
 highlight def link HsShebang Comment
 highlight def link HsLineComment Comment
 highlight def link HsBlockComment Comment
-highlight def link HsPragma SpecialComment
-highlight def link HsLiquid HsPragma
 highlight def link HsChar HsString
 highlight def link HsBacktick Operator
 highlight def link HsQuasiQuoted HsString
