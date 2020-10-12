@@ -149,11 +149,11 @@ function! s:parens(name, contains, nextgroup) abort "{{{
 endfunction "}}}
 
 function! s:braces_top(name, extra, contains, nextgroup) abort "{{{
-  return s:brak_top(a:name, '{\ze[^-]', '}', a:extra, a:contains, a:nextgroup)
+  return s:brak_top(a:name, '\v\{(-)@!', '}', a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
-function! s:braces(name, contains, nextgroup) abort "{{{
-  return s:braces_top(a:name, s:opts, a:contains, a:nextgroup)
+function! s:braces(name, extra, contains, nextgroup) abort "{{{
+  return s:braces_top(a:name, s:opts . a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
 function! s:brackets_top(name, extra, contains, nextgroup) abort "{{{
@@ -228,6 +228,7 @@ call s:Name('HsClassName', '', '')
 
 " comments
 
+" TODO use exclude_strings
 call s:match('HsComment', s:comment_re, '', 'HsTODO,@Spell', '')
 highlight def link HsComment Comment
 
@@ -449,6 +450,8 @@ call s:indent_region_eq(
 
 call s:nameWith('HsDeclName', 'contained', '', '')
 
+call s:match('HsSig', '::', '', '', '')
+
 highlight def link HsSig Operator
 highlight def link HsDeclName HsIdentifier
 highlight def link HsForall Keyword
@@ -468,26 +471,24 @@ function! s:top_decl1(name, keyword, head, where_body, eq_body) abort "{{{
   call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
 endfunction "}}}
 
-call s:match('HsDataSimpletype', '\v\u.{-}(\=|$)', '', 'HsTycon', 'HsDataBody')
+call s:top_decl1(
+  \ 'Data',
+  \ '\v(data%( family)?|newtype)',
+  \ 'HsDataContext,HsDataSimpletype,HsInlineSig,HsComment',
+  \ 'HsGadtBody',
+  \ 'HsDataBody',
+  \ )
+
+call s:match('HsDataSimpletype', '\v\u.{-}(\=|$)', '', 'HsTycon', '')
 
 call s:match('HsDataContext', '\v\u.{-}\=\>', '', 'HsClassContextClass', 'HsDataSimpletype')
-
-call s:indent_region_top(
-  \ 'HsTopDeclData',
-  \ 'HsTopDeclKeyword',
-  \ '',
-  \ '\v^data|newtype>',
-  \ 'keepend skipwhite skipnl',
-  \ 'HsDataContext,HsDataSimpletype,HsComment',
-  \ '',
-  \ )
 
 " TODO HsConOp, doesn't work like this since HsCon already parses a Name
 call s:Name('HsCon', 'HsConId', 'HsConRecord,HsConAtypes,HsConOp')
 
 call s:match('HsConAtypes', '\v(\s*\{[^-])@!\S.{-}\ze($|\|)', 'keepend', 'HsTycon', 'HsConSum,HsDataDeriving')
 
-call s:braces('HsConRecord', 'HsConRecordField,HsComment', 'HsConSum,HsDataDeriving')
+call s:braces('HsConRecord', '', 'HsConRecordField,HsComment', 'HsConSum,HsDataDeriving')
 
 call s:region(
   \ 'HsConRecordField',
@@ -523,8 +524,6 @@ function! s:top_decl(name, keyword, body_start, contains) abort "{{{
     \ )
 endfunction "}}}
 
-call s:top_decl('HsTopDeclGadt', 'data', '\v<where>', 'HsGadtType')
-
 call s:region(
   \ 'HsGadtType',
   \ '',
@@ -536,12 +535,16 @@ call s:region(
   \ 'HsGadtBody'
   \ )
 
-call s:indent_region('HsGadtBody', 'HsKeyword', '\S.*', 'where', '', 'HsGadtCon,HsGadtConRecord', '')
+call s:indent_region('HsGadtBody', 'HsKeyword', '\S.*', 'where', '', 'HsGadtCon,HsComment', '')
 
-call s:indent_region('HsGadtCon', 'HsConId', '', s:conid_re, '', 'HsInlineSig', 'HsGadtCon,HsComment')
+call s:indent_region('HsGadtCon', 'HsConId', '', s:conid_re, '', 'HsGadtSig', '')
 
-" TODO
-" call s:indent_region('HsGadtConRecord', 'HsConId', '', s:conid_re, '', 'HsInlineSigRecord', 'HsGadtCon,HsComment')
+call s:match('HsGadtSig', '::', '', 'HsSig', 'HsGadtConRecord,@HsType,HsComment')
+" call s:indent_region_zero('HsGadtSig', 'HsSig', '::', '', 'HsGadtConRecord,@HsType,HsComment', '')
+
+call s:braces('HsGadtConRecord', 'extend', 'HsConRecordField,HsComment', 'HsGadtConRecordResult')
+
+call s:match('HsGadtConRecordResult', '\s*->.*', '', 'HsOperator,@HsType', '')
 
 call s:match(
   \ 'HsDataDeriving',
