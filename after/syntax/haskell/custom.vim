@@ -23,7 +23,7 @@ highlight! link HsPragma HsString
 
 " debug
 
-highlight! Class ctermfg=5 gui=bold guifg=#cb4b16
-highlight! FunParamType ctermfg=6 guifg=#d33682
-highlight! Constructor ctermfg=6 gui=bold guifg=#880000
-highlight! link HsFunParamType FunParamType
+" highlight! Class ctermfg=5 gui=bold guifg=#cb4b16
+" highlight! FunParamType ctermfg=6 guifg=#d33682
+" highlight! Constructor ctermfg=6 gui=bold guifg=#880000
+" highlight! link HsFunParamType FunParamType

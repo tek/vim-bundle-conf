@@ -37,8 +37,8 @@ endfunction "}}}
 
 function! s:syn(main, contains, nextgroup) abort "{{{
   execute 'syntax ' . a:main .
-        \ (empty(a:contains) ? '' : ' contains=' . a:contains) .
-        \ (empty(a:nextgroup) ? '' : ' nextgroup=' . a:nextgroup)
+    \ (empty(a:contains) ? '' : ' contains=' . a:contains) .
+    \ (empty(a:nextgroup) ? '' : ' nextgroup=' . a:nextgroup)
 endfunction "}}}
 
 function! s:match_top(name, pattern, extra, contains, nextgroup) abort "{{{
@@ -51,11 +51,11 @@ endfunction "}}}
 
 function! s:region_top(name, mg_start, start, mg_end, end, extra, contains, nextgroup) abort "{{{
   return s:syn(
-        \ 'region ' . a:name . s:optional('matchgroup', a:mg_start) . s:qv('start', a:start) .
-        \   s:optional('matchgroup', a:mg_end) . s:qv('end', a:end) . a:extra,
-        \ a:contains,
-        \ a:nextgroup,
-        \ )
+    \ 'region ' . a:name . s:optional('matchgroup', a:mg_start) . s:qv('start', a:start) .
+    \   s:optional('matchgroup', a:mg_end) . s:qv('end', a:end) . a:extra,
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
 endfunction "}}}
 
 function! s:region(name, mg_start, start, mg_end, end, extra, contains, nextgroup) abort "{{{
@@ -64,28 +64,28 @@ endfunction "}}}
 
 function! s:indent_region_zero(name, matchgroup, start, extra, contains, nextgroup) abort "{{{
   return s:region_top(
-        \ a:name,
-        \ a:matchgroup,
-        \ a:start,
-        \ '',
-        \ '\v\ze^\S',
-        \ a:extra,
-        \ a:contains,
-        \ a:nextgroup,
-        \ )
+    \ a:name,
+    \ a:matchgroup,
+    \ a:start,
+    \ '',
+    \ '\v\ze^\S',
+    \ a:extra . ' keepend ',
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
 endfunction "}}}
 
 function! s:indent_region_top(name, matchgroup, pre, start, extra, contains, nextgroup) abort "{{{
   return s:region_top(
-        \ a:name,
-        \ a:matchgroup,
-        \ '\v(^\z(\s*)' . a:pre . ')@<=' . a:start,
-        \ '',
-        \ '\v\ze(' . s:comment_re . ')?\n\s*(^\z1\s+)@<!\S',
-        \ a:extra . ' keepend ',
-        \ a:contains,
-        \ a:nextgroup,
-        \ )
+    \ a:name,
+    \ a:matchgroup,
+    \ '\v(^\z(\s*)' . a:pre . ')@<=' . a:start,
+    \ '',
+    \ '\v\ze(' . s:comment_re . ')?\n\s*(^\z1\s+)@<!\S',
+    \ a:extra . ' keepend ',
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
 endfunction "}}}
 
 function! s:indent_region(name, matchgroup, pre, start, extra, contains, nextgroup) abort "{{{
@@ -94,32 +94,56 @@ endfunction "}}}
 
 function! s:indent_region_eq_top(name, matchgroup, pre, start, extra, contains, nextgroup) abort "{{{
   return s:region_top(
-        \ a:name,
-        \ a:matchgroup,
-        \ '\v(^\z(\s*)' . a:pre . ')@<=' . a:start,
-        \ '',
-        \ '\v\ze^\s*(^\z1\s*)@<!\S',
-        \ a:extra,
-        \ a:contains,
-        \ a:nextgroup,
-        \ )
+    \ a:name,
+    \ a:matchgroup,
+    \ '\v(^\z(\s*)' . a:pre . ')@<=' . a:start,
+    \ '',
+    \ '\v\ze^\s*(^\z1\s*)@<!\S',
+    \ a:extra,
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
 endfunction "}}}
 
 function! s:indent_region_eq(name, matchgroup, pre, start, extra, contains, nextgroup) abort "{{{
   return s:indent_region_eq_top(a:name, a:matchgroup, a:pre, a:start, s:opts . a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
+function! s:indented_till_top(name, end, extra, contains, nextgroup) abort "{{{
+  return s:match_top(
+    \ a:name,
+    \ '\v%(^(\s*)\S.*)@<=\s*\S.*%(\n\s*%(^\1\s+)@<=\S.*)*\ze' . a:end,
+    \ a:extra . ' keepend ',
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
+  " return s:region_top(
+  "   \ a:name,
+  "   \ '',
+  "   \ '\v(^\z(\s*)\S.*)@<=\s*\ze\S',
+  "   \ '',
+  "   \ '\v\ze(^\s*(\z1\s+)@<!\S|' . a:end . ')',
+  "   \ a:extra . ' keepend ',
+  "   \ a:contains,
+  "   \ a:nextgroup,
+  "   \ )
+endfunction "}}}
+
+function! s:indented_till(name, end, extra, contains, nextgroup) abort "{{{
+  return s:indented_till_top(a:name, a:end, s:opts . a:extra, a:contains, a:nextgroup)
+endfunction "}}}
+
 function! s:brak_top(name, l, r, extra, contains, nextgroup) abort "{{{
   return s:region_top(
-        \ a:name,
-        \ 'HsBrackets',
-        \ a:l,
-        \ '',
-        \ a:r,
-        \ a:extra,
-        \ a:contains,
-        \ a:nextgroup,
-        \ )
+    \ a:name,
+    \ 'HsBrackets',
+    \ a:l,
+    \ '',
+    \ a:r,
+    \ a:extra,
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
 endfunction "}}}
 
 function! s:parens_top(name, extra, contains, nextgroup) abort "{{{
@@ -139,7 +163,7 @@ function! s:braces(name, contains, nextgroup) abort "{{{
 endfunction "}}}
 
 function! s:brackets_top(name, extra, contains, nextgroup) abort "{{{
-  return s:brak_top(a:name, '\[', '\]', a:extra, a:contains, a:nextgroup)
+  return s:brak_top(a:name, '\v''?\[', '\]', a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
 function! s:brackets(name, contains, nextgroup) abort "{{{
@@ -198,9 +222,9 @@ call s:match('HsOperator', s:operator, '', '', '')
 highlight def link HsOperator Operator
 
 syntax keyword HsKeywordBasic
-      \ case class data default deriving do else if import in infix infixl infixr
-      \ instance module newtype of then type family role mdo rec qualified pattern
-      \ contained
+  \ case class data default deriving do else if import in infix infixl infixr
+  \ instance module newtype of then type family role mdo rec qualified pattern
+  \ contained
 highlight def link HsKeywordBasic HsKeyword
 
 syntax keyword HsKeywordLetWhere where let contained
@@ -231,22 +255,22 @@ highlight def link HsString String
 " expressions
 
 call s:parens(
-      \ 'HsExpParens',
-      \ 'HsExpParens,HsExpCtor,HsExpVar',
-      \ '',
-      \ )
+  \ 'HsExpParens',
+  \ 'HsExpParens,HsExpCtor,HsExpVar',
+  \ '',
+  \ )
 
 call s:Name(
-      \ 'HsExpCtor',
-      \ 'HsQualifiedCtor',
-      \ '',
-      \ )
+  \ 'HsExpCtor',
+  \ 'HsQualifiedCtor',
+  \ '',
+  \ )
 
 call s:syn(
-      \ 'match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts,
-      \ '',
-      \ 'HsInlineSig',
-      \ )
+  \ 'match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts,
+  \ '',
+  \ 'HsInlineSig',
+  \ )
 
 syntax cluster HsExp contains=HsExpVar,HsExpCtor,HsExpParens,HsComment
 
@@ -271,88 +295,88 @@ call s:match('HsTypeComment', '\v%(^(\s*).*)@<=' . s:comment_re . '\n\1\s+', '',
 highlight def link HsTypeKind HsKind
 
 syntax cluster HsType
-      \ contains=HsTypeParens,HsTypeBrackets,HsTypeType,HsTypeTypeParam,HsTypeOperator,HsTypeKind,HsTypeComment
+  \ contains=HsTypeParens,HsTypeBrackets,HsTypeType,HsTypeTypeParam,HsTypeOperator,HsTypeKind,HsTypeComment
 
 " module
 
 call s:match_top('HsModule', '\v\s*\zsmodule>', 'skipwhite skipnl', '@HsKeyword', 'HsModuleId')
 
 call s:match(
-      \ 'HsModuleId',
-      \ s:conid_re . '\v(\.' . s:conid_re . ')*',
-      \ '',
-      \ 'HsModId,HsModuleDot',
-      \ 'HsExports,HsKeywordLetWhere',
-      \ )
+  \ 'HsModuleId',
+  \ s:conid_re . '\v(\.' . s:conid_re . ')*',
+  \ '',
+  \ 'HsModId,HsModuleDot',
+  \ 'HsExports,HsKeywordLetWhere',
+  \ )
 
 call s:parens('HsExports', 'HsTycon', 'HsKeywordLetWhere')
 
 " imports
 
 syntax match HsImport '\v^\s*import>' skipwhite skipnl
-      \ contains=HsImportKeyword
-      \ nextgroup=HsImportModule,HsImportPreQualifier,HsImportPackage
+  \ contains=HsImportKeyword
+  \ nextgroup=HsImportModule,HsImportPreQualifier,HsImportPackage
 
 syntax match HsImportModule '\v\u\k*(\.\u\k*)*' contained skipwhite skipnl
-      \ contains=HsModId,HsModuleDot
-      \ nextgroup=HsImportAs,HsImportHiding,HsImportList
+  \ contains=HsModId,HsModuleDot
+  \ nextgroup=HsImportAs,HsImportHiding,HsImportList
 
 syntax match HsImportPreQualifier '\v[a-z]+' contained skipwhite skipnl
-      \ contains=HsImportQualifier
-      \ nextgroup=HsImportModule,HsImportQualifier,HsImportPackage
+  \ contains=HsImportQualifier
+  \ nextgroup=HsImportModule,HsImportQualifier,HsImportPackage
 
 syntax match HsImportPackage '\v"[^"]+"' contained skipwhite skipnl
-      \ contains=HsString
-      \ nextgroup=HsImportModule
+  \ contains=HsString
+  \ nextgroup=HsImportModule
 
 syntax match HsModId '\v<\u\k*>' contained
 syntax match HsModuleDot '\.' contained
 
 syntax region HsImportList matchgroup=HsImportParens start='(' end=')' contained
-      \ contains=HsImportPrefixedItem,HsImportType,HsImportSymbolicType,HsImportFunc
+  \ contains=HsImportPrefixedItem,HsImportType,HsImportSymbolicType,HsImportFunc
 
 syntax match HsImportAs 'as\>' contained skipwhite skipnl
-      \ contains=HsImportQualifier
-      \ nextgroup=HsImportAsName
+  \ contains=HsImportQualifier
+  \ nextgroup=HsImportAsName
 
 syntax match HsImportAsName '\v\u\k*' contained skipwhite skipnl
-      \ contains=HsModId
-      \ nextgroup=HsImportList
+  \ contains=HsModId
+  \ nextgroup=HsImportList
 
 syntax match HsImportHiding 'hiding\>' contained skipwhite skipnl
-      \ contains=HsImportQualifier
-      \ nextgroup=HsImportList
+  \ contains=HsImportQualifier
+  \ nextgroup=HsImportList
 
 syntax match HsImportType '\v\u\k*' contained skipwhite skipnl
-      \ nextgroup=HsImportCtors,HsImportComma
+  \ nextgroup=HsImportCtors,HsImportComma
 
 syntax match HsImportSymbolicType '\v\((\k@![^)])+\)' contained skipwhite skipnl
-      \ contains=HsImportSymbolicTypeName,HsImportParens
-      \ nextgroup=HsImportCtors,HsImportComma
+  \ contains=HsImportSymbolicTypeName,HsImportParens
+  \ nextgroup=HsImportCtors,HsImportComma
 
 syntax region HsImportCtors matchgroup=HsImportParens start='(' end=')' contained skipwhite skipnl
-      \ contains=HsImportSymbolicCtor,HsImportCtor
-      \ nextgroup=HsImportComma
+  \ contains=HsImportSymbolicCtor,HsImportCtor
+  \ nextgroup=HsImportComma
 
 syntax match HsImportSymbolicCtor '\v\((\k@![^)])+\)' contained skipwhite skipnl
-      \ contains=HsImportSymbolicCtorName,HsImportParens
-      \ nextgroup=HsImportCtorComma
+  \ contains=HsImportSymbolicCtorName,HsImportParens
+  \ nextgroup=HsImportCtorComma
 
 syntax match HsImportCtor '\v\u\k*' contained skipwhite skipnl
-      \ nextgroup=HsImportCtorComma
+  \ nextgroup=HsImportCtorComma
 
 syntax match HsImportCtorComma ',' contained skipwhite skipnl
-      \ nextgroup=HsImportSymbolicCtor,HsImportCtor
+  \ nextgroup=HsImportSymbolicCtor,HsImportCtor
 
 syntax match HsImportFunc '\v[a-z]\k*' contained skipwhite skipnl
-      \ nextgroup=HsImportComma
+  \ nextgroup=HsImportComma
 
 syntax match HsImportPrefixedItem '\v(type|pattern)>' contained skipwhite skipnl
-      \ contains=HsImportItemKeyword
-      \ nextgroup=HsImportSymbolicType,HsImportType
+  \ contains=HsImportItemKeyword
+  \ nextgroup=HsImportSymbolicType,HsImportType
 
 syntax match HsImportComma ',' contained skipwhite skipnl
-      \ nextgroup=HsImportPrefixedItem,HsImportType,HsImportSymbolicType,HsImportFunc
+  \ nextgroup=HsImportPrefixedItem,HsImportType,HsImportSymbolicType,HsImportFunc
 
 syntax match HsImportParens '[()]' contained
 syntax match HsImportSymbolicTypeName '[^\k()]' contained
@@ -394,32 +418,32 @@ highlight def link HsFunName HsIdentifier
 " function declaration
 
 call s:match_top(
-      \ 'HsDecl',
-      \ '\v(default\s*)?' . s:var_re . '(,\s*' . s:var_re . ')*\ze\s*\_s\s*::\_s',
-      \ 'skipwhite skipnl',
-      \ 'HsDeclName,HsSeparator',
-      \ 'HsDeclBody1,HsDeclBody2',
-      \ )
+  \ 'HsDecl',
+  \ '\v(default\s*)?' . s:var_re . '(,\s*' . s:var_re . ')*\ze\s*\_s\s*::\_s',
+  \ 'skipwhite skipnl',
+  \ 'HsDeclName,HsSeparator',
+  \ 'HsDeclBody1,HsDeclBody2',
+  \ )
 
 call s:indent_region(
-      \ 'HsDeclBody1',
-      \ 'HsSig',
-      \ '.*',
-      \ '::\s*',
-      \ '',
-      \ 'HsTycon,HsOperator,HsComment,HsBrackets',
-      \ 'HsFun',
-      \ )
+  \ 'HsDeclBody1',
+  \ 'HsSig',
+  \ '.*',
+  \ '::\s*',
+  \ '',
+  \ '@HsType,HsOperator,HsComment',
+  \ 'HsFun',
+  \ )
 
 call s:indent_region_eq(
-      \ 'HsDeclBody2',
-      \ 'HsSig',
-      \ '\s+',
-      \ '::',
-      \ '',
-      \ 'HsTycon,HsOperator,HsComment',
-      \ 'HsFun',
-      \ )
+  \ 'HsDeclBody2',
+  \ 'HsSig',
+  \ '\s+',
+  \ '::',
+  \ '',
+  \ '@HsType,HsOperator,HsComment',
+  \ 'HsFun',
+  \ )
 
 call s:nameWith('HsDeclName', 'contained', '', '')
 
@@ -434,81 +458,81 @@ call s:match('HsDataSimpletype', '\v\u.{-}(\=|$)', '', 'HsTycon', 'HsDataBody')
 call s:match('HsDataContext', '\v\u.{-}\=\>', '', 'HsClassContextClass', 'HsDataSimpletype')
 
 call s:indent_region_top(
-      \ 'HsTopDeclData',
-      \ 'HsTopDeclKeyword',
-      \ '',
-      \ '\v^data>',
-      \ 'keepend skipwhite skipnl',
-      \ 'HsDataContext,HsDataSimpletype,HsComment',
-      \ '',
-      \ )
+  \ 'HsTopDeclData',
+  \ 'HsTopDeclKeyword',
+  \ '',
+  \ '\v^data|newtype>',
+  \ 'keepend skipwhite skipnl',
+  \ 'HsDataContext,HsDataSimpletype,HsComment',
+  \ '',
+  \ )
 
 call s:Name('HsCon', 'HsConId', 'HsConRecord,HsConAtypes,HsConOp')
 
 call s:braces('HsConRecord', 'HsConRecordField,HsComment', 'HsConSum,HsDataDeriving')
 
 call s:region(
-      \ 'HsConRecordField',
-      \ '',
-      \ '[a-z_]',
-      \ 'HsDelimiter',
-      \ '\v(,|\ze\s*})',
-      \ 'keepend',
-      \ 'HsDecl',
-      \ 'HsConRecordField'
-      \ )
+  \ 'HsConRecordField',
+  \ '',
+  \ '[a-z_]',
+  \ 'HsDelimiter',
+  \ '\v(,|\ze\s*})',
+  \ 'keepend',
+  \ 'HsDecl',
+  \ 'HsConRecordField'
+  \ )
 
 call s:match('HsConAtypes', '\v\u.{-}\ze($|\|)', 'keepend', 'HsTycon', 'HsConSum,HsDataDeriving')
 
 call s:match('HsConSum', '|', '', 'HsOperator', 'HsCon')
 
 call s:indent_region(
-      \ 'HsDataBody',
-      \ '',
-      \ '.*',
-      \ '.',
-      \ 'keepend skipwhite skipnl',
-      \ 'HsCon,HsDataDeriving,HsComment',
-      \ '',
-      \ )
+  \ 'HsDataBody',
+  \ '',
+  \ '.*',
+  \ '.',
+  \ 'keepend skipwhite skipnl',
+  \ 'HsCon,HsDataDeriving,HsComment',
+  \ '',
+  \ )
 
 function! s:top_decl(name, keyword, body_start, contains) abort "{{{
   call s:indent_region_zero(
-        \ a:name,
-        \ 'HsTopDeclKeyword',
-        \ '\v^' . a:keyword . '>\ze((\n\n)@!\_.)+' . a:body_start,
-        \ '',
-        \ a:contains,
-        \ '',
-        \ )
+    \ a:name,
+    \ 'HsTopDeclKeyword',
+    \ '\v^' . a:keyword . '>\ze((\n\n)@!\_.)+' . a:body_start,
+    \ '',
+    \ a:contains,
+    \ '',
+    \ )
 endfunction "}}}
 
 call s:top_decl('HsTopDeclGadt', 'data', '\v<where>', 'HsGadtType')
 
 call s:region(
-      \ 'HsGadtType',
-      \ '',
-      \ '\s',
-      \ '',
-      \ '\v\ze<where>',
-      \ 'containedin=HsTopDeclGadt',
-      \ 'HsInlineSig,@HsType',
-      \ 'HsGadtBody'
-      \ )
+  \ 'HsGadtType',
+  \ '',
+  \ '\s',
+  \ '',
+  \ '\v\ze<where>',
+  \ 'containedin=HsTopDeclGadt',
+  \ 'HsInlineSig,@HsType',
+  \ 'HsGadtBody'
+  \ )
 
-call s:indent_region('HsGadtBody', 'HsKeyword', '.*', 'where', '', 'HsGadtCon,HsGadtConRecord', '')
+call s:indent_region('HsGadtBody', 'HsKeyword', '\S.*', 'where', '', 'HsGadtCon,HsGadtConRecord', '')
 
 call s:indent_region('HsGadtCon', 'HsConId', '', s:conid_re, '', 'HsInlineSig', 'HsGadtCon,HsComment')
 
 " call s:indent_region('HsGadtConRecord', 'HsConId', '', s:conid_re, '', 'HsInlineSigRecord', 'HsGadtCon,HsComment')
 
 call s:match(
-      \ 'HsDataDeriving',
-      \ '\v<deriving>(\s+<(anyclass|newtype|stock|via)>)?\s+',
-      \ '',
-      \ 'HsDataDerivingKeyword',
-      \ 'HsClassName,HsDataDerivingClassParens',
-      \ )
+  \ 'HsDataDeriving',
+  \ '\v<deriving>(\s+<(anyclass|newtype|stock|via)>)?\s+',
+  \ '',
+  \ 'HsDataDerivingKeyword',
+  \ 'HsClassName,HsDataDerivingClassParens',
+  \ )
 
 call s:parens('HsDataDerivingClassParens', 'HsClassName,HsDelimiter', '')
 
@@ -521,59 +545,79 @@ highlight def link HsDataDerivingKeyword HsKeyword
 " " type
 
 call s:region_top(
-      \ 'HsTopDeclType',
-      \ '',
-      \ '\v<type>',
-      \ '',
-      \ '\_s=\_s',
-      \ 'keepend skipwhite skipnl',
-      \ '@HsType,HsOperator,HsTopDeclKeyword',
-      \ '@HsType',
-      \ )
+  \ 'HsTopDeclType',
+  \ '',
+  \ '\v<type>',
+  \ '',
+  \ '\v\_s\=\_s',
+  \ 'keepend skipwhite skipnl',
+  \ '@HsType,HsOperator,HsTopDeclKeyword',
+  \ '@HsType',
+  \ )
 
 " TODO make this an indent region for both closed and open families, then decide based on the presence of `where` which
 " one to parse
 call s:region_top(
-      \ 'HsTopDeclClosedTypeFamily',
-      \ 'HsTopDeclKeyword',
-      \ '\v<type family>',
-      \ '',
-      \ '\v\ze<where>',
-      \ 'keepend',
-      \ '@HsType,HsOperator,HsTopDeclKeyword,HsKeywordLetWhere',
-      \ 'HsTypeFamilyBody',
-      \ )
+  \ 'HsTopDeclClosedTypeFamily',
+  \ 'HsTopDeclKeyword',
+  \ '\v<type family>',
+  \ '',
+  \ '\v\ze<where>',
+  \ 'keepend',
+  \ '@HsType,HsOperator,HsTopDeclKeyword,HsKeywordLetWhere',
+  \ 'HsTypeFamilyBody',
+  \ )
 
 call s:indent_region('HsTypeFamilyBody', 'HsKeywordLetWhere', '.*', 'where', '', 'HsTypeFamilyEqn,HsComment', '')
 
-call s:match('HsTypeFamilyEqn', s:with_comment('.*\_s=\_s'), 'skipwhite skipnl', '@HsType,HsComment', '@HsType')
+call s:match('HsTypeFamilyEqn', s:with_comment('\v.*\_s\=\_s'), 'skipwhite skipnl', '@HsType,HsComment', '@HsType')
 
 call s:match_top(
-      \ 'HsTopDeclOpenTypeFamily',
-      \ '\v^\s*type family.*(<where>)@<!$',
-      \ 'skipwhite skipnl',
-      \ '@HsType,HsOperator,HsTopDeclKeyword',
-      \ '',
-      \ )
+  \ 'HsTopDeclOpenTypeFamily',
+  \ '\v^\s*type family.*(<where>)@<!$',
+  \ 'skipwhite skipnl',
+  \ '@HsType,HsOperator,HsTopDeclKeyword',
+  \ '',
+  \ )
 
 " class
 
 call s:Name('HsClassContextClass', 'HsClassName', '@HsType')
 
-call s:match('HsClassContext', '\v((<where>)@!\_.)+\=\>', '', 'HsClassContextClass,HsOperator,HsBrackets', 'HsClassHead')
+call s:match('HsClassContext', '\v((<where>)@!\_.)+\=\>', '', 'HsClassContextClass,HsOperator,HsBrackets,HsComment', 'HsClassHead')
 
 call s:Name('HsClassHead', 'HsClassName', '@HsType')
 
-call s:region_top(
-      \ 'HsTopDeclClass',
-      \ 'HsTopDeclKeyword',
-      \ '\v^\s*(class|instance)>',
-      \ '',
-      \ '\v\ze<where>',
-      \ 'keepend',
-      \ 'HsPragma,HsClassContext,HsClassHead,HsComment',
-      \ 'HsClassBody',
-      \ )
+function! s:top_decl1(name, keyword, head, where_body, eq_body) abort "{{{
+  let prefix = 'Hs' . a:name
+  let main_name = 'HsTopDecl' . a:name
+  let where_name = prefix . 'Where'
+  let eq_name = prefix . 'Eq'
+  let plain_name = prefix . 'Plain'
+  let bodies = where_name . ',' . eq_name . ',' . plain_name
+  call s:match_top(main_name, '\v^' . a:keyword . '>', 'skipwhite skipnl', 'HsTopDeclKeyword', bodies)
+  call s:indented_till(eq_name, '\v\_s\=\_s', '', a:head, a:eq_body)
+  call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
+endfunction "}}}
+
+call s:top_decl1(
+  \ 'Class',
+  \ '\v(class|instance)',
+  \ 'HsPragma,HsClassContext,HsClassHead,HsComment',
+  \ 'HsClassBody',
+  \ '',
+  \ )
+
+" call s:region_top(
+"       \ 'HsTopDeclClass',
+"       \ 'HsTopDeclKeyword',
+"       \ '\v^\s*(class|instance)>',
+"       \ '',
+"       \ '\v\ze<where>',
+"       \ 'keepend',
+"       \ 'HsPragma,HsClassContext,HsClassHead,HsComment',
+"       \ 'HsClassBody',
+"       \ )
 
 call s:match('HsClassAssocType', '\v^\s+type\s+\ze.*::.*', '', '@HsKeyword', 'HsClassAssocTypeLhs')
 
@@ -592,6 +636,10 @@ call s:region('HsQQInterpolate', 'Delimiter', '\v#\{', 'Delimiter', '\}', '', '@
 
 syntax region HsTHBlock matchgroup=HsTH start="\[\(d\|t\|p\)\?|" end="|]" contains=TOP
 syntax region HsTHDoubleBlock matchgroup=HsTH start="\[||" end="||]" contains=TOP
+
+" comment line override
+
+call s:match_top('HsCommentLine', '^' . s:comment_re, '', 'HsComment', '')
 
 " misc
 
@@ -635,14 +683,8 @@ if get(g:, 'haskell_enable_typeroles', 0)
     \ HsTycon,
     \ HsTypeRoles
 endif
-if get(g:, 'haskell_enable_recursivedo', 0)
-  syntax keyword HsRecursiveDo mdo rec
-endif
 if get(g:, 'haskell_enable_arrowsyntax', 0)
   syntax keyword HsArrowSyntax proc
-endif
-if get(g:, 'haskell_enable_pattern_synonyms', 0)
-  syntax keyword HsPatternKeyword pattern
 endif
 
 highlight def link HsBottom Macro
@@ -671,7 +713,6 @@ highlight def link HsDeclKeyword Structure
 highlight def link HsWhere Structure
 highlight def link HsLet Structure
 highlight def link HsRecursiveDo Keyword
-highlight def link HsPatternKeyword Structure
 highlight def link HsTypeRoles Structure
 
 if get(g:, 'haskell_enable_arrowsyntax', 0)
