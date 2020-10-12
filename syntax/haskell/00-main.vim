@@ -23,6 +23,7 @@ let s:inline_comment = '\v(\s*--+(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
 let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
 let s:operator = '\v(--|::|<-)@!' . s:op_char . '+'
+let s:exclude_strings = 'containedin=ALLBUT,HsComment,HsQQ,HsString'
 
 function! s:optional(name, value) abort "{{{
   return empty(a:value) ? '' : ' ' . a:name . '=' . a:value . ' '
@@ -110,6 +111,8 @@ function! s:indent_region_eq(name, matchgroup, pre, start, extra, contains, next
   return s:indent_region_eq_top(a:name, a:matchgroup, a:pre, a:start, s:opts . a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
+" Consume everything until the 'end' pattern, but require newlines to be followed by the indent of the start location
+" Since this doesn't use a region, it can be used multiple times at the same location
 function! s:indented_till_top(name, end, extra, contains, nextgroup) abort "{{{
   return s:match_top(
     \ a:name,
@@ -118,16 +121,6 @@ function! s:indented_till_top(name, end, extra, contains, nextgroup) abort "{{{
     \ a:contains,
     \ a:nextgroup,
     \ )
-  " return s:region_top(
-  "   \ a:name,
-  "   \ '',
-  "   \ '\v(^\z(\s*)\S.*)@<=\s*\ze\S',
-  "   \ '',
-  "   \ '\v\ze(^\s*(\z1\s+)@<!\S|' . a:end . ')',
-  "   \ a:extra . ' keepend ',
-  "   \ a:contains,
-  "   \ a:nextgroup,
-  "   \ )
 endfunction "}}}
 
 function! s:indented_till(name, end, extra, contains, nextgroup) abort "{{{
@@ -243,12 +236,10 @@ call s:region_top('HsBlockComment', '', '{-', '', '-}', '', 'HsBlockComment,HsTo
 call s:region_top('HsPragma', '', '{-#', '', '#-}', 'keepend ' . s:exclude_strings, '', '')
 highlight def link HsPragma SpecialComment
 
-call s:region_top('HsPragma', '', '{-#', '', '#-}', 'keepend ' . s:exclude_strings, '', '')
+call s:region_top('HsLiquid', '', '{-@', '', '@-}', 'keepend ' . s:exclude_strings, '', '')
 highlight def link HsLiquid HsPragma
 
 " literals
-
-let s:exclude_strings = 'containedin=ALLBUT,HsComment,HsQQ,HsString'
 
 function! s:lit(name, pattern) abort "{{{
   call s:match(a:name, a:pattern, s:exclude_strings, '', '')
@@ -462,7 +453,20 @@ highlight def link HsSig Operator
 highlight def link HsDeclName HsIdentifier
 highlight def link HsForall Keyword
 
-" " data
+" data
+
+function! s:top_decl1(name, keyword, head, where_body, eq_body) abort "{{{
+  let prefix = 'Hs' . a:name
+  let main_name = 'HsTopDecl' . a:name
+  let where_name = prefix . 'Where'
+  let eq_name = prefix . 'Eq'
+  let plain_name = prefix . 'Plain'
+  let bodies = where_name . ',' . eq_name . ',' . plain_name
+  call s:match_top(main_name, '\v^' . a:keyword . '>', 'skipwhite skipnl', 'HsTopDeclKeyword', bodies)
+  call s:indent_region(plain_name, '', '\S.*', ' ', '', a:head, '')
+  call s:indented_till(eq_name, '\v\_s\=\_s', '', a:head, a:eq_body)
+  call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
+endfunction "}}}
 
 call s:match('HsDataSimpletype', '\v\u.{-}(\=|$)', '', 'HsTycon', 'HsDataBody')
 
@@ -481,7 +485,7 @@ call s:indent_region_top(
 " TODO HsConOp, doesn't work like this since HsCon already parses a Name
 call s:Name('HsCon', 'HsConId', 'HsConRecord,HsConAtypes,HsConOp')
 
-call s:match('HsConAtypes', '\v(\s*\{[^-])@!\S.{-}\ze($|\|)', 'keepend', 'HsPragma,HsTycon', 'HsConSum,HsDataDeriving')
+call s:match('HsConAtypes', '\v(\s*\{[^-])@!\S.{-}\ze($|\|)', 'keepend', 'HsTycon', 'HsConSum,HsDataDeriving')
 
 call s:braces('HsConRecord', 'HsConRecordField,HsComment', 'HsConSum,HsDataDeriving')
 
@@ -555,7 +559,7 @@ highlight def link HsTopDeclKeyword HsKeyword
 syntax keyword HsDataDerivingKeyword deriving anyclass stock newtype via contained
 highlight def link HsDataDerivingKeyword HsKeyword
 
-" " type
+" type
 
 call s:region_top(
   \ 'HsTopDeclType',
@@ -600,18 +604,6 @@ call s:Name('HsClassContextClass', 'HsClassName', '@HsType')
 call s:match('HsClassContext', '\v((<where>)@!\_.)+\=\>', '', 'HsClassContextClass,HsOperator,HsBrackets,HsComment', 'HsClassHead')
 
 call s:Name('HsClassHead', 'HsClassName', '@HsType')
-
-function! s:top_decl1(name, keyword, head, where_body, eq_body) abort "{{{
-  let prefix = 'Hs' . a:name
-  let main_name = 'HsTopDecl' . a:name
-  let where_name = prefix . 'Where'
-  let eq_name = prefix . 'Eq'
-  let plain_name = prefix . 'Plain'
-  let bodies = where_name . ',' . eq_name . ',' . plain_name
-  call s:match_top(main_name, '\v^' . a:keyword . '>', 'skipwhite skipnl', 'HsTopDeclKeyword', bodies)
-  call s:indented_till(eq_name, '\v\_s\=\_s', '', a:head, a:eq_body)
-  call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
-endfunction "}}}
 
 call s:top_decl1(
   \ 'Class',
