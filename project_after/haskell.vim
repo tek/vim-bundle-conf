@@ -6,7 +6,7 @@ function! Compile_project() abort "{{{
   return get(g:, 'haskell_compile_project', Test_project())
 endfunction "}}}
 
-if get(g:, 'myo_haskell_stack', v:true)
+if get(g:, 'myo_haskell_stack', v:false)
   nnoremap <silent> <f5> :MyoRun stack-test<cr>
   nnoremap <silent> <s-f5> :MyoRun stack-test-lenient<cr>
   nnoremap <silent> <f17> :MyoRun stack-test-lenient<cr>
