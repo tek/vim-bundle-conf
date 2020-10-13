@@ -10,7 +10,7 @@ function! s:qv(key, value) abort "{{{
   return ' ' . a:key . "=/" . a:value . "/ "
 endfunction "}}}
 
-let s:keyword_re = '\v<(where|let|in|deriving|via|import|module|class|type|data|family|instance|case|of|foreign|default)>'
+let s:keyword_re = '\v<(where|let|in|deriving|via|import|module|class|type|data|family|instance|case|of|foreign|default|forall)>'
 let s:no_keyword = '\v(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
 let s:var_re = s:no_keyword . '\v<[a-z_]\k*#?>'
@@ -247,6 +247,8 @@ call s:Name('HsClassName', '', '')
 
 call s:match('HsLambda', '\v( )@<=\\\ze(\k| )', ' conceal cchar=λ' . s:exclude_strings, '', '')
 
+call s:match('HsForall', '\v<forall>', ' conceal cchar=∀' . s:exclude_strings, '', '')
+
 " comments
 
 call s:match_top('HsComment', s:comment_re, s:exclude_strings, 'HsTODO,@Spell', '')
@@ -463,7 +465,6 @@ call s:match('HsSig', '::', '', '', '')
 
 highlight def link HsSig Operator
 highlight def link HsDeclName HsIdentifier
-highlight def link HsForall Keyword
 
 " data
 
