@@ -23,7 +23,7 @@ let s:inline_comment = '\v(\s*--+(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
 let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
 let s:operator = '\v(--|::|<-)@!' . s:op_char . '+'
-let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsQQ,HsString,HsPragma'
+let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid'
 
 function! s:optional(name, value) abort "{{{
   return empty(a:value) ? '' : ' ' . a:name . '=' . a:value . ' '
@@ -245,7 +245,9 @@ highlight def link HsKeyword Keyword
 
 call s:Name('HsClassName', '', '')
 
-call s:match('HsLambda', '\v( )@<=\\\ze(\k| )', ' conceal cchar=λ' . s:exclude_strings, '', '')
+" concealed characters
+
+call s:match('HsLambda', '\v[ (\[]@<=\\\ze(\k| )', ' conceal cchar=λ' . s:exclude_strings, '', '')
 
 call s:match('HsForall', '\v<forall>', ' conceal cchar=∀' . s:exclude_strings, '', '')
 
@@ -254,12 +256,13 @@ call s:match('HsForall', '\v<forall>', ' conceal cchar=∀' . s:exclude_strings,
 call s:match_top('HsComment', s:comment_re, s:exclude_strings, 'HsTODO,@Spell', '')
 highlight def link HsComment Comment
 
-call s:region_top('HsBlockComment', '', '{-', '', '-}', '', 'HsBlockComment,HsTodo,@Spell', '')
+call s:region_top('HsBlockComment', '', '{-', '', '-}', 'keepend extend', 'HsBlockComment,HsTodo,@Spell', '')
+highlight def link HsBlockComment Comment
 
-call s:region_top('HsPragma', '', '{-#', '', '#-}', 'keepend ' . s:exclude_strings, '', '')
+call s:region_top('HsPragma', '', '{-#', '', '#-}', 'keepend' . s:exclude_strings, '', '')
 highlight def link HsPragma SpecialComment
 
-call s:region_top('HsLiquid', '', '{-@', '', '@-}', 'keepend ' . s:exclude_strings, '', '')
+call s:region_top('HsLiquid', '', '{-@', '', '@-}', 'keepend' . s:exclude_strings, '', '')
 highlight def link HsLiquid HsPragma
 
 " literals
@@ -667,7 +670,6 @@ highlight def link HsInfix Keyword
 highlight def link HsQuote Operator
 highlight def link HsShebang Comment
 highlight def link HsLineComment Comment
-highlight def link HsBlockComment Comment
 highlight def link HsChar HsString
 highlight def link HsBacktick Operator
 highlight def link HsTodo Todo
