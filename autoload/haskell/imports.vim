@@ -179,7 +179,7 @@ function! haskell#imports#import_grep_query(import_type, identifier) abort "{{{
   let ident = '[a-zA-Z0-9_.]+'
   let name = '(?:' . ident . '|\([^)]+\))'
   let elem = '\s*(?:' . ident . '(?:\((?:' . name . '(?:, )?)+\))?(?:,\n?)?\s*)'
-  let pre = '^import\s+(?:"[^"]+"\s+|[a-z]+\s+)*\s+(\S+)'
+  let pre = '^import\s+(?:"[^"]+"\s+|[a-z]+\s+)*(\S+)'
   let type = pre . '(?:\s+as)?\s+' . '\((?m:\n?' . elem . '*?\s*)'
   if a:import_type == 'qualified'
     return pre . '\s+as\s+' . a:identifier . '\b.*'
