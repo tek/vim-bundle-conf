@@ -180,6 +180,19 @@ function! s:name(name, contains, nextgroup) abort "{{{
   return s:nameWith(a:name, s:opts, a:contains, a:nextgroup)
 endfunction "}}}
 
+function! s:top_decl(name, keyword, head, where_body, eq_body) abort "{{{
+  let prefix = 'Hs' . a:name
+  let main_name = 'HsTopDecl' . a:name
+  let where_name = prefix . 'Where'
+  let eq_name = prefix . 'Eq'
+  let plain_name = prefix . 'Plain'
+  let bodies = where_name . ',' . eq_name . ',' . plain_name
+  call s:match_top(main_name, '\v^' . a:keyword . '>', 'skipwhite skipnl', 'HsTopDeclKeyword', bodies)
+  call s:indent_region(plain_name, '', '\S.*', ' ', '', a:head, '')
+  call s:indented_till(eq_name, '\v\_s\=\_s', '', a:head, a:eq_body)
+  call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
+endfunction "}}}
+
 syntax spell notoplevel
 syntax sync fromstart
 
@@ -454,20 +467,7 @@ highlight def link HsForall Keyword
 
 " data
 
-function! s:top_decl1(name, keyword, head, where_body, eq_body) abort "{{{
-  let prefix = 'Hs' . a:name
-  let main_name = 'HsTopDecl' . a:name
-  let where_name = prefix . 'Where'
-  let eq_name = prefix . 'Eq'
-  let plain_name = prefix . 'Plain'
-  let bodies = where_name . ',' . eq_name . ',' . plain_name
-  call s:match_top(main_name, '\v^' . a:keyword . '>', 'skipwhite skipnl', 'HsTopDeclKeyword', bodies)
-  call s:indent_region(plain_name, '', '\S.*', ' ', '', a:head, '')
-  call s:indented_till(eq_name, '\v\_s\=\_s', '', a:head, a:eq_body)
-  call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
-endfunction "}}}
-
-call s:top_decl1(
+call s:top_decl(
   \ 'Data',
   \ '\v(data%( family)?|newtype)',
   \ 'HsDataContext,HsDataSimpletype,HsInlineSig,HsComment',
@@ -482,7 +482,7 @@ call s:match('HsDataContext', '\v\u.{-}\=\>', '', 'HsClassContextClass', 'HsData
 " TODO HsConOp, doesn't work like this since HsCon already parses a Name
 call s:Name('HsCon', 'HsConId', 'HsConRecord,HsConAtypes,HsConOp')
 
-call s:match('HsConAtypes', '\v(\s*\{[^-])@!\S.{-}\ze($|\|)', 'keepend', 'HsTycon', 'HsConSum,HsDataDeriving')
+call s:match('HsConAtypes', '\v(\s*\{[^-]|deriving)@!\S.{-}\ze($|\|)', 'keepend', '@HsType', 'HsConSum,HsDataDeriving')
 
 call s:braces('HsConRecord', '', 'HsConRecordField,HsComment', 'HsConSum,HsDataDeriving')
 
@@ -508,17 +508,6 @@ call s:indent_region(
   \ 'HsCon,HsDataDeriving,HsComment',
   \ '',
   \ )
-
-function! s:top_decl(name, keyword, body_start, contains) abort "{{{
-  call s:indent_region_zero(
-    \ a:name,
-    \ 'HsTopDeclKeyword',
-    \ '\v^' . a:keyword . '>\ze((\n\n)@!\_.)+' . a:body_start,
-    \ '',
-    \ a:contains,
-    \ '',
-    \ )
-endfunction "}}}
 
 call s:region(
   \ 'HsGadtType',
@@ -601,7 +590,7 @@ call s:match('HsClassContext', '\v((<where>)@!\_.)+\=\>', '', 'HsClassContextCla
 
 call s:Name('HsClassHead', 'HsClassName', '@HsType')
 
-call s:top_decl1(
+call s:top_decl(
   \ 'Class',
   \ '\v(class|instance)',
   \ 'HsClassContext,HsClassHead,HsComment',
