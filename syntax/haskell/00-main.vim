@@ -2,6 +2,8 @@ if exists("b:current_syntax")
   finish
 endif
 
+setlocal maxmempattern=10000
+
 function! s:q(a) abort "{{{
   return " /" . a:a . "/ "
 endfunction "}}}
@@ -10,20 +12,47 @@ function! s:qv(key, value) abort "{{{
   return ' ' . a:key . "=/" . a:value . "/ "
 endfunction "}}}
 
+let s:keywords_basic = [
+  \ 'case',
+  \ 'class',
+  \ 'data',
+  \ 'default',
+  \ 'deriving',
+  \ 'do',
+  \ 'else',
+  \ 'family',
+  \ 'forall',
+  \ 'foreign',
+  \ 'if',
+  \ 'import',
+  \ 'in',
+  \ 'infix',
+  \ 'infixl',
+  \ 'infixr',
+  \ 'instance',
+  \ 'module',
+  \ 'newtype',
+  \ 'of',
+  \ 'then',
+  \ 'type',
+  \ 'via',
+  \ ]
+let s:keywords = s:keywords_basic + ['let', 'where']
+
 let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
-let s:keyword_re = '\v<(where|let|in|do|deriving|via|import|module|class|type|data|family|instance|case|of|foreign|default|forall)>'
-let s:no_keyword = '\v(' . s:keyword_re . ')@!'
+let s:keyword_re = '\v<%(' . join(s:keywords, '|') . ')>'
+let s:no_keyword = '\v%(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
 let s:var_re = s:no_keyword . '\v<[a-z_]\k*#?>'
 let s:sym_var_re = '\v\(' . s:op_char . '+\)'
 let s:sym_or_var_re = '\v%(' . s:sym_var_re . '|' . s:var_re . ')'
 let s:conid_re = '\v<''?''?\u\k*>'
 let s:conid_re_q = s:q(s:conid_re)
-let s:wli = '\v(<(where|let|in)>\s+)'
-let s:comment_re = '\v\s*(' . s:op_char . ')@<!--+(\k|\s|$).*$'
-let s:inline_comment = '\v(\s*--+(\k|\s).*\n\s*)?'
+let s:wli = '\v%(<%(where|let|in)>\s+)'
+let s:comment_re = '\v\s*%(' . s:op_char . ')@<!--+%(\k|\s|$).*$'
+let s:inline_comment = '\v%(\s*--+%(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
-let s:operator = '\v(--|::|<-)@!' . s:op_char . '+'
+let s:operator = '\v%(--|::|<-)@!' . s:op_char . '+'
 let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid'
 
 function! s:optional(name, value) abort "{{{
@@ -42,6 +71,10 @@ function! s:syn(main, contains, nextgroup) abort "{{{
   execute 'syntax ' . a:main .
     \ (empty(a:contains) ? '' : ' contains=' . a:contains) .
     \ (empty(a:nextgroup) ? '' : ' nextgroup=' . a:nextgroup)
+endfunction "}}}
+
+function! s:keyword(name, values, extra) abort "{{{
+  return s:syn('keyword ' . a:name . ' ' . join(a:values, ' ') . ' contained ' . a:extra, '', '')
 endfunction "}}}
 
 function! s:match_top(name, pattern, extra, contains, nextgroup) abort "{{{
@@ -225,25 +258,22 @@ highlight def link HsDiscreetBrackets Delimiter
 syntax match HsQualifyingModule '\v<\u\k*\ze\.' contained contains=HsModId,HsModuleDot
 highlight def link HsQualifyingModule Type
 
-syntax match HsQualifiedCtor '\v(\u\k*\.)*\u\k*' contained contains=HsQualifyingModule,HsConId
+syntax match HsQualifiedCtor '\v%(\u\k*\.)*\u\k*' contained contains=HsQualifyingModule,HsConId
 
-syntax match HsQualifiedType '\v(\u\k*\.)*\u\k*' contained contains=HsQualifyingModule,HsTycon
+call s:match('HsQualifiedType', '\v%(' . s:conid_re . ')*' . s:conid_re, '', 'HsQualifyingModule,HsTycon', '')
 
-syntax match HsQualifiedVar '\v(\u\k*\.)+[a-z_]\k*' contains=HsQualifyingModule,HsVar
+syntax match HsQualifiedVar '\v%(\u\k*\.)+[a-z_]\k*' contains=HsQualifyingModule,HsVar
 
 call s:match(
   \ 'HsOperator',
   \ s:operator,
-  \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda,HsDeclName,HsFunName',
+  \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda,HsDeclName,HsFunName,HsFunNameSym',
   \ '',
   \ '',
   \ )
 highlight def link HsOperator Operator
 
-syntax keyword HsKeywordBasic
-  \ case class data default deriving do else if import in infix infixl infixr
-  \ instance module newtype of then type family role mdo rec qualified pattern
-  \ contained
+call s:keyword('HsKeywordBasic', s:keywords_basic, '')
 highlight def link HsKeywordBasic HsKeyword
 
 syntax keyword HsKeywordLetWhere where let contained
@@ -254,11 +284,18 @@ highlight def link HsKeyword Keyword
 
 call s:Name('HsClassName', '', '')
 
+call s:match_top('HsDefaultDecl', '\v^default\s*\(.*\)\s*$', '', 'HsKeywordBasic,@HsType', '')
+
+call s:match_top('HsTHTop', '^' . s:var_re, 'skipwhite', '', '@HsType')
+
 " concealed characters
 
-call s:match('HsLambda', '\v(' . s:op_char . ')@<!\\(' . s:op_char . ')@!', ' conceal cchar=λ' . s:exclude_strings, '', '')
+call s:match('HsLambda', '\v%(' . s:op_char . ')@<!\\%(' . s:op_char . ')@!', ' conceal cchar=λ' . s:exclude_strings, '', '')
 
-call s:match('HsForall', '\v<forall>', ' conceal cchar=∀' . s:exclude_strings, '', '')
+call s:keyword('HsForall', ['forall'], 'conceal cchar=∀' . s:exclude_strings)
+
+call s:keyword('HsBottom', ['undefined'], 'conceal cchar=⟂' . s:exclude_strings)
+highlight def link HsBottom Macro
 
 " comments
 
@@ -292,13 +329,13 @@ highlight def link HsString String
 " expressions
 
 call s:Name( 'HsExpCtor', 'HsQualifiedCtor', '')
-call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp', '')
-call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp', '')
+call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp,@HsKeyword', '')
+call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp,@HsKeyword', '')
 call s:match('HsExpSymVar', s:sym_var_re, '', 'HsStrongBrackets,HsOperator', '')
 call s:syn('match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts, '', 'HsInlineSig')
 call s:match('HsExpTypeApp', '\v\@\ze\k', 'keepend', '', 'HsQualifiedType')
-call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', '', 'HsDiscreetBrackets,@HsType', '')
-call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', '', 'HsDiscreetBrackets,@HsType', '')
+call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', 'keepend', 'HsDiscreetBrackets,@HsType', '')
+call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', 'keepend', 'HsDiscreetBrackets,@HsType', '')
 
 syntax cluster HsExp
   \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets,HsExpSymVar
@@ -306,10 +343,10 @@ syntax cluster HsExp
 " type signature
 
 call s:match('HsInlineSig', '::', '', '', '@HsType')
-highlight def link HsInlineSig Operator
+highlight def link HsInlineSig HsOperator
 
 " TODO
-call s:match('HsTypeLiteral', '\v\d+', '', 'HsNumber', '@HsClassArg')
+call s:match('HsTypeLiteral', '\v\d+', '', 'HsNumber', '@HsType')
 call s:parens('HsTypeParens', 'HsDiscreetBrackets', '@HsType,HsComment', '@HsType')
 call s:brackets('HsTypeBrackets', 'HsStrongBrackets', '@HsType,HsComment', '@HsType')
 call s:Name('HsTypeType', 'HsQualifiedType', '@HsType')
@@ -318,12 +355,14 @@ call s:match('HsTypeOperator', s:operator, '', 'HsOperator', '@HsType')
 call s:match('HsTypeKind', s:no_op_around('\*'), '', '', '@HsType')
 call s:match('HsTypeKind', '\v<Type>', '', '', '@HsType')
 call s:match('HsTypeComment', '\v%(^(\s*).*)@<=' . s:comment_re . '\n\1\s+', '', 'HsComment', '@HsType')
+call s:match('HsTypeForall', '\v%(<forall>|∀)[^.]+%(\n\s+)?\.', '', '', '@HsType')
 
 highlight def link HsKind HsTycon
 highlight def link HsTypeKind HsKind
+highlight def link HsTypeQuote HsTycon
 
 syntax cluster HsType
-  \ contains=HsTypeParens,HsTypeBrackets,HsTypeType,HsTypeTypeParam,HsTypeOperator,HsTypeKind,HsTypeComment
+  \ contains=HsTypeParens,HsTypeBrackets,HsTypeType,HsTypeTypeParam,HsTypeOperator,HsTypeKind,HsTypeComment,HsTypeForall
 
 " module
 
@@ -408,9 +447,9 @@ syntax match HsImportParens '[()]' contained
 syntax match HsImportSymbolicTypeName '\v(\k@![^()])+' contained
 syntax match HsImportSymbolicCtorName '\v(\k@![^()])+' contained
 
-syntax keyword HsImportKeyword import contained
-syntax keyword HsImportQualifier qualified safe as hiding contained
-syntax keyword HsImportItemKeyword type pattern contained
+call s:keyword('HsImportKeyword', ['import'], '')
+call s:keyword('HsImportQualifier', ['qualified', 'safe', 'as', 'hiding'], '')
+call s:keyword('HsImportItemKeyword', ['type', 'pattern'], '')
 
 highlight def link HsImportKeyword Include
 highlight def link HsImportQualifier Keyword
@@ -425,9 +464,13 @@ highlight def link HsImportParens HsStrongBrackets
 
 " function equation
 
-call s:match_top('HsFun', '\v\ze.*(\{[^}]*)@<!\=\_s', '', '', 'HsFunName')
+call s:match_top('HsFun', '\v\ze.*(\{[^}]*)@<!\=\_s', '', '', 'HsFunSymPat,HsFunName')
 
 call s:symOrName('HsFunName', '', 'HsFunArgs')
+
+call s:match('HsFunSymPat', '\v.*\s+' . s:operator . '\s+.*\ze\=', '', '@HsExp,HsFunNameSym', 'HsFunBody')
+
+call s:match('HsFunNameSym', s:operator, '', '', '')
 
 call s:match('HsFunArgs', '\v.*(\{[^}]*)@<!\ze\=\_s', '', '@HsExp', 'HsFunBody')
 
@@ -440,6 +483,7 @@ call s:indent_region('HsStmtArrow', 'HsOperator', '\S.*', '\<-\s*\_s\s*', '', '@
 call s:indent_region('HsLetWhere', 'HsKeywordLetWhere', '', '<(where|let)>', '', 'HsDecl,HsFun,HsComment', '')
 
 highlight def link HsFunName HsIdentifier
+highlight def link HsFunNameSym HsIdentifier
 
 " function declaration
 
@@ -475,7 +519,7 @@ call s:symOrNameWith('HsDeclName', 'contained', '', '')
 
 call s:match('HsSig', '::', '', '', '')
 
-highlight def link HsSig Operator
+highlight def link HsSig HsOperator
 highlight def link HsDeclName HsIdentifier
 
 " data
@@ -504,7 +548,7 @@ call s:region(
   \ '',
   \ '[a-z_]',
   \ 'HsSeparator',
-  \ '\v(,\ze' . s:inline_comment . s:var_re . '\_s+::\_s|\ze\s*(-)@<!})',
+  \ '\v%(,\ze\s*' . s:inline_comment . s:var_re . '\_s+::\_s|\ze\s*(-)@<!})',
   \ 'keepend',
   \ 'HsDecl',
   \ 'HsConRecordField'
@@ -543,7 +587,7 @@ call s:braces('HsGadtConRecord', 'extend', 'HsConRecordField,HsComment', '@HsTyp
 
 call s:match(
   \ 'HsDataDeriving',
-  \ '\v<deriving>(\s+<(anyclass|newtype|stock|via)>)?\s+',
+  \ '\v<deriving>(\s+<(anyclass|newtype|stock)>)?\s+',
   \ '',
   \ 'HsDataDerivingKeyword',
   \ 'HsClassName,HsDataDerivingClassParens',
@@ -605,7 +649,7 @@ call s:Name('HsClassHead', 'HsClassName', '@HsType')
 
 call s:top_decl(
   \ 'Class',
-  \ '\v(class|instance)',
+  \ '\v(class|%(<deriving>%(\s+<%(anyclass|newtype|stock)>)?\s+)?instance)',
   \ 'HsClassContext,HsClassHead,HsComment',
   \ 'HsClassBody',
   \ '',
@@ -645,10 +689,7 @@ syntax region HsForeignImport start="\<foreign\>" end="\_s\+::\s" keepend
 if get(g:, 'haskell_enable_static_pointers', 0)
   syntax keyword HsStatic static
 endif
-syntax keyword HsConditional if then else
 syntax match HsSeparator  '[,;]'
-syntax keyword HsInfix infix infixl infixr
-syntax keyword HsBottom undefined containedin=ALL
 syntax match HsQuote "\<'\+" contained
 syntax match HsBacktick "`[A-Za-z_][A-Za-z0-9_\.']*#\?`"
 " syntax match HsIdentifier "[_a-z][a-zA-z0-9_']*" contained
@@ -668,14 +709,11 @@ if get(g:, 'haskell_enable_arrowsyntax', 0)
   syntax keyword HsArrowSyntax proc
 endif
 
-highlight def link HsBottom Macro
 highlight def link HsTH HsString
 highlight def link HsIdentifier Identifier
 highlight def link HsForeignKeywords Structure
 highlight def link HsDefault Keyword
-highlight def link HsConditional Conditional
 highlight def link HsSeparator Delimiter
-highlight def link HsInfix Keyword
 highlight def link HsQuote Operator
 highlight def link HsShebang Comment
 highlight def link HsLineComment Comment
