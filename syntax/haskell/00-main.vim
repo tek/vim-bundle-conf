@@ -10,7 +10,7 @@ function! s:qv(key, value) abort "{{{
   return ' ' . a:key . "=/" . a:value . "/ "
 endfunction "}}}
 
-let s:keyword_re = '\v<(where|let|in|deriving|via|import|module|class|type|data|family|instance|case|of|foreign|default|forall)>'
+let s:keyword_re = '\v<(where|let|in|do|deriving|via|import|module|class|type|data|family|instance|case|of|foreign|default|forall)>'
 let s:no_keyword = '\v(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
 let s:var_re = s:no_keyword . '\v<[a-z_]\k*#?>'
@@ -18,10 +18,10 @@ let s:var_re_q = s:q(s:var_re)
 let s:conid_re = '\v<''?''?\u\k*>'
 let s:conid_re_q = s:q(s:conid_re)
 let s:wli = '\v(<(where|let|in)>\s+)'
-let s:comment_re = '\v\s*--+(\k|\s).*$'
+let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
+let s:comment_re = '\v\s*(' . s:op_char . ')@<!--+(\k|\s|$).*$'
 let s:inline_comment = '\v(\s*--+(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
-let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
 let s:operator = '\v(--|::|<-)@!' . s:op_char . '+'
 let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid'
 
@@ -194,7 +194,7 @@ function! s:top_decl(name, keyword, head, where_body, eq_body) abort "{{{
 endfunction "}}}
 
 syntax spell notoplevel
-syntax sync fromstart
+syntax sync match HsSyncEmptyLine grouphere NONE "\n\n"
 
 " fallbacks and generics
 
@@ -247,7 +247,7 @@ call s:Name('HsClassName', '', '')
 
 " concealed characters
 
-call s:match('HsLambda', '\v[ (\[]@<=\\\ze(\k| )', ' conceal cchar=λ' . s:exclude_strings, '', '')
+call s:match('HsLambda', '\v(' . s:op_char . ')@<!\\(' . s:op_char . ')@!', ' conceal cchar=λ' . s:exclude_strings, '', '')
 
 call s:match('HsForall', '\v<forall>', ' conceal cchar=∀' . s:exclude_strings, '', '')
 
