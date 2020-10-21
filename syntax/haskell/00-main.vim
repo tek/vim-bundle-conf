@@ -10,15 +10,16 @@ function! s:qv(key, value) abort "{{{
   return ' ' . a:key . "=/" . a:value . "/ "
 endfunction "}}}
 
+let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
 let s:keyword_re = '\v<(where|let|in|do|deriving|via|import|module|class|type|data|family|instance|case|of|foreign|default|forall)>'
 let s:no_keyword = '\v(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
 let s:var_re = s:no_keyword . '\v<[a-z_]\k*#?>'
-let s:var_re_q = s:q(s:var_re)
+let s:sym_var_re = '\v\(' . s:op_char . '+\)'
+let s:sym_or_var_re = '\v%(' . s:sym_var_re . '|' . s:var_re . ')'
 let s:conid_re = '\v<''?''?\u\k*>'
 let s:conid_re_q = s:q(s:conid_re)
 let s:wli = '\v(<(where|let|in)>\s+)'
-let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
 let s:comment_re = '\v\s*(' . s:op_char . ')@<!--+(\k|\s|$).*$'
 let s:inline_comment = '\v(\s*--+(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
@@ -173,11 +174,19 @@ function! s:Name_top(name, contains, nextgroup) abort "{{{
 endfunction "}}}
 
 function! s:nameWith(name, extra, contains, nextgroup) abort "{{{
-  return s:syn('match ' . a:name . s:var_re_q . a:extra, a:contains, a:nextgroup)
+  return s:syn('match ' . a:name . s:q(s:var_re) . a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
 function! s:name(name, contains, nextgroup) abort "{{{
   return s:nameWith(a:name, s:opts, a:contains, a:nextgroup)
+endfunction "}}}
+
+function! s:symOrNameWith(name, extra, contains, nextgroup) abort "{{{
+  return s:syn('match ' . a:name . s:q(s:sym_or_var_re) . a:extra, a:contains, a:nextgroup)
+endfunction "}}}
+
+function! s:symOrName(name, contains, nextgroup) abort "{{{
+  return s:symOrNameWith(a:name, s:opts, a:contains, a:nextgroup)
 endfunction "}}}
 
 function! s:top_decl(name, keyword, head, where_body, eq_body) abort "{{{
@@ -225,7 +234,7 @@ syntax match HsQualifiedVar '\v(\u\k*\.)+[a-z_]\k*' contains=HsQualifyingModule,
 call s:match(
   \ 'HsOperator',
   \ s:operator,
-  \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda',
+  \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda,HsDeclName,HsFunName',
   \ '',
   \ '',
   \ )
@@ -285,15 +294,14 @@ highlight def link HsString String
 call s:Name( 'HsExpCtor', 'HsQualifiedCtor', '')
 call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp', '')
 call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp', '')
+call s:match('HsExpSymVar', s:sym_var_re, '', 'HsStrongBrackets,HsOperator', '')
 call s:syn('match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts, '', 'HsInlineSig')
 call s:match('HsExpTypeApp', '\v\@\ze\k', 'keepend', '', 'HsQualifiedType')
 call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', '', 'HsDiscreetBrackets,@HsType', '')
 call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', '', 'HsDiscreetBrackets,@HsType', '')
 
 syntax cluster HsExp
-  \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets
-
-highlight def link HsKind HsTycon
+  \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets,HsExpSymVar
 
 " type signature
 
@@ -311,6 +319,7 @@ call s:match('HsTypeKind', s:no_op_around('\*'), '', '', '@HsType')
 call s:match('HsTypeKind', '\v<Type>', '', '', '@HsType')
 call s:match('HsTypeComment', '\v%(^(\s*).*)@<=' . s:comment_re . '\n\1\s+', '', 'HsComment', '@HsType')
 
+highlight def link HsKind HsTycon
 highlight def link HsTypeKind HsKind
 
 syntax cluster HsType
@@ -418,7 +427,7 @@ highlight def link HsImportParens HsStrongBrackets
 
 call s:match_top('HsFun', '\v\ze.*(\{[^}]*)@<!\=\_s', '', '', 'HsFunName')
 
-call s:name('HsFunName', '', 'HsFunArgs')
+call s:symOrName('HsFunName', '', 'HsFunArgs')
 
 call s:match('HsFunArgs', '\v.*(\{[^}]*)@<!\ze\=\_s', '', '@HsExp', 'HsFunBody')
 
@@ -436,7 +445,7 @@ highlight def link HsFunName HsIdentifier
 
 call s:match_top(
   \ 'HsDecl',
-  \ '\v(default\s*)?' . s:var_re . '(,\s*' . s:var_re . ')*\ze\s*\_s\s*::\_s',
+  \ '\v(default\s*)?' . s:sym_or_var_re . '(,\s*' . s:sym_or_var_re . ')*\ze\s*\_s\s*::\_s',
   \ 'skipwhite skipnl',
   \ 'HsDeclName,HsSeparator',
   \ 'HsDeclBody1,HsDeclBody2',
@@ -462,7 +471,7 @@ call s:indent_region_eq(
   \ 'HsFun',
   \ )
 
-call s:nameWith('HsDeclName', 'contained', '', '')
+call s:symOrNameWith('HsDeclName', 'contained', '', '')
 
 call s:match('HsSig', '::', '', '', '')
 
