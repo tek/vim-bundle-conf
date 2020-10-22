@@ -39,7 +39,9 @@ let s:keywords_basic = [
   \ ]
 let s:keywords = s:keywords_basic + ['let', 'where']
 
-let s:op_char = '[\-∀!#$%&*+/<=>?@\\^|~:.]'
+let s:op_chars = '\-∀!#$%&*+/<=>?@\\^|~:.'
+let s:op_char = '[' . s:op_chars . ']'
+let s:not_op_char = '[^' . s:op_chars . ']'
 let s:keyword_re = '\v<%(' . join(s:keywords, '|') . ')>'
 let s:no_keyword = '\v%(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
@@ -52,7 +54,7 @@ let s:wli = '\v%(<%(where|let|in)>\s+)'
 let s:comment_re = '\v\s*%(' . s:op_char . ')@<!--+%(\k|\s|$).*$'
 let s:inline_comment = '\v%(\s*--+%(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
-let s:operator = '\v%(--|::|<-)@!' . s:op_char . '+'
+let s:operator = '\v%(--|::|\<-|-\>)@!' . s:op_char . '+'
 let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid'
 
 function! s:optional(name, value) abort "{{{
@@ -329,8 +331,8 @@ highlight def link HsString String
 " expressions
 
 call s:Name( 'HsExpCtor', 'HsQualifiedCtor', '')
-call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp,@HsKeyword', '')
-call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp,@HsKeyword', '')
+call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
+call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
 call s:match('HsExpSymVar', s:sym_var_re, '', 'HsStrongBrackets,HsOperator', '')
 call s:syn('match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts, '', 'HsInlineSig')
 call s:match('HsExpTypeApp', '\v\@\ze\k', 'keepend', '', 'HsQualifiedType')
@@ -338,7 +340,8 @@ call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', 'keepend',
 call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', 'keepend', 'HsDiscreetBrackets,@HsType', '')
 
 syntax cluster HsExp
-  \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets,HsExpSymVar
+  \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets,
+  \ HsExpSymVar
 
 " type signature
 
@@ -464,11 +467,16 @@ highlight def link HsImportParens HsStrongBrackets
 
 " function equation
 
+" TODO false positives for symbolic equations if there is any operator used in a regular equation.
+" can probably only be done heuristically.
+" * use a second variant of HsDecl that uses nextgroup to select HsFunSym
+" * check that no open parens are before the operator
+
 call s:match_top('HsFun', '\v\ze.*(\{[^}]*)@<!\=\_s', '', '', 'HsFunSymPat,HsFunName')
 
 call s:symOrName('HsFunName', '', 'HsFunArgs')
 
-call s:match('HsFunSymPat', '\v.*\s+' . s:operator . '\s+.*\ze\=', '', '@HsExp,HsFunNameSym', 'HsFunBody')
+call s:match('HsFunSymPat', '\v.*\s+%(\@' . s:not_op_char . ')@!(\([^)]*)@<!' . s:operator . '\s+.*\ze\=', '', '@HsExp,HsFunNameSym', 'HsFunBody')
 
 call s:match('HsFunNameSym', s:operator, '', '', '')
 
@@ -491,7 +499,7 @@ call s:match_top(
   \ 'HsDecl',
   \ '\v(default\s*)?' . s:sym_or_var_re . '(,\s*' . s:sym_or_var_re . ')*\ze\s*\_s\s*::\_s',
   \ 'skipwhite skipnl',
-  \ 'HsDeclName,HsSeparator',
+  \ 'HsKeywordBasic,HsDeclName,HsSeparator',
   \ 'HsDeclBody1,HsDeclBody2',
   \ )
 
