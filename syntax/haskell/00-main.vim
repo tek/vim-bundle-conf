@@ -30,9 +30,11 @@ let s:keywords_basic = [
   \ 'infixl',
   \ 'infixr',
   \ 'instance',
+  \ 'mdo',
   \ 'module',
   \ 'newtype',
   \ 'of',
+  \ 'rec',
   \ 'then',
   \ 'type',
   \ 'via',
@@ -42,6 +44,15 @@ let s:keywords = s:keywords_basic + ['let', 'where']
 let s:op_chars = '\-∀!#$%&*+/<=>?@\\^|~:.'
 let s:op_char = '[' . s:op_chars . ']'
 let s:not_op_char = '[^' . s:op_chars . ']'
+
+function! s:no_op_around(main) abort "{{{
+  return '\v' . s:op_char . '@<!' . a:main . '' . s:op_char . '@!'
+endfunction "}}}
+
+function! s:ws_around(main) abort "{{{
+  return '\v(\s)@<=' . a:main . '(\s)@='
+endfunction "}}}
+
 let s:keyword_re = '\v<%(' . join(s:keywords, '|') . ')>'
 let s:no_keyword = '\v%(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
@@ -55,14 +66,11 @@ let s:comment_re = '\v\s*%(' . s:op_char . ')@<!--+%(\k|\s|$).*$'
 let s:inline_comment = '\v%(\s*--+%(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
 let s:operator = '\v%(--|::|\<-|-\>)@!' . s:op_char . '+'
+let s:arrow = s:ws_around('-\>')
 let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid'
 
 function! s:optional(name, value) abort "{{{
   return empty(a:value) ? '' : ' ' . a:name . '=' . a:value . ' '
-endfunction "}}}
-
-function! s:no_op_around(main) abort "{{{
-  return '\v' . s:op_char . '@<!' . a:main . '' . s:op_char . '@!'
 endfunction "}}}
 
 function! s:with_comment(main) abort "{{{
@@ -349,12 +357,15 @@ call s:match('HsInlineSig', '::', '', '', '@HsType')
 highlight def link HsInlineSig HsOperator
 
 " TODO
-call s:match('HsTypeLiteral', '\v\d+', '', 'HsNumber', '@HsType')
+call s:match('HsTypeLiteralNumber', '\v\d+', '', 'HsNumber', '@HsType')
+call s:match('HsTypeLiteralString', '\v"[^"]*"', '', 'HsString', '@HsType')
+call s:match('HsTypeLiteralChar', '\v''[^'']''', '', 'HsChar', '@HsType')
 call s:parens('HsTypeParens', 'HsDiscreetBrackets', '@HsType,HsComment', '@HsType')
 call s:brackets('HsTypeBrackets', 'HsStrongBrackets', '@HsType,HsComment', '@HsType')
 call s:Name('HsTypeType', 'HsQualifiedType', '@HsType')
 call s:name('HsTypeTypeParam', '', '@HsType')
 call s:match('HsTypeOperator', s:operator, '', 'HsOperator', '@HsType')
+call s:match('HsTypeArrow', s:arrow, '', 'HsOperator', '@HsType')
 call s:match('HsTypeKind', s:no_op_around('\*'), '', '', '@HsType')
 call s:match('HsTypeKind', '\v<Type>', '', '', '@HsType')
 call s:match('HsTypeComment', '\v%(^(\s*).*)@<=' . s:comment_re . '\n\1\s+', '', 'HsComment', '@HsType')
@@ -366,6 +377,7 @@ highlight def link HsTypeQuote HsTycon
 
 syntax cluster HsType
   \ contains=HsTypeParens,HsTypeBrackets,HsTypeType,HsTypeTypeParam,HsTypeOperator,HsTypeKind,HsTypeComment,HsTypeForall
+  \ ,HsTypeLiteralNumber,HsTypeLiteralString,HsTypeLiteralChar,HsTypeArrow
 
 " module
 
