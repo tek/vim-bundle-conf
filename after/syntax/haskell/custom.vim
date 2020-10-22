@@ -5,6 +5,7 @@ highlight! DiscreetSymbol2 ctermfg=6 gui=bold guifg=#444444
 highlight! Constructor ctermfg=6 gui=bold guifg=#a060c0
 highlight! IdentifierBold ctermfg=4 gui=bold guifg=#268bd2
 highlight! HsOperator ctermfg=2 gui=bold guifg=#719e07
+highlight! HsReservedOperator ctermfg=2 gui=bold guifg=#719e07
 " highlight! Conceal ctermfg=2 guifg=#d33682
 
 highlight! link HsTycon HaskellType

@@ -12,6 +12,18 @@ function! s:qv(key, value) abort "{{{
   return ' ' . a:key . "=/" . a:value . "/ "
 endfunction "}}}
 
+function! s:choice(values) abort "{{{
+ return '\v%(' . join(a:values, '|') . ')'
+endfunction "}}}
+
+function! s:not_before(main) abort "{{{
+  return '\v%(' . a:main . ')@<!'
+endfunction "}}}
+
+function! s:not_here(main) abort "{{{
+  return '\v%(' . a:main . ')@!'
+endfunction "}}}
+
 let s:keywords_basic = [
   \ 'case',
   \ 'class',
@@ -53,19 +65,23 @@ function! s:ws_around(main) abort "{{{
   return '\v(\s)@<=' . a:main . '(\s)@='
 endfunction "}}}
 
+let s:reserved_ops = ['\.\.', ':', '::', '\=', '\\', '\|', '\<\-', '\-\>', '\@', '\~', '\=\>']
+let s:reserved_op = s:no_op_around(s:choice(s:reserved_ops))
+
 let s:keyword_re = '\v<%(' . join(s:keywords, '|') . ')>'
 let s:no_keyword = '\v%(' . s:keyword_re . ')@!'
 let s:opts = ' contained skipwhite skipnl '
 let s:var_re = s:no_keyword . '\v<[a-z_]\k*#?>'
-let s:sym_var_re = '\v\(' . s:op_char . '+\)'
-let s:sym_or_var_re = '\v%(' . s:sym_var_re . '|' . s:var_re . ')'
+let s:varsym_re = '\v\(' . s:op_char . '+\)'
+let s:consym_re = '\v\(:' . s:op_char . '+\)'
+let s:sym_or_var_re = '\v%(' . s:varsym_re . '|' . s:var_re . ')'
 let s:conid_re = '\v<''?''?\u\k*>'
 let s:conid_re_q = s:q(s:conid_re)
 let s:wli = '\v%(<%(where|let|in)>\s+)'
 let s:comment_re = '\v\s*%(' . s:op_char . ')@<!--+%(\k|\s|$).*$'
 let s:inline_comment = '\v%(\s*--+%(\k|\s).*\n\s*)?'
 let s:till_comment = '.*\ze' . s:comment_re
-let s:operator = '\v%(--|::|\<-|-\>)@!' . s:op_char . '+'
+let s:operator = s:not_here(s:reserved_op) . s:no_op_around(s:op_char . '+')
 let s:arrow = s:ws_around('-\>')
 let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid'
 
@@ -274,14 +290,26 @@ call s:match('HsQualifiedType', '\v%(' . s:conid_re . ')*' . s:conid_re, '', 'Hs
 
 syntax match HsQualifiedVar '\v%(\u\k*\.)+[a-z_]\k*' contains=HsQualifyingModule,HsVar
 
+let s:exclude_op =
+  \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda,HsDeclName,HsFunName,HsFunNameSym'
+
 call s:match(
   \ 'HsOperator',
   \ s:operator,
-  \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda,HsDeclName,HsFunName,HsFunNameSym',
+  \ s:exclude_op,
   \ '',
   \ '',
   \ )
 highlight def link HsOperator Operator
+
+call s:match(
+  \ 'HsReservedOperator',
+  \ s:reserved_op,
+  \ s:exclude_op,
+  \ '',
+  \ '',
+  \ )
+highlight def link HsReservedOperator Operator
 
 call s:keyword('HsKeywordBasic', s:keywords_basic, '')
 highlight def link HsKeywordBasic HsKeyword
@@ -341,7 +369,7 @@ highlight def link HsString String
 call s:Name( 'HsExpCtor', 'HsQualifiedCtor', '')
 call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
 call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
-call s:match('HsExpSymVar', s:sym_var_re, '', 'HsStrongBrackets,HsOperator', '')
+call s:match('HsExpSymVar', s:varsym_re, '', 'HsStrongBrackets,HsOperator', '')
 call s:syn('match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts, '', 'HsInlineSig')
 call s:match('HsExpTypeApp', '\v\@\ze\k', 'keepend', '', 'HsQualifiedType')
 call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', 'keepend', 'HsDiscreetBrackets,@HsType', '')
