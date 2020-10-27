@@ -26,3 +26,6 @@ nmap <leader>cs <cmd>CocList -I symbols<cr>
 nnoremap <silent> <leader>cn <cmd>CocCommand document.renameCurrentWord<cr>
 
 inoremap <silent><expr> <c-space> coc#refresh()
+
+let g:coc_snippet_next = '<c-l>'
+let g:coc_snippet_prev = '<c-h>'
