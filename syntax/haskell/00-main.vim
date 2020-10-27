@@ -445,7 +445,7 @@ syntax cluster HsType
 
 call s:match('HsSigForall', '\v\s*%(<forall>|∀)[^.]+%(\n\s+)?\.', '', '', '')
 call s:Name('HsSigClass', '', '@HsType')
-call s:match('HsSigContext', '\v\s*\u.*%(\=\>' . s:opt_comment . '$|' . s:opt_comment . '\n\s+\=\>)', 'keepend', 'HsSigClass', '')
+call s:match('HsSigContext', '\v\s*\u.*%(\=\>' . s:opt_comment . '$|\n\s+\=\>)', '', 'HsSigClass', '')
 call s:match_line('HsSigComment', '\v^' . s:comment_re, '', '', '')
 
 syntax cluster HsTypeSig
