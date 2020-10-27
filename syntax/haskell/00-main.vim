@@ -65,7 +65,7 @@ function! s:ws_around(main) abort "{{{
   return '\v(\_s)@<=' . a:main . '(\_s)@='
 endfunction "}}}
 
-let s:reserved_ops = ['\.\.', ':', '::', '\=', '\\', '\|', '\<\-', '\-\>', '\@', '\~', '\=\>']
+let s:reserved_ops = ['\.\.', ':', '::', '\=', '\\', '\|', '\<\-', '\-\>', '\@', '\~', '\=\>', '--']
 let s:reserved_op = s:no_op_around(s:choice(s:reserved_ops))
 
 let s:keyword_re = '\v<%(' . join(s:keywords, '|') . ')>'
@@ -79,9 +79,11 @@ let s:conid_re = '\v<''?''?\u\k*>'
 let s:conid_re_q = s:q(s:conid_re)
 let s:wli = '\v%(<%(where|let|in)>\s+)'
 let s:comment_re = '\v\s*--+%(\k|\s|$).*$'
-let s:inline_comment = '\v%(\s*--+%(\k|\s).*\n\s*)?'
-let s:operator = s:not_here(s:reserved_op) . s:no_op_around(s:op_char . '+')
-let s:arrow = s:ws_around('[=-]\>|')
+let s:opt_comment = '\v%(' . s:comment_re . ')?$'
+let s:operator = s:not_here(s:reserved_op) . s:op_char . '+'
+" TODO does this do anything? it's definitely a performance problem
+" let s:operator = s:not_here(s:reserved_op) . s:no_op_around(s:op_char . '+')
+let s:arrow = s:ws_around('[=-]\>')
 let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid,HsOperator'
 
 function! s:optional(name, value) abort "{{{
@@ -90,10 +92,6 @@ endfunction "}}}
 
 function! s:optional_regpat(name, value) abort "{{{
   return empty(a:value) ? '' : s:regpat(a:name, a:value)
-endfunction "}}}
-
-function! s:with_comment(main) abort "{{{
-  return a:main . s:inline_comment
 endfunction "}}}
 
 function! s:syn(main, contains, nextgroup) abort "{{{
@@ -356,6 +354,7 @@ syntax cluster HsKeyword contains=HsKeywordBasic,HsKeywordLetWhere
 highlight def link HsKeyword Keyword
 
 call s:Name('HsClassName', '', '')
+highlight def link HsClassName HsTycon
 
 call s:match_top('HsDefaultDecl', '\v^default\s*\(.*\)\s*$', '', 'HsKeywordBasic,@HsType', '')
 
@@ -372,7 +371,7 @@ highlight def link HsBottom Macro
 
 " comments
 
-call s:region('HsComment', '', '\v\s*--+\ze%(\k|\s|$)', '', '$', 'oneline keepend' . s:exclude_strings, 'HsTodo', '')
+call s:region_top('HsComment', '', '\v\s*--+\ze%(\k|\s|$)', '', '$', 'oneline keepend' . s:exclude_strings, 'HsTodo', '')
 highlight def link HsComment Comment
 
 call s:region_top('HsBlockComment', '', '{-', '', '-}', 'keepend extend', 'HsBlockComment,HsTodo', '')
@@ -420,7 +419,6 @@ syntax cluster HsExp
 call s:match('HsInlineSig', '::', '', '', '@HsType')
 highlight def link HsInlineSig HsOperator
 
-" TODO
 call s:match_line('HsTypeLiteralNumber', '\v\d+', '', 'HsNumber', '@HsType')
 call s:match_line('HsTypeLiteralString', '\v"[^"]*"', '', 'HsString', '@HsType')
 call s:match_line('HsTypeLiteralChar', '\v''[^'']''', '', 'HsChar', '@HsType')
@@ -432,8 +430,9 @@ call s:match('HsTypeOperator', '\v%(' . s:operator . '|' . s:ws_around(':') . ')
 call s:match('HsTypeArrow', s:arrow, '', 'HsOperator', '@HsType')
 call s:match_line('HsTypeKind', s:no_op_around('\*'), '', '', '@HsType')
 call s:match_line('HsTypeKind', '\v<Type>', '', '', '@HsType')
-call s:match_line('HsTypeComment', '\v%(^(\s*).*)@<=' . s:comment_re . '\n\1\s+', '', 'HsComment', '@HsType')
-call s:match('HsTypeForall', '\v%(<forall>|∀)[^.]+%(\n\s+)?\.', '', '', '@HsType')
+" TODO performance
+call s:match_line('HsTypeComment', '\v%(^(\s*).*)@<=' . s:comment_re . '\n\ze\1\s+', '', 'HsComment', '@HsType')
+call s:match('HsTypeForall', '\v\s*%(<forall>|∀)[^.]+%(\n\s+)?\.', '', '', '@HsType')
 
 highlight def link HsKind HsTycon
 highlight def link HsTypeKind HsKind
@@ -443,6 +442,17 @@ highlight def link HsTypeOperator HsOperator
 syntax cluster HsType
   \ contains=HsTypeParens,HsTypeBrackets,HsTypeType,HsTypeTypeParam,HsTypeOperator,HsTypeKind,HsTypeComment,HsTypeForall
   \ ,HsTypeLiteralNumber,HsTypeLiteralString,HsTypeLiteralChar,HsTypeArrow
+
+call s:match('HsSigForall', '\v\s*%(<forall>|∀)[^.]+%(\n\s+)?\.', '', '', '')
+call s:Name('HsSigClass', '', '@HsType')
+call s:match('HsSigContext', '\v\s*\u.*%(\=\>' . s:opt_comment . '$|' . s:opt_comment . '\n\s+\=\>)', 'keepend', 'HsSigClass', '')
+call s:match_line('HsSigComment', '\v^' . s:comment_re, '', '', '')
+
+syntax cluster HsTypeSig
+  \ contains=HsSigComment,HsSigContext,HsSigForall,@HsType
+
+highlight def link HsSigClass HsClassName
+highlight def link HsSigComment HsComment
 
 " module
 
@@ -559,29 +569,29 @@ call s:match_top(
 
 call s:indent_region(
   \ 'HsDeclBody1',
-  \ 'HsSig',
+  \ 'HsSigOp',
   \ '.*',
   \ '::\s*',
   \ '',
-  \ '@HsType,HsOperator,HsComment,HsContext',
+  \ 'HsComment,@HsTypeSig',
   \ 'HsFun',
   \ )
 
 call s:indent_region_eq(
   \ 'HsDeclBody2',
-  \ 'HsSig',
+  \ 'HsSigOp',
   \ '\s+',
   \ '::',
   \ '',
-  \ '@HsType,HsOperator,HsComment,HsContext',
+  \ 'HsComment,@HsTypeSig',
   \ 'HsFun',
   \ )
 
 call s:symOrNameWith('HsDeclName', 'contained', '', '')
 
-call s:match('HsSig', '::', '', '', '')
+call s:match('HsSigOp', '::', '', '', '')
 
-highlight def link HsSig HsOperator
+highlight def link HsSigOp HsOperator
 highlight def link HsDeclName HsIdentifier
 
 " data
@@ -631,7 +641,7 @@ call s:region(
 
 call s:indent_region('HsGadtCon', 'HsConId', '', s:conid_re, '', 'HsGadtSig', '')
 
-call s:match('HsGadtSig', '::', '', 'HsSig', 'HsGadtConRecord,@HsType,HsComment')
+call s:match('HsGadtSig', '::', '', 'HsSigOp', 'HsGadtConRecord,@HsType,HsComment')
 
 call s:braces('HsGadtConRecord', '', 'HsConRecordField,HsComment', '@HsType')
 
