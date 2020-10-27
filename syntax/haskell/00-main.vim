@@ -407,8 +407,9 @@ call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp,@HsKeyword,HsInline
 call s:match('HsExpSymVar', s:varsym_re, '', 'HsStrongBrackets,HsOperator', '')
 call s:syn('match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts, '', 'HsInlineSig')
 call s:match('HsExpTypeApp', '\v\@\ze\k', 'keepend', '', 'HsQualifiedType')
-call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', 'keepend', 'HsDiscreetBrackets,@HsType', '')
-call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', 'keepend', 'HsDiscreetBrackets,@HsType', '')
+call s:match('HsExpTypeAppBracket', '[([]', '', 'HsDiscreetBrackets', '@HsType')
+call s:region('HsExpTypeAppBrackets', '', '\v( )@<=\@''?\[', '', ']', 'keepend', 'HsDiscreetBrackets,HsExpTypeAppBracket', '')
+call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', 'keepend', 'HsDiscreetBrackets,HsExpTypeAppBracket', '')
 
 syntax cluster HsExp
   \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets,
