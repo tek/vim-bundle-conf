@@ -1,7 +1,6 @@
 highlight! HaskellType ctermfg=5 guifg=#a060c0
 highlight! Class ctermfg=5 gui=bold guifg=#a387af
-highlight! DiscreetSymbol ctermfg=6 gui=bold guifg=#586e75
-highlight! DiscreetSymbol2 ctermfg=6 gui=bold guifg=#444444
+highlight! DiscreetSymbol ctermfg=6 gui=bold guifg=#444444
 highlight! Constructor ctermfg=6 gui=bold guifg=#a060c0
 highlight! IdentifierBold ctermfg=4 gui=bold guifg=#268bd2
 highlight! HsOperator ctermfg=2 gui=bold guifg=#719e07
@@ -10,11 +9,12 @@ highlight! HsReservedOperator ctermfg=2 gui=bold guifg=#719e07
 
 highlight! link HsTycon HaskellType
 highlight! link HsModId Type
-highlight! link HsModuleDot DiscreetSymbol2
-highlight! link HsImportParens DiscreetSymbol2
-highlight! link HsPatternParens DiscreetSymbol2
+highlight! link HsModuleDot DiscreetSymbol
+highlight! link HsImportComma DiscreetSymbol
+highlight! link HsImportParens DiscreetSymbol
+highlight! link HsPatternParens DiscreetSymbol
 highlight! link HsStrongBrackets Constant
-highlight! link HsDiscreetBrackets DiscreetSymbol2
+highlight! link HsDiscreetBrackets DiscreetSymbol
 highlight! link HsClassName Class
 highlight! link HsSigConstraintParam HsResultType
 highlight! link HsSigReturnType HsResultType
