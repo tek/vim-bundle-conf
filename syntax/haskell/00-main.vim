@@ -290,7 +290,7 @@ function! s:top_decl(name, keyword, head, where_body, eq_body) abort "{{{
   let bodies = where_name . ',' . eq_name . ',' . plain_name
   call s:indent_region_top_decl(main_name, '', a:keyword . '>', 'skipnl', head_name, '')
   call s:region(head_name, '', '\v<' . a:keyword . '>', '', '\v\ze%(\_s\=\_s|<where>)', 'keepend', start_name, bodies)
-  call s:match(start_name, '\<' . a:keyword . '>', '', 'HsTopDeclKeyword', a:head)
+  call s:match(start_name, '\v<' . a:keyword . '>', '', 'HsTopDeclKeyword', a:head)
   call s:region(where_name, 'HsKeywordLetWhere', '\v<where>', '', '^\ze\S', '', a:where_body, '')
   call s:region(eq_name, 'HsOperator', '\v\_s\=\_s', '', '^\ze\S', '', a:eq_body, '')
 endfunction "}}}
@@ -520,7 +520,7 @@ call s:keyword('HsImportKeyword', ['import'], '')
 call s:keyword('HsImportQualifier', ['qualified', 'safe', 'as', 'hiding'], '')
 call s:keyword('HsImportItemKeyword', ['type', 'pattern'], '')
 
-highlight def link HsImportKeyword Include
+highlight def link HsImportKeyword HsKeyword
 highlight def link HsImportQualifier Keyword
 highlight def link HsImportModule Type
 highlight def link HsModId Type
@@ -534,11 +534,6 @@ highlight def link HsImportComma HsSeparator
 highlight def link HsImportCtorComma HsImportComma
 
 " function equation
-
-" TODO false positives for symbolic equations if there is any operator used in a regular equation.
-" can probably only be done heuristically.
-" * use a second variant of HsDecl that uses nextgroup to select HsFunSym
-" * check that no open parens are before the operator
 
 call s:match_top('HsFun', '\v\ze.*(\{[^}]*)@<!\=\_s', '', '', 'HsFunSymPat,HsFunName')
 
@@ -619,12 +614,14 @@ call s:match('HsConAtypes', '\v(\s*\{[^-]|deriving)@!\S.{-}\ze($|\|)', 'keepend'
 
 call s:braces('HsConRecord', '', 'HsConRecordField,HsComment', 'HsConSum,HsDataDeriving')
 
+let s:field_comment = '\v%(' . s:comment_re . '\n\s*)?'
+
 call s:region(
   \ 'HsConRecordField',
   \ '',
   \ '[a-z_]',
   \ 'HsSeparator',
-  \ '\v%(,\ze\n?\s*' . s:inline_comment . s:var_re . '\_s+::\_s|\ze\s*(-)@<!})',
+  \ '\v%(,\ze\n?\s*' . s:field_comment . s:var_re . '\_s+::\_s|\ze\s*(-)@<!})',
   \ 'keepend',
   \ 'HsDecl',
   \ 'HsConRecordField'
