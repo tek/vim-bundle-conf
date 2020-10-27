@@ -8,8 +8,8 @@ function! s:q(a) abort "{{{
   return " /" . a:a . "/ "
 endfunction "}}}
 
-function! s:qv(key, value) abort "{{{
-  return ' ' . a:key . "=/" . a:value . "/ "
+function! s:regpat(key, value) abort "{{{
+  return ' ' . a:key . '=/' . a:value . '/ '
 endfunction "}}}
 
 function! s:choice(values) abort "{{{
@@ -89,6 +89,10 @@ function! s:optional(name, value) abort "{{{
   return empty(a:value) ? '' : ' ' . a:name . '=' . a:value . ' '
 endfunction "}}}
 
+function! s:optional_regpat(name, value) abort "{{{
+  return empty(a:value) ? '' : s:regpat(a:name, a:value)
+endfunction "}}}
+
 function! s:with_comment(main) abort "{{{
   return a:main . '\v(' . s:comment_re . ')?'
 endfunction "}}}
@@ -111,10 +115,20 @@ function! s:match(name, pattern, extra, contains, nextgroup) abort "{{{
   return s:match_top(a:name, a:pattern, s:opts . a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
+function! s:region_top_skip(name, mg_start, start, skip, mg_end, end, extra, contains, nextgroup) abort "{{{
+  return s:syn(
+    \ 'region ' . a:name . s:optional('matchgroup', a:mg_start) . s:regpat('start', a:start) .
+    \   s:optional_regpat('skip', a:skip) .
+    \   s:optional('matchgroup', a:mg_end) . s:regpat('end', a:end) . a:extra,
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
+endfunction "}}}
+
 function! s:region_top(name, mg_start, start, mg_end, end, extra, contains, nextgroup) abort "{{{
   return s:syn(
-    \ 'region ' . a:name . s:optional('matchgroup', a:mg_start) . s:qv('start', a:start) .
-    \   s:optional('matchgroup', a:mg_end) . s:qv('end', a:end) . a:extra,
+    \ 'region ' . a:name . s:optional('matchgroup', a:mg_start) . s:regpat('start', a:start) .
+    \   s:optional('matchgroup', a:mg_end) . s:regpat('end', a:end) . a:extra,
     \ a:contains,
     \ a:nextgroup,
     \ )
@@ -131,6 +145,20 @@ function! s:indent_region_zero(name, matchgroup, start, extra, contains, nextgro
     \ a:start,
     \ '',
     \ '\v\ze^\S',
+    \ a:extra . ' keepend ',
+    \ a:contains,
+    \ a:nextgroup,
+    \ )
+endfunction "}}}
+
+function! s:indent_region_top_decl(name, matchgroup, start, extra, contains, nextgroup) abort "{{{
+  return s:region_top_skip(
+    \ a:name,
+    \ a:matchgroup,
+    \ '\v^\z(\s*)' . a:start,
+    \ '\v^\z1\s+',
+    \ '',
+    \ '\v\ze^\s*\S',
     \ a:extra . ' keepend ',
     \ a:contains,
     \ a:nextgroup,
@@ -254,11 +282,25 @@ function! s:top_decl(name, keyword, head, where_body, eq_body) abort "{{{
   let where_name = prefix . 'Where'
   let eq_name = prefix . 'Eq'
   let plain_name = prefix . 'Plain'
+  let head_name = main_name . 'Head'
   let bodies = where_name . ',' . eq_name . ',' . plain_name
-  call s:match_top(main_name, '\v^' . a:keyword . '>', 'skipwhite skipnl', 'HsTopDeclKeyword', bodies)
-  call s:indent_region(plain_name, '', '\S.*', ' ', '', a:head, '')
-  call s:indented_till(eq_name, '\v\_s\=\_s', '', a:head, a:eq_body)
-  call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
+  call s:indent_region_top_decl(
+    \ main_name,
+    \ 'HsTopDeclKeyword',
+    \ a:keyword . '>',
+    \ 'skipwhite skipnl',
+    \ head_name,
+    \ ''
+    \ )
+  call s:region(head_name, '', '\v%(' . a:keyword . '>)@<=.', '', '\v\ze%(\_s\=\_s|<where>)', 'keepend', a:head, bodies)
+  call s:region(where_name, '', '\v<where>', '', '^\ze\S', '', a:where_body, '')
+  call s:region(eq_name, '', '\v\_s\=\_s', '', '^\ze\S', '', a:eq_body, '')
+  " call s:match_top(main_name, '\v^' . a:keyword . '>', 'skipwhite skipnl', 'HsTopDeclKeyword', bodies)
+  " call s:indent_region(plain_name, '', '\S.*', ' ', '', a:head, '')
+  " if !empty(a:eq_body)
+  "   call s:indented_till(eq_name, '\v\_s\=\_s', '', a:head, a:eq_body)
+  " endif
+  " call s:indented_till(where_name, '\v<where>', '', a:head, a:where_body)
 endfunction "}}}
 
 syntax spell notoplevel
@@ -292,6 +334,7 @@ syntax match HsQualifiedVar '\v%(\u\k*\.)+[a-z_]\k*' contains=HsQualifyingModule
 
 let s:exclude_op =
   \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda,HsDeclName,HsFunName,HsFunNameSym'
+  \ . ',HsTypeOperator'
 
 call s:match(
   \ 'HsOperator',
@@ -392,7 +435,7 @@ call s:parens('HsTypeParens', 'HsDiscreetBrackets', '@HsType,HsComment', '@HsTyp
 call s:brackets('HsTypeBrackets', 'HsStrongBrackets', '@HsType,HsComment', '@HsType')
 call s:Name('HsTypeType', 'HsQualifiedType', '@HsType')
 call s:name('HsTypeTypeParam', '', '@HsType')
-call s:match('HsTypeOperator', s:operator, '', 'HsOperator', '@HsType')
+call s:match('HsTypeOperator', s:operator, '', '', '@HsType')
 call s:match('HsTypeArrow', s:arrow, '', 'HsOperator', '@HsType')
 call s:match('HsTypeKind', s:no_op_around('\*'), '', '', '@HsType')
 call s:match('HsTypeKind', '\v<Type>', '', '', '@HsType')
@@ -402,6 +445,7 @@ call s:match('HsTypeForall', '\v%(<forall>|∀)[^.]+%(\n\s+)?\.', '', '', '@HsTy
 highlight def link HsKind HsTycon
 highlight def link HsTypeKind HsKind
 highlight def link HsTypeQuote HsTycon
+highlight def link HsTypeOperator HsOperator
 
 syntax cluster HsType
   \ contains=HsTypeParens,HsTypeBrackets,HsTypeType,HsTypeTypeParam,HsTypeOperator,HsTypeKind,HsTypeComment,HsTypeForall
@@ -596,7 +640,7 @@ call s:region(
   \ '',
   \ '[a-z_]',
   \ 'HsSeparator',
-  \ '\v%(,\ze\s*' . s:inline_comment . s:var_re . '\_s+::\_s|\ze\s*(-)@<!})',
+  \ '\v%(,\ze\n?\s*' . s:inline_comment . s:var_re . '\_s+::\_s|\ze\s*(-)@<!})',
   \ 'keepend',
   \ 'HsDecl',
   \ 'HsConRecordField'
