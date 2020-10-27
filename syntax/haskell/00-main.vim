@@ -79,7 +79,7 @@ let s:conid_re = '\v<''?''?\u\k*>'
 let s:conid_re_q = s:q(s:conid_re)
 let s:wli = '\v%(<%(where|let|in)>\s+)'
 let s:comment_re = '\v\s*--+%(\k|\s|$).*$'
-let s:opt_comment = '\v%(' . s:comment_re . ')?$'
+let s:inline_comment = '\v%(' . s:comment_re . ')?'
 let s:operator = s:not_here(s:reserved_op) . s:op_char . '+'
 " TODO does this do anything? it's definitely a performance problem
 " let s:operator = s:not_here(s:reserved_op) . s:no_op_around(s:op_char . '+')
@@ -286,9 +286,11 @@ function! s:top_decl(name, keyword, head, where_body, eq_body) abort "{{{
   let eq_name = prefix . 'Eq'
   let plain_name = prefix . 'Plain'
   let head_name = main_name . 'Head'
+  let start_name = head_name . 'Start'
   let bodies = where_name . ',' . eq_name . ',' . plain_name
-  call s:indent_region_top_decl(main_name, 'HsTopDeclKeyword', a:keyword . '>', 'skipnl', head_name, '')
-  call s:region(head_name, '', '\v%(' . a:keyword . '>)@<=.', '', '\v\ze%(\_s\=\_s|<where>)', 'keepend', a:head, bodies)
+  call s:indent_region_top_decl(main_name, '', a:keyword . '>', 'skipnl', head_name, '')
+  call s:region(head_name, '', '\v<' . a:keyword . '>', '', '\v\ze%(\_s\=\_s|<where>)', 'keepend', start_name, bodies)
+  call s:match(start_name, '\<' . a:keyword . '>', '', 'HsTopDeclKeyword', a:head)
   call s:region(where_name, 'HsKeywordLetWhere', '\v<where>', '', '^\ze\S', '', a:where_body, '')
   call s:region(eq_name, 'HsOperator', '\v\_s\=\_s', '', '^\ze\S', '', a:eq_body, '')
 endfunction "}}}
@@ -324,7 +326,7 @@ syntax match HsQualifiedVar '\v%(\u\k*\.)+[a-z_]\k*' contains=HsQualifyingModule
 
 let s:exclude_op =
   \ s:exclude_strings . ',HsImportSymbolicTypeName,HsImportSymbolicCtorName,HsLambda,HsDeclName,HsFunName,HsFunNameSym'
-  \ . ',HsTypeOperator,HsModuleDot'
+  \ . ',HsTypeOperator,HsModuleDot,HsTypeKind'
 
 call s:match(
   \ 'HsOperator',
@@ -404,6 +406,7 @@ highlight def link HsString String
 call s:Name( 'HsExpCtor', 'HsQualifiedCtor', '')
 call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
 call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
+call s:braces('HsExpBraces', '', '@HsExp,@HsKeyword,HsInlineSig', '')
 call s:match('HsExpSymVar', s:varsym_re, '', 'HsStrongBrackets,HsOperator', '')
 call s:syn('match HsExpVar ' . s:q(s:wli . '@!' . s:var_re) . s:opts, '', 'HsInlineSig')
 call s:match('HsExpTypeApp', '\v\@\ze\k', 'keepend', '', 'HsQualifiedType')
@@ -413,7 +416,7 @@ call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', 'keepend', '
 
 syntax cluster HsExp
   \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets,
-  \ HsExpSymVar
+  \ HsExpSymVar,HsExpBraces
 
 " type signature
 
@@ -446,7 +449,7 @@ syntax cluster HsType
 
 call s:match('HsSigForall', '\v\s*%(<forall>|∀)[^.]+%(\n\s+)?\.', '', '', '')
 call s:Name('HsSigClass', '', '@HsType')
-call s:match('HsSigContext', '\v\s*\u.*%(\=\>' . s:opt_comment . '$|\n\s+\=\>)', '', 'HsSigClass', '')
+call s:match('HsSigContext', '\v\s*\u.*%(\=\>' . s:inline_comment . '$|\n\s+\=\>)', '', 'HsSigClass', '')
 call s:match_line('HsSigComment', '\v^' . s:comment_re, '', '', '')
 
 syntax cluster HsTypeSig
@@ -600,7 +603,7 @@ highlight def link HsDeclName HsIdentifier
 call s:top_decl(
   \ 'Data',
   \ '\v(data%( family)?|newtype)',
-  \ 'HsDataContext,HsDataSimpletype,HsInlineSig,HsComment',
+  \ 'HsDataContext,@HsType,HsInlineSig,HsComment',
   \ 'HsGadtCon,HsComment',
   \ 'HsCon,HsDataDeriving,HsComment',
   \ )
@@ -656,7 +659,7 @@ call s:match(
 
 call s:parens('HsDataDerivingClassParens', 'HsDiscreetBrackets', 'HsClassName,HsSeparator', '')
 
-syntax keyword HsTopDeclKeyword data newtype type class instance family contained
+syntax keyword HsTopDeclKeyword data newtype type class instance family deriving stock anyclass via contained
 highlight def link HsTopDeclKeyword HsKeyword
 
 syntax keyword HsDataDerivingKeyword deriving anyclass stock newtype via contained
@@ -701,28 +704,31 @@ highlight def link HsTypeFamilyInstance HsConId
 call s:top_decl(
   \ 'Class',
   \ '\v(class|%(<deriving>%(\s+<%(anyclass|newtype|stock)>)?\s+)?instance)',
-  \ 'HsClassContext,HsClassHead,HsComment',
-  \ '@HsClassContent,HsComment',
+  \ 'HsClassContext,HsComment',
+  \ '@HsClassBody,HsComment',
   \ '',
   \ )
 
 call s:Name('HsClassContextClass', 'HsClassName', '@HsType')
 
-call s:match(
+call s:Name('HsClassHead', 'HsClassName', '@HsType')
+
+call s:region(
   \ 'HsClassContext',
-  \ '\v((<where>)@!\_.)+\=\>',
   \ '',
+  \ '.',
+  \ '',
+  \ '\v\=\>',
+  \ 'keepend',
   \ 'HsClassContextClass,HsOperator,HsStrongBrackets,HsComment',
   \ 'HsClassHead'
   \ )
-
-call s:Name('HsClassHead', 'HsClassName', '@HsType')
 
 call s:match('HsClassAssocType', '\v^\s+type\s+\ze.*::.*', '', '@HsKeyword', 'HsClassAssocTypeLhs')
 
 call s:match('HsClassAssocTypeLhs', '\S.*\s*::', '', '@HsType', '@HsType')
 
-syntax cluster HsClassContent contains=HsClassAssocType,HsTopDeclType,HsDecl,HsFun
+syntax cluster HsClassBody contains=HsClassAssocType,HsTopDeclType,HsDecl,HsFun
 
 " TH
 
