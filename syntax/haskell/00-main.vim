@@ -141,6 +141,10 @@ function! s:region(name, mg_start, start, mg_end, end, extra, contains, nextgrou
   return s:region_top(a:name, a:mg_start, a:start, a:mg_end, a:end, s:opts . a:extra, a:contains, a:nextgroup)
 endfunction "}}}
 
+function! s:open_region(name, contains, nextgroup) abort "{{{
+  return s:region(a:name, '', '.', '', '\ze^\S', '', a:contains, a:nextgroup)
+endfunction "}}}
+
 function! s:indent_region_zero(name, matchgroup, start, extra, contains, nextgroup) abort "{{{
   return s:region_top(
     \ a:name,
@@ -521,8 +525,7 @@ call s:keyword('HsImportQualifier', ['qualified', 'safe', 'as', 'hiding'], '')
 call s:keyword('HsImportItemKeyword', ['type', 'pattern'], '')
 
 highlight def link HsImportKeyword HsKeyword
-highlight def link HsImportQualifier Keyword
-highlight def link HsImportModule Type
+highlight def link HsImportQualifier HsImportKeyword
 highlight def link HsModId Type
 highlight def link HsImportCtor HsConId
 highlight def link HsImportType HsTycon
@@ -680,10 +683,12 @@ call s:region_top(
 call s:top_decl(
   \ 'TypeFamily',
   \ 'type family',
-  \ '@HsType,HsOperator,HsTopDeclKeyword,HsKeywordLetWhere',
+  \ 'HSTypeFamilyHead',
   \ 'HsTypeFamilyEqn',
   \ ''
   \ )
+
+call s:open_region('HSTypeFamilyHead', '@HsType,HsOperator,HsTopDeclKeyword,HsKeywordLetWhere', '')
 
 call s:indent_region_top_decl(
   \ 'HsTypeFamilyEqn',
