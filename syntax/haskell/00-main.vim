@@ -84,7 +84,7 @@ let s:operator = s:not_here(s:reserved_op) . s:op_char . '+'
 " TODO does this do anything? it's definitely a performance problem
 " let s:operator = s:not_here(s:reserved_op) . s:no_op_around(s:op_char . '+')
 let s:arrow = s:ws_around('[=-]\>')
-let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid,HsOperator'
+let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid,HsOperator,HsChar'
 
 function! s:optional(name, value) abort "{{{
   return empty(a:value) ? '' : ' ' . a:name . '=' . a:value . ' '
@@ -405,9 +405,12 @@ highlight def link HsFloat HsNumber
 call s:region_top_skip('HsString', '', '"', '\\"',  '', '"', 'keepend' . s:exclude_strings, '', '')
 highlight def link HsString String
 
+call s:lit('HsChar', '\v<''%([^''\\]|\\.|\\u[0-9a-fA-F]{4})''>')
+highlight def link HsChar HsString
+
 " expressions
 
-call s:Name( 'HsExpCtor', 'HsQualifiedCtor', '')
+call s:Name('HsExpCtor', 'HsQualifiedCtor', '')
 call s:parens('HsExpParens', 'HsDiscreetBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
 call s:brackets('HsExpBrackets', 'HsStrongBrackets', '@HsExp,@HsKeyword,HsInlineSig', '')
 call s:braces('HsExpBraces', '', '@HsExp,@HsKeyword,HsInlineSig', '')
@@ -420,7 +423,7 @@ call s:region('HsExpTypeAppParens', '', '\v( )@<=\@''?\(', '', ')', 'keepend', '
 
 syntax cluster HsExp
   \ contains=HsExpVar,HsExpCtor,HsExpParens,HsExpBrackets,HsExpTypeApp,HsExpTypeAppParens,HsExpTypeAppBrackets,
-  \ HsExpSymVar,HsExpBraces
+  \ HsExpSymVar,HsExpBraces,HsChar
 
 " type signature
 
@@ -762,7 +765,6 @@ syntax match HsSeparator  '[,;]'
 syntax match HsQuote "\<'\+" contained
 syntax match HsBacktick "`[A-Za-z_][A-Za-z0-9_\.']*#\?`"
 " syntax match HsIdentifier "[_a-z][a-zA-z0-9_']*" contained
-syntax match HsChar "\<'[^'\\]'\|'\\.'\|'\\u[0-9a-fA-F]\{4}'\>"
 syntax match HsPreProc "^#.*$" keepend
 syntax keyword HsTodo TODO FIXME contained
 " Treat a shebang line at the start of the file as a comment
@@ -786,7 +788,6 @@ highlight def link HsSeparator Delimiter
 highlight def link HsQuote Operator
 highlight def link HsShebang Comment
 highlight def link HsLineComment Comment
-highlight def link HsChar HsString
 highlight def link HsBacktick Operator
 highlight def link HsTodo Todo
 highlight def link HsPreProc PreProc
