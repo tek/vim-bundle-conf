@@ -257,8 +257,20 @@ snippet pr "pragma"
 {-# $0 #-}
 endsnippet
 
-snippet lpr "language pragma"
+snippet lpr "language pragma" b
 {-# LANGUAGE $0 #-}
+endsnippet
+
+snippet prl "language pragma" b
+{-# LANGUAGE $0 #-}
+endsnippet
+
+snippet pro "options pragma" b
+{-# OPTIONS_GHC $0 #-}
+endsnippet
+
+snippet prw "turn off warnings" b
+{-# OPTIONS_GHC -Wno-all #-}
 endsnippet
 
 snippet dac "DeriveAnyClass pragma" b
@@ -269,7 +281,7 @@ snippet qq "QuasiQuotes pragma" b
 {-# LANGUAGE QuasiQuotes #-}
 endsnippet
 
-snippet ud "undefined"
+snippet ud "undefined" i
 undefined
 endsnippet
 
