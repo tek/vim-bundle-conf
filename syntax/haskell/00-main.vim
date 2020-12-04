@@ -85,6 +85,7 @@ let s:operator = s:not_here(s:reserved_op) . s:op_char . '+'
 " let s:operator = s:not_here(s:reserved_op) . s:no_op_around(s:op_char . '+')
 let s:arrow = s:ws_around('[=-]\>')
 let s:exclude_strings = ' containedin=ALLBUT,HsComment,HsBlockComment,HsQQ,HsString,HsPragma,HsLiquid,HsOperator,HsChar'
+  \ . ',HsPreProc'
 
 function! s:optional(name, value) abort "{{{
   return empty(a:value) ? '' : ' ' . a:name . '=' . a:value . ' '
@@ -391,22 +392,20 @@ highlight def link HsLiquid HsPragma
 
 " literals
 
-function! s:lit(name, pattern) abort "{{{
+function! s:lit(name, pattern, hi) abort "{{{
   call s:match(a:name, a:pattern, s:exclude_strings, '', '')
+  execute 'highlight def link ' . a:name . ' ' . a:hi
 endfunction "}}}
 
-call s:lit('HsNumber', '\v<[0-9]+>|<0[xX][0-9a-fA-F]+>|<0[oO][0-7]+>|<0[bB][10]+>')
-highlight def link HsNumber Number
+call s:lit('HsNumber', '\v<[0-9]+>|<0[xX][0-9a-fA-F]+>|<0[oO][0-7]+>|<0[bB][10]+>', 'Number')
 
-call s:lit('HsFloat', '\v<\d+\.\d+([eE][-+]=[0-9]+)=>')
-highlight def link HsFloat HsNumber
+call s:lit('HsFloat', '\v<\d+\.\d+([eE][-+]=[0-9]+)=>', 'HsNumber')
 
 " TODO multiline strings with /\\n  \foo/ ?
-call s:region_top_skip('HsString', '', '"', '\\"',  '', '"', 'keepend' . s:exclude_strings, '', '')
+call s:region_top_skip('HsString', '', '"', '[^\\]\zs\\"',  '', '"', 'keepend extend' . s:exclude_strings, '', '')
 highlight def link HsString String
 
-call s:lit('HsChar', '\v<''%([^''\\]|\\.|\\u[0-9a-fA-F]{4})''>')
-highlight def link HsChar HsString
+call s:lit('HsChar', '\v<''%([^''\\]|\\.|\\u[0-9a-fA-F]{4})''>', 'HsString')
 
 " expressions
 
@@ -740,7 +739,7 @@ syntax cluster HsClassBody contains=HsClassAssocType,HsTopDeclType,HsDecl,HsFun
 call s:region_top('HsQQ', '', '\v\[\K\k*\|', '', '\v\|\]', s:exclude_strings, 'HsQQInterpolate', '')
 highligh def link HsQQ HsString
 
-call s:region('HsQQInterpolate', 'Delimiter', '\v#\{', 'Delimiter', '\}', '', '@HsExp,HsInlineSig', '')
+call s:region('HsQQInterpolate', 'Delimiter', '\v[#$]\{', 'Delimiter', '\}', '', '@HsExp,HsInlineSig', '')
 
 syntax region HsTHBlock matchgroup=HsTH start="\[\(d\|t\|p\)\?|" end="|]" contains=TOP
 syntax region HsTHDoubleBlock matchgroup=HsTH start="\[||" end="||]" contains=TOP
