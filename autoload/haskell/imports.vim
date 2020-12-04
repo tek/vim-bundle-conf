@@ -200,15 +200,24 @@ function! haskell#imports#ask_match(results) abort "{{{
   return inputlist(lines)
 endfunction "}}}
 
+function! s:match_module_prefix(prefix, module) abort "{{{
+  return a:prefix == split(a:module, '\.')[:len(a:prefix) - 1]
+endfunction "}}}
+
+function! s:import_module(import) abort "{{{
+  return matchstr(a:import, s:import_prefix_re . '\zs%(\k|\.)+\ze')
+endfunction "}}}
+
 function! haskell#imports#insert_into(import, local, module_base, module_line, import_base) abort "{{{
   let blocks = haskell#imports#import_blocks()
   if len(blocks) >= 2
-    let local_base = matchstr(getline(blocks[1][0]), s:import_prefix_re . '\zs\k+\ze')
-    let lnum = (local_base == a:import_base || a:local ? blocks[1][0] : blocks[0][0]) - 1
+    let local_mod = s:import_module(getline(blocks[1][0]))
+    let lnum = (s:match_module_prefix(a:import_base, local_mod) || a:local ? blocks[1][0] : blocks[0][0]) - 1
     let matching = 1
   elseif len(blocks) == 1
     let block_lnum = blocks[0][0]
-    let local_block = match(getline(block_lnum), s:import_prefix_re . a:module_base) != -1
+    let local_mod = s:import_module(getline(block_lnum))
+    let local_block = s:match_module_prefix(a:module_base, local_mod)
     let matching = local_block == a:local
     let nonmatching_line = a:local ? blocks[0][-1] + 1 : block_lnum - 1
     let lnum = matching || ! a:local ? block_lnum - 1 : blocks[0][-1] + 1
@@ -226,9 +235,28 @@ function! haskell#imports#current_module() abort "{{{
   return [module_line, matchstr(getline(module_line), '\v^module \zs\S+\ze')]
 endfunction "}}}
 
+function! haskell#imports#file_package() abort "{{{
+  let fn = expand('%')
+  let package = substitute(fn, '\v%(^|.*/)packages/([^/]+)/.*', '\1', '')
+  return fn == package ? '' : package
+endfunction "}}}
+
+function! s:segments() abort "{{{
+  let packages = get(g:, 'haskell_packages_local_module_segments', {})
+  let package = haskell#imports#file_package()
+  let global_max = get(g:, 'haskell_local_module_segments', 1)
+  return get(packages, package, global_max)
+endfunction "}}}
+
+function! haskell#imports#module_prefix(file_module, import_module) abort "{{{
+  let max = s:segments()
+  let file_modules = split(a:file_module, '\.')
+  let import_modules = split(a:import_module, '\.')
+  return [file_modules[:max - 1], import_modules[:max - 1]]
+endfunction "}}}
+
 function! haskell#imports#insert(module_line, file_module, import_module, identifier, import_type) abort "{{{
-  let import_base = matchstr(a:import_module, '\v^\k+\ze')
-  let module_base = matchstr(a:file_module, '\v^\k+\ze')
+  let [module_base, import_base] = haskell#imports#module_prefix(a:file_module, a:import_module)
   let prefix = a:import_type == 'qualified' ? 'qualified ' : ''
   let infix = a:import_type == 'qualified' ? ' as ' . a:identifier : ''
   let names = a:import_type == 'ctor' ? ' (' . a:identifier . '(' . a:identifier . '))' :
