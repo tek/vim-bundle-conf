@@ -1,5 +1,12 @@
 let g:proteome_files_exclude_directories = ['result', 'build-output']
 
+let g:myo_command_build = {
+      \ 'ident': 'build',
+      \ 'lines': ['nix-build -A ghc.bodhi-obelisk'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ }
+
 let g:myo_command_frontend = {
       \ 'ident': 'frontend',
       \ 'lines': ['ops/dev/ghcid-frontend.zsh'],
@@ -16,6 +23,7 @@ let g:myo_command_android = {
 
 function! s:setup() abort "{{{
   let g:myo_commands['system'] += [
+        \ g:myo_command_build,
         \ g:myo_command_frontend,
         \ g:myo_command_android,
         \ ]
