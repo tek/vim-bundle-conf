@@ -40,5 +40,9 @@ nnoremap <silent> <leader>e :ProFiles<cr>
 " nnoremap <silent> <leader>1 :Projects<cr>
 " nnoremap <silent> <leader>2 :ProSelectAdd -start-insert<cr>
 
+command! -nargs=+ -complete=file Mv ProMove <args>
+command! -nargs=+ -complete=file Cp ProCopy <args>
+command! Rm ProRemove
+
 let g:proteome_files_exclude_directories = []
 let g:proteome_files_exclude_files = ['.*\.pyc']

@@ -7,5 +7,5 @@ function! haskell#buffer#rename() abort "{{{
   if empty(module[1])
     return 0
   endif
-  execute 'Rename ' . module[1] . '.hs'
+  execute 'Mv ' . module[1] . '.hs'
 endfunction "}}}
