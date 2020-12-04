@@ -6,22 +6,28 @@ function! s:show_documentation()
   endif
 endfunction
 
-nmap <silent> gd <Plug>(coc-definition)
+function! s:fix_next() abort "{{{
+  execute "normal \<plug>(coc-fix-current)"
+  sleep 100m
+  execute "normal \<plug>(coc-diagnostic-next)"
+endfunction "}}}
+
+nmap <silent> gd <plug>(coc-definition)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 xnoremap <silent> K :call <SID>show_documentation()<CR>
 
 autocmd CursorHold * silent! call CocActionAsync('highlight')
 
-nmap <silent> ( <Plug>(coc-diagnostic-prev)
-nmap <silent> ) <Plug>(coc-diagnostic-next)
-nmap <silent> <leader>ct <Plug>(coc-type-definition)
-nmap <silent> <leader>ci <Plug>(coc-implementation)
-nmap <silent> <leader>cr <Plug>(coc-references)
+nmap <silent> ( <plug>(coc-diagnostic-prev)
+nmap <silent> ) <plug>(coc-diagnostic-next)
+nmap <silent> <leader>ct <plug>(coc-type-definition)
+nmap <silent> <leader>ci <plug>(coc-implementation)
+nmap <silent> <leader>cr <plug>(coc-references)
 nmap <silent> <leader>cR <cmd>CocRestart<cr>
-nmap <leader>ca <Plug>(coc-codeaction)
-nmap <leader>cl <Plug>(coc-codelens-action)
-nmap <silent> <m-f> <Plug>(coc-fix-current)
-nmap <silent> & <Plug>(coc-fix-current)<plug>(coc-diagnostic-next)
+nmap <leader>ca <plug>(coc-codeaction)
+nmap <leader>cl <plug>(coc-codelens-action)
+nmap <silent> <m-f> <plug>(coc-fix-current)
+nmap <silent> & <cmd>call <sid>fix_next()<cr>
 nmap <leader>cs <cmd>CocList -I symbols<cr>
 nnoremap <silent> <leader>cn <cmd>CocCommand document.renameCurrentWord<cr>
 
