@@ -3,7 +3,7 @@ if $PWD =~ '.*/code/\%(tek\|spr\)/'
 endif
 
 function! s:save() abort "{{{
-  if &modifiable && &buftype == '' && &modified
+  if !g:readonly_project && &modifiable && &buftype == '' && &modified
     let preserve = (get(g:, 'repeat_tick', -1) == b:changedtick)
     silent! noautocmd write
     if preserve
@@ -12,10 +12,8 @@ function! s:save() abort "{{{
   endif
 endfunction "}}}
 
-if !g:readonly_project
-  augroup tek_save_insert_leave
-    autocmd!
-    autocmd TextChanged * call s:save()
-    autocmd InsertLeave * call s:save()
-  augroup end
-endif
+augroup tek_save_insert_leave
+  autocmd!
+  autocmd TextChanged * call s:save()
+  autocmd InsertLeave * call s:save()
+augroup end
