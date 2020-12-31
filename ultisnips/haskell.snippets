@@ -204,6 +204,10 @@ newtype $1 =
   deriving newtype (Num, Ord, Enum, Real, Fractional)
 endsnippet
 
+snippet di "deriving instance" b
+deriving instance
+endsnippet
+
 snippet f "function" b
 $1 :: ${2:m ()}
 $1 =
@@ -258,27 +262,23 @@ snippet pr "pragma"
 endsnippet
 
 snippet lpr "language pragma" b
-{-# LANGUAGE $0 #-}
+{-# language $0 #-}
 endsnippet
 
 snippet prl "language pragma" b
-{-# LANGUAGE $0 #-}
+{-# language $0 #-}
 endsnippet
 
 snippet pro "options pragma" b
-{-# OPTIONS_GHC $0 #-}
+{-# options_ghc $0 #-}
 endsnippet
 
 snippet prw "turn off warnings" b
-{-# OPTIONS_GHC -Wno-all #-}
+{-# options_ghc -Wno-all #-}
 endsnippet
 
-snippet dac "DeriveAnyClass pragma" b
-{-# LANGUAGE DeriveAnyClass #-}
-endsnippet
-
-snippet qq "QuasiQuotes pragma" b
-{-# LANGUAGE QuasiQuotes #-}
+snippet orp "orphans pragma" b
+{-# options_ghc -fno-warn-orphans #-}
 endsnippet
 
 snippet ud "undefined" i
@@ -303,10 +303,6 @@ endsnippet
 
 snippet inc "incoherent" i
 {-# incoherent #-}
-endsnippet
-
-snippet orp "orphans pragma" b
-{-# OPTIONS_GHC -fno-warn-orphans #-}
 endsnippet
 
 snippet eff "polysemy effect GADT" b
@@ -337,6 +333,10 @@ snippet "\s*inl" "inline pragma" rb
 endsnippet
 
 snippet tf "type family" b
-type family $1 :: * where
-  `!p snip.rv = type_family_match(t[1])` = $2
+type family $1 :: $2 where
+  `!p snip.rv = type_family_match(t[1])` = $3
+endsnippet
+
+snippet n "Nothing"
+Nothing
 endsnippet
