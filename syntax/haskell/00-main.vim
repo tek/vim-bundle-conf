@@ -736,7 +736,7 @@ syntax cluster HsClassBody contains=HsClassAssocType,HsTopDeclType,HsDecl,HsFun
 
 " TH
 
-call s:region_top('HsQQ', '', '\v\[\K\k*\|', '', '\v\|\]', s:exclude_strings, 'HsQQInterpolate', '')
+call s:region_top('HsQQ', '', '\v\[%(\K\k*)?\|', '', '\v\|\]', s:exclude_strings, 'HsQQInterpolate', '')
 highligh def link HsQQ HsString
 
 call s:region('HsQQInterpolate', 'Delimiter', '\v[#$]\{', 'Delimiter', '\}', '', '@HsExp,HsInlineSig', '')
