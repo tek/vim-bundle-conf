@@ -11,9 +11,9 @@ let g:haskell_project_map = {
 
 let g:proteome_files_exclude_directories = ['result', 'build-output']
 
-let g:myo_command_api_dev = {
-      \ 'ident': 'api-dev',
-      \ 'lines': ['ops/dev/ghcid-api-dev.zsh'],
+let g:myo_command_collect_api_dev = {
+      \ 'ident': 'collect-api-dev',
+      \ 'lines': ['ops/dev/ghcid-collect-api-dev.zsh'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ 'capture': v:true,
@@ -65,7 +65,7 @@ let g:myo_command_build_collect = {
 
 function! s:setup() abort "{{{
   let g:myo_commands['system'] += [
-        \ g:myo_command_api_dev,
+        \ g:myo_command_collect_api_dev,
         \ g:myo_command_cinema_api_dev,
         \ g:myo_command_collect,
         \ g:myo_command_cinema,
