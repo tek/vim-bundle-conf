@@ -297,6 +297,8 @@ endfunction "}}}
 function! haskell#imports#current_word() abort "{{{
   let ln = getline('.')
   let identifier = expand('<cword>')
+  let ticked = identifier[:0] == ''''
+  let unticked = ticked ? identifier[1:] : identifier
   let col = getcurpos()[2]
   let qualified = match(ln, '.*\k*\%' . col . 'c\k*\..*') != -1
   let sig = haskell#indent#line_is_in_function_signature(line('.'))
@@ -306,10 +308,10 @@ function! haskell#imports#current_word() abort "{{{
   let family = haskell#indent#line_is_in_family(line('.'))
   let import_type =
         \ qualified ? 'qualified' :
-        \ identifier =~# '^[a-z]' ? 'function' :
+        \ unticked =~# '^[a-z]' ? 'function' :
         \ (sig || inline_sig || app || family) ? 'type' :
-        \ equation ? 'ctor' : 'type'
-  return [identifier, import_type]
+        \ (equation || ticked) ? 'ctor' : 'type'
+  return [unticked, import_type]
 endfunction "}}}
 
 function! s:file_module(path) abort "{{{
