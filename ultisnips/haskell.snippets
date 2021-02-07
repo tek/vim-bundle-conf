@@ -274,7 +274,7 @@ snippet pro "options pragma" b
 endsnippet
 
 snippet prw "turn off warnings" b
-{-# options_ghc -Wno-all #-}
+{-# options_ghc -Wno-all -Wno-redundant-constraints #-}
 endsnippet
 
 snippet orp "orphans pragma" b
@@ -335,6 +335,14 @@ endsnippet
 snippet tf "type family" b
 type family $1 :: $2 where
   `!p snip.rv = type_family_match(t[1])` = $3
+endsnippet
+
+snippet fto "open type family" b
+type family $1 :: $2
+endsnippet
+
+snippet ti "type instance" b
+type instance $0
 endsnippet
 
 snippet n "Nothing"
