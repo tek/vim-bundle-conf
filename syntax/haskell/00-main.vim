@@ -2,6 +2,8 @@ if exists("b:current_syntax")
   finish
 endif
 
+let b:current_syntax = "haskell"
+
 setlocal maxmempattern=10000
 
 function! s:q(a) abort "{{{
@@ -803,4 +805,3 @@ if get(g:, 'haskell_backpack', 0)
   highlight def link HsBackpackStructure Structure
   highlight def link HsBackpackDependency Include
 endif
-let b:current_syntax = "haskell"
