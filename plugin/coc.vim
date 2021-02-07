@@ -25,6 +25,8 @@ nmap <silent> <leader>ci <plug>(coc-implementation)
 nmap <silent> <leader>cr <plug>(coc-references)
 nmap <silent> <leader>cR <cmd>CocRestart<cr>
 nmap <leader>ca <plug>(coc-codeaction)
+nmap <leader>cA v<plug>(coc-codeaction-selected)
+xmap <leader>ca <plug>(coc-codeaction-selected)
 nmap <leader>cl <plug>(coc-codelens-action)
 nmap <silent> <m-f> <plug>(coc-fix-current)
 nmap <silent> & <cmd>call <sid>fix_next()<cr>
