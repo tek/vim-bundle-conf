@@ -4,6 +4,10 @@ endif
 
 let b:current_syntax = "haskell"
 
+if g:use_treesitter
+  finish
+endif
+
 setlocal maxmempattern=10000
 
 function! s:q(a) abort "{{{
