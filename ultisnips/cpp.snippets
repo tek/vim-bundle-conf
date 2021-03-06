@@ -1,0 +1,13 @@
+snippet l "lambda" i
+[=]($1) { return $2; }
+endsnippet
+
+snippet l "lambda" b
+[=]($1) {
+return $2;
+};
+endsnippet
+
+snippet lr "lambda return"
+return [=]($1) { return $2; };
+endsnippet
