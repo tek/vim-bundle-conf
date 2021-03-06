@@ -29,8 +29,8 @@ let g:proteome_project_config = {
 let g:proteome_grep_cmdline = 'rg --vimgrep --no-heading --ignore-file ' . $HOME .'/.agignore'
 let g:proteome_buffers_current_last = v:true
 
-nnoremap <silent> gaa <cmd>call ProGrep('\b' . expand('<cword>') . '\b')<cr>
-xnoremap <silent> gaa "ay<cmd>call ProGrep(@a)<cr>
+nnoremap <silent> gaa <cmd>call ProGrep('\b' . tek_misc#regex_escaped_expand('<cword>') . '\b')<cr>
+xnoremap <silent> gaa "ay<cmd>call ProGrep(tek_misc#regex_escaped(@a))<cr>
 nnoremap <silent> <leader>aa :ProGrep<cr>
 nnoremap <silent> <leader>b :ProBuffers<cr>
 nnoremap <silent> <insert> :ProNext<cr>
