@@ -5,7 +5,6 @@ highlight! Constructor ctermfg=6 gui=bold guifg=#a060c0
 highlight! IdentifierBold ctermfg=4 gui=bold guifg=#268bd2
 highlight! HsOperator ctermfg=2 gui=bold guifg=#719e07
 highlight! HsReservedOperator ctermfg=2 gui=bold guifg=#719e07
-" highlight! Module ctermfg=3 gui=bold guifg=#c2410a
 highlight! Module ctermfg=3 gui=bold guifg=#b58900
 
 highlight! link HsTycon HaskellType

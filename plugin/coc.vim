@@ -1,6 +1,13 @@
+function! s:vim_help() abort "{{{
+  let word = expand('<cword>')
+  let is_fun = match(getline('.'), word . '(') != -1
+  let topic = word . (is_fun ? '()' : '')
+  execute 'help '. topic
+endfunction "}}}
+
 function! s:show_documentation()
   if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
+    return s:vim_help()
   else
     call CocAction('doHover')
   endif
