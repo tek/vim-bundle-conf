@@ -21,6 +21,15 @@ function! haskell#imports#import_blocks() abort "{{{
   return s:find_blocks([], 1)
 endfunction "}}}
 
+function! haskell#imports#all_imports() abort "{{{
+  let blocks = haskell#imports#import_blocks()
+  if empty(blocks)
+    return [1, 1]
+  else
+    return [blocks[0][0], blocks[-1][1]]
+  endif
+endfunction "}}}
+
 function! s:compare_names(l, r) abort "{{{
   let left_op = a:l[:0] == '('
   let right_op = a:r[:0] == '('
@@ -131,20 +140,67 @@ function! haskell#imports#merge_imports(imports) abort "{{{
   endif
 endfunction "}}}
 
-function! haskell#imports#sort_block(block) abort "{{{
+function! haskell#imports#block_statements(block) abort "{{{
   let [start, end] = a:block
   let lines = map(copy(range(start, end)), { i, l -> getline(l) })
-  let imports = haskell#imports#import_statements(lines, [])
-  let sorted = sort(copy(imports), { l, r -> s:compare_imports(l, r) })
+  return [lines, haskell#imports#import_statements(filter(lines, { i, a -> !empty(a) }), [])]
+endfunction "}}}
+
+function! haskell#imports#sort_block_stmts(imports) abort "{{{
+  let sorted = sort(copy(a:imports), { l, r -> s:compare_imports(l, r) })
   let merged = haskell#imports#merge_imports(sorted)
   let formatted = map(copy(merged), { i, imp -> haskell#imports#format_import(imp) })
-  let updated_lines = list#concat(formatted)
+  return list#concat(formatted)
+endfunction "}}}
+
+function! haskell#imports#sort_block(block) abort "{{{
+  let [lines, imports] = haskell#imports#block_statements(a:block)
+  let updated_lines = haskell#imports#sort_block_stmts(imports)
   return {
-        \ 'start': start,
-        \ 'end': end,
+        \ 'start': a:block[0],
+        \ 'end': a:block[1],
         \ 'modified': lines != updated_lines,
         \ 'data': updated_lines,
         \ }
+endfunction "}}}
+
+function! s:segments() abort "{{{
+  let packages = get(g:, 'haskell_packages_local_module_segments', {})
+  let package = haskell#imports#file_package()
+  let global_max = get(g:, 'haskell_local_module_segments', 1)
+  return get(packages, package, global_max)
+endfunction "}}}
+
+function! haskell#imports#module_prefix(module, max) abort "{{{
+  let modules = split(a:module, '\.')
+  return modules[:a:max - 1]
+endfunction "}}}
+
+function! haskell#imports#split() abort "{{{
+  let [module_line, file_module] = haskell#imports#current_module()
+  if empty(file_module)
+    return []
+  endif
+  let max = s:segments()
+  let prefix = haskell#imports#module_prefix(file_module, max)
+  let block = haskell#imports#all_imports()
+  let [lines, imports] = haskell#imports#block_statements(block)
+  function! Split(prefix, max, blocks, import) abort "{{{
+    if a:prefix == haskell#imports#module_prefix(a:import.module, a:max)
+      return [a:blocks[0], a:blocks[1] + [a:import]]
+    else
+      return [a:blocks[0] + [a:import], a:blocks[1]]
+    endif
+  endfunction "}}}
+  let split_imports = list#fold_left({ z, a -> Split(prefix, max, z, a) }, [[], []], imports)
+  let sorted = map(split_imports, { i, a -> haskell#imports#sort_block_stmts(a) })
+  let updated_lines = sorted[0] + [''] + sorted[1]
+  return [{
+        \ 'start': block[0],
+        \ 'end': block[1],
+        \ 'modified': lines != updated_lines,
+        \ 'data': updated_lines,
+        \ }]
 endfunction "}}}
 
 function! haskell#imports#sort() abort "{{{
@@ -154,8 +210,13 @@ function! haskell#imports#sort() abort "{{{
   let view = winsaveview()
   let modified = v:false
   try
-    let blocks = map(copy(haskell#imports#import_blocks()), { i, a -> haskell#imports#sort_block(a) })
-    for block in reverse(blocks)
+    if get(g:, 'haskell_imports_split', 1)
+      let sorted_blocks = haskell#imports#split()
+    else
+      let blocks = haskell#imports#import_blocks()
+      let sorted_blocks = map(copy(blocks), { i, a -> haskell#imports#sort_block(a) })
+    endif
+    for block in reverse(sorted_blocks)
       if block.modified
         let modified = v:true
         keepjumps silent call deletebufline('%', block.start, block.end)
@@ -242,14 +303,7 @@ function! haskell#imports#file_package() abort "{{{
   return fn == package ? '' : package
 endfunction "}}}
 
-function! s:segments() abort "{{{
-  let packages = get(g:, 'haskell_packages_local_module_segments', {})
-  let package = haskell#imports#file_package()
-  let global_max = get(g:, 'haskell_local_module_segments', 1)
-  return get(packages, package, global_max)
-endfunction "}}}
-
-function! haskell#imports#module_prefix(file_module, import_module) abort "{{{
+function! haskell#imports#prefixes(file_module, import_module) abort "{{{
   let max = s:segments()
   let file_modules = split(a:file_module, '\.')
   let import_modules = split(a:import_module, '\.')
@@ -257,7 +311,7 @@ function! haskell#imports#module_prefix(file_module, import_module) abort "{{{
 endfunction "}}}
 
 function! haskell#imports#insert(module_line, file_module, import_module, identifier, import_type) abort "{{{
-  let [module_base, import_base] = haskell#imports#module_prefix(a:file_module, a:import_module)
+  let [module_base, import_base] = haskell#imports#prefixes(a:file_module, a:import_module)
   let prefix = a:import_type == 'qualified' ? 'qualified ' : ''
   let infix = a:import_type == 'qualified' ? ' as ' . a:identifier : ''
   let names = a:import_type == 'ctor' ? ' (' . a:identifier . '(' . a:identifier . '))' :
