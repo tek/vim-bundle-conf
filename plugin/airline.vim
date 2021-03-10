@@ -39,7 +39,6 @@ autocmd User AirlineAfterInit call tek_airline#init()
 "       \ 'obsession',
 "       \ 'term',
 "       \ 'virtualenv',
-"       \ 'ale',
 "       \ 'whitespace',
 "       \ 'cursormode',
 "       \ 'hunks',
