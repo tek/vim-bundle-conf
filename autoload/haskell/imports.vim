@@ -24,7 +24,7 @@ endfunction "}}}
 function! haskell#imports#all_imports() abort "{{{
   let blocks = haskell#imports#import_blocks()
   if empty(blocks)
-    return [1, 1]
+    return [0, 0]
   else
     return [blocks[0][0], blocks[-1][1]]
   endif
@@ -45,32 +45,37 @@ function! s:parse_names(match) abort "{{{
   return s:sort(map(split(names, s:names_re), { i, a -> trim(a) }))
 endfunction "}}}
 
-function! haskell#imports#import_statements(block, agg) abort "{{{
-  if len(a:block) == 0
-    return a:agg
-  else
-    let [cur; rest] = a:block
+function! haskell#imports#import_statement(cur, tail) abort "{{{
+  let multi = len(a:tail) > 0
+  let import = matchlist(join([a:cur] + a:tail, ' '), s:import_re)
+  let head_match = get(import, 2, '')
+  let head = len(head_match) > 0 ? head_match : get(import, 0, a:cur)
+  let names_match = get(import, 6, '')
+  return {
+        \ 'head': head,
+        \ 'comment': !empty(get(import, 1, '')),
+        \ 'qualifiers': get(import, 3, ''),
+        \ 'module': get(import, 4, ''),
+        \ 'has_names': len(names_match) > 0,
+        \ 'suffix': get(import, 5, ''),
+        \ 'names': s:parse_names(names_match),
+        \ 'multi': multi,
+        \ }
+endfunction "}}}
+
+function! haskell#imports#import_statements(block) abort "{{{
+  let block = a:block
+  let result = []
+  while len(block) != 0
+    let [cur; rest] = block
     let next_index = match(rest, s:import_start_re)
-    let [tail, remainder] = next_index == 0 ? [[], rest] : (
+    let [tail, block] = next_index == 0 ? [[], rest] : (
           \ next_index == -1 ? [rest, []] : [rest[:next_index - 1], rest[next_index:]]
           \ )
-    let multi = len(tail) > 0
-    let import = matchlist(join([cur] + tail, ' '), s:import_re)
-    let head_match = get(import, 2, '')
-    let head = len(head_match) > 0 ? head_match : get(import, 0, cur)
-    let names_match = get(import, 6, '')
-    let statement = {
-          \ 'head': head,
-          \ 'comment': ! empty(get(import, 1, '')),
-          \ 'qualifiers': get(import, 3, ''),
-          \ 'module': get(import, 4, ''),
-          \ 'has_names': len(names_match) > 0,
-          \ 'suffix': get(import, 5, ''),
-          \ 'names': s:parse_names(names_match),
-          \ 'multi': multi,
-          \ }
-    return haskell#imports#import_statements(remainder, a:agg + [statement])
-  endif
+    let statement = haskell#imports#import_statement(cur, tail)
+    call add(result, statement)
+  endwhile
+  return result
 endfunction "}}}
 
 function! s:format_head(import) abort "{{{
@@ -143,7 +148,7 @@ endfunction "}}}
 function! haskell#imports#block_statements(block) abort "{{{
   let [start, end] = a:block
   let lines = map(copy(range(start, end)), { i, l -> getline(l) })
-  return [lines, haskell#imports#import_statements(filter(lines, { i, a -> !empty(a) }), [])]
+  return [lines, haskell#imports#import_statements(filter(lines, { i, a -> !empty(a) }))]
 endfunction "}}}
 
 function! haskell#imports#sort_block_stmts(imports) abort "{{{
@@ -194,11 +199,12 @@ function! haskell#imports#split() abort "{{{
   endfunction "}}}
   let split_imports = list#fold_left({ z, a -> Split(prefix, max, z, a) }, [[], []], imports)
   let sorted = map(split_imports, { i, a -> haskell#imports#sort_block_stmts(a) })
-  let updated_lines = sorted[0] + [''] + sorted[1]
+  let spacer = empty(sorted[0]) || empty(sorted[1]) ? [] : ['']
+  let updated_lines = sorted[0] + spacer + sorted[1]
   return [{
         \ 'start': block[0],
         \ 'end': block[1],
-        \ 'modified': lines != updated_lines,
+        \ 'modified': lines != (sorted[0] + sorted[1]),
         \ 'data': updated_lines,
         \ }]
 endfunction "}}}
