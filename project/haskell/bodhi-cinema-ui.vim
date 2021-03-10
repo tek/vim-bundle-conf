@@ -15,6 +15,14 @@ let g:myo_command_frontend = {
       \ 'capture': v:true,
       \ }
 
+let g:myo_command_mocked = {
+      \ 'ident': 'mocked',
+      \ 'lines': ['ops/dev/ghcid-frontend-mocked.zsh'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ 'capture': v:true,
+      \ }
+
 let g:myo_command_android = {
       \ 'ident': 'android-debug-build',
       \ 'lines': ['nix-build -A android.frontend'],
@@ -31,6 +39,7 @@ function! s:setup() abort "{{{
   let g:myo_commands['system'] += [
         \ g:myo_command_build_exe,
         \ g:myo_command_frontend,
+        \ g:myo_command_mocked,
         \ g:myo_command_android,
         \ g:myo_command_android_install,
         \ ]
@@ -44,3 +53,4 @@ endif
 
 let g:haskell_nix_project = v:true
 let g:myo_haskell_stack = v:false
+let haskell_local_module_segments = 2
