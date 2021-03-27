@@ -1,13 +1,13 @@
-let s:import_start_re = '\v^%(--\s*)?import '
+let s:import_start_re = '\v^%(--\s\s+)?import '
 let s:import_prefix_re = '\vimport\s+(%("[^"]+"\s+|[a-z]+\s+)*)'
-let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)|\s+hiding)?)\s*%((\(.*\)))?$'
+let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)?%(\s+hiding)?))\s*%((\(.*\)))?$'
 let s:name_re = '%([^,()]+|\([^,()]+\))\s*'
 let s:ctor_re = s:name_re . '%(,\s*)?'
 let s:type_re = '\v%(%(type|pattern)\s+)?' . s:name_re
 let s:names_re = '\v^' . s:type_re . '%(\(%(' . s:ctor_re . ')*\))?\zs,\s*'
 
 function! s:find_block_end(found, current) abort "{{{
-  keepjumps let end = search('\v^(%(--\s*)?import|\s)@!', 'W')
+  keepjumps let end = search('\v^(%(--\s\s+)?import|\s)@!', 'W')
   return end > 0 ? s:find_blocks(a:found + [[a:current, end - 1]], end) : a:found + [[a:current, line('$')]]
 endfunction "}}}
 
