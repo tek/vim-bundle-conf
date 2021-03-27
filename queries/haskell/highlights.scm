@@ -1,24 +1,33 @@
-(varid) @variable
-(varsym) @operator
-(exp (conid) @constructor)
-(consym) @operator
-(modid (conid) @module_name)
-(tycon) @type
-(tyclsid) @class
-(constr_id) @constructor
+(variable) @variable
+(operator) @operator
+(type_operator) @type_operator
+(constructor) @constructor
+(constructor_operator) @operator
+(module) @module
+(type) @type
+(class_name (type) @class)
+; (constr_id) @constructor
 (pragma) @pragma
 (comment) @comment
-(decl_sig name: (varid) @fun_type_name)
-(funlhs name: (varid) @fun_name)
-(context class: (tycon) @class)
-(decl_class (head type_name: (tycon) @class))
-(decl_instance (head type_name: (tycon) @class))
+(signature name: (variable) @fun_type_name)
+(function name: (variable) @fun_name)
 (integer) @literal
 (float) @literal
 (char) @literal
-(tycon_unit) @literal
-(tycon_list) @literal
+"(" @brackets.parenthesis.left
+")" @brackets.parenthesis.right
+; "[" @bracket
+; "]" @bracket
+(type_literal (con_unit "(" @brackets.parenthesis.left.unit.type))
+(type_literal (con_list) @type_bracket)
+(type_list "[" @bracket)
+(type_list "]" @bracket)
+(type_parens "(" @parenthesis)
+(type_parens ")" @parenthesis)
 (tycon_arrow) @operator
+"=>" @operator.carrow
+"->" @operator.arrow
+"<-" @operator.larrow
 (where) @keyword
 "module" @keyword
 "let" @keyword
@@ -39,5 +48,3 @@
 "do" @keyword
 "mdo" @keyword
 "rec" @keyword
-"(" @paren
-")" @paren

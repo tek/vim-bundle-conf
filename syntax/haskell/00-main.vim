@@ -408,7 +408,7 @@ call s:lit('HsNumber', '\v<[0-9]+>|<0[xX][0-9a-fA-F]+>|<0[oO][0-7]+>|<0[bB][10]+
 call s:lit('HsFloat', '\v<\d+\.\d+([eE][-+]=[0-9]+)=>', 'HsNumber')
 
 " TODO multiline strings with /\\n  \foo/ ?
-call s:region_top_skip('HsString', '', '"', '[^\\]\zs\\"',  '', '"', 'keepend extend' . s:exclude_strings, '', '')
+call s:region_top_skip('HsString', '', '"', '\v\\@<!\\"',  '', '"', 'keepend extend' . s:exclude_strings, '', '')
 highlight def link HsString String
 
 call s:lit('HsChar', '\v<''%([^''\\]|\\.|\\u[0-9a-fA-F]{4})''>', 'HsString')
