@@ -172,7 +172,7 @@ endfunction "}}}
 function! s:segments() abort "{{{
   let packages = get(g:, 'haskell_packages_local_module_segments', {})
   let package = haskell#imports#file_package()
-  let global_max = get(g:, 'haskell_local_module_segments', 1)
+  let global_max = get(g:, 'haskell_local_module_segments', 2)
   return get(packages, package, global_max)
 endfunction "}}}
 
