@@ -22,8 +22,8 @@ function! haskell#nix#hash(pkg) abort "{{{
   endif
 endfunction "}}}
 
-function! haskell#nix#hash_line(bump) abort "{{{
-  let parts = matchlist(getline('.'), '\vpack "([^"]+)" "([^"]+)"')
+function! haskell#nix#hash_line_new(bump) abort "{{{
+  let parts = matchlist(getline('.'), '\v(\S+) \= .*hackage "([^"]*)"')
   let pkg = get(parts, 1, '')
   let prefix = get(parts, 2, '')
   if empty(pkg)
@@ -37,8 +37,30 @@ function! haskell#nix#hash_line(bump) abort "{{{
       if empty(hash)
         echo 'no output'
       else
-        execute 'substitute /\vpack "[^"]+" "\zs[^"]+\ze"/' . guess
-        execute 'substitute /\vpack "[^"]+" "[^"]+" "\zs[^"]+\ze"/' . hash
+        execute 'substitute /\vhackage "\zs[^"]*\ze"/' . guess
+        execute 'substitute /\vhackage "[^"]*" "\zs[^"]*\ze"/' . hash
+      endif
+    endif
+  endif
+endfunction "}}}
+
+function! haskell#nix#hash_line(bump) abort "{{{
+  let parts = matchlist(getline('.'), '\v%(pack|version) "([^"]+)" "([^"]+)"')
+  let pkg = get(parts, 1, '')
+  let prefix = get(parts, 2, '')
+  if empty(pkg)
+    return haskell#nix#hash_line_new(a:bump)
+  else
+    let guess = haskell#nix#guess_version(pkg, prefix, a:bump)
+    if empty(guess)
+      echo 'no matching version'
+    else
+      let hash = haskell#nix#hash(pkg . '-' . guess)
+      if empty(hash)
+        echo 'no output'
+      else
+        execute 'substitute /\v%(pack|version) "[^"]+" "\zs[^"]+\ze"/' . guess
+        execute 'substitute /\v%(pack|version) "[^"]+" "[^"]+" "\zs[^"]+\ze"/' . hash
       endif
     endif
   endif
