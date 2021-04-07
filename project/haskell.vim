@@ -93,3 +93,17 @@ let g:myo_haskell_nix_default_hpack = 'ops/hpack.zsh'
 function! Hpack() abort "{{{
   MyoRun hpack
 endfunction "}}}
+
+if filereadable('default.nix')
+  call haskell#nix_project#setup()
+else
+  nnoremap <silent> <f5> :MyoRun stack-test<cr>
+  nnoremap <silent> <s-f5> :MyoRun stack-test-lenient<cr>
+  nnoremap <silent> <f17> :MyoRun stack-test-lenient<cr>
+  nnoremap <silent> <f6> :MyoRun stack-build<cr>
+  nnoremap <silent> <s-f6> :MyoRun stack-build-lenient<cr>
+  nnoremap <silent> <f18> :MyoRun stack-build-lenient<cr>
+  nnoremap <silent> <f7> :MyoRun stack-clean<cr>
+  nnoremap <silent> <s-f7> :MyoRun stack-clean-all<cr>
+  nnoremap <silent> <f19> :MyoRun stack-clean-all<cr>
+endif
