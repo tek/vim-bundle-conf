@@ -48,7 +48,7 @@ def test_effect() -> str:
 def test_imports() -> str:
   return f'''import Polysemy.Test (UnitTest)
 
-import {project_name()}.Test (runTest)'''
+import Polysemy.Test (runTestAuto)'''
 
 def unit_test_imports() -> str:
   name = test_effect()
@@ -118,7 +118,7 @@ snippet mt "test module declaration" b
 
 test_$1 :: UnitTest
 test_$1 =
-  runTest do
+  runTestAuto do
     unit
 endsnippet
 
@@ -290,11 +290,7 @@ snippet q "quasiquotation" i
 endsnippet
 
 snippet qt "text quasiquotation" i
-[qt|$0|]
-endsnippet
-
-snippet qti "text quasiquotation with i" i
-[i|$0|]
+[text|$0|]
 endsnippet
 
 snippet olb "overlappable" i
@@ -329,12 +325,12 @@ snippet dl "derive lenses" b
 endsnippet
 
 snippet "\s*inl" "inline pragma" rb
-{-# INLINE `!v haskell#snippet#current_function()` #-}
+{-# inline `!v haskell#snippet#current_function()` #-}
 endsnippet
 
 snippet tf "type family" b
 type family $1 :: $2 where
-  `!p snip.rv = type_family_match(t[1])` = $3
+  `!p snip.rv = type_family_match(t[1])` = ()
 endsnippet
 
 snippet fto "open type family" b
@@ -347,4 +343,33 @@ endsnippet
 
 snippet n "Nothing"
 Nothing
+endsnippet
+
+snippet td "TODO" b
+-- TODO 
+endsnippet
+
+snippet test_main "Description" b
+module Main where
+
+import Polysemy.Test (unitTest)
+import Test.Tasty (TestTree, defaultMain, testGroup)
+
+tests :: TestTree
+tests =
+  testGroup "main" [
+    unitTest "test" unit
+  ]
+
+main :: IO ()
+main =
+  defaultMain tests
+endsnippet
+
+snippet me "Member constraint"
+Member ($1) r =>
+endsnippet
+
+snippet ms "Members constraint"
+Members [$1] r =>
 endsnippet
