@@ -2,28 +2,21 @@ let g:proteome_files_exclude_directories = ['result', 'build-output']
 
 let g:myo_command_build_obelisk = {
       \ 'ident': 'build-obelisk',
-      \ 'lines': ['nix-build -A ghc.bodhi-obelisk'],
+      \ 'lines': ['nix build .#bodhi-obelisk'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
 
 let g:myo_command_build_backend = {
       \ 'ident': 'build-backend',
-      \ 'lines': ['nix-build -A ghc.backend'],
-      \ 'target': 'make',
-      \ 'kill': v:true,
-      \ }
-
-let g:myo_command_build_exe = {
-      \ 'ident': 'build-web',
-      \ 'lines': ['nix-build -A web'],
+      \ 'lines': ['nix build .#backend'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
 
 let g:myo_command_frontend = {
       \ 'ident': 'frontend',
-      \ 'lines': ['ops/dev/ghcid-frontend.zsh'],
+      \ 'lines': ['nix run --impure .#frontend'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ 'capture': v:true,
@@ -42,14 +35,13 @@ let g:myo_command_android_install = {
       \ }
 
 function! s:setup() abort "{{{
-  let g:myo_commands['system'] += [
-        \ g:myo_command_build_obelisk,
-        \ g:myo_command_build_backend,
-        \ g:myo_command_build_exe,
-        \ g:myo_command_frontend,
-        \ g:myo_command_android,
-        \ g:myo_command_android_install,
-        \ ]
+  call myo_commands#add([
+    \ g:myo_command_build_obelisk,
+    \ g:myo_command_build_backend,
+    \ g:myo_command_frontend,
+    \ ])
+        " \ g:myo_command_android,
+        " \ g:myo_command_android_install,
 endfunction "}}}
 
 autocmd User MyoBuiltinsLoaded call s:setup()
@@ -58,5 +50,4 @@ if g:myo_builtins_loaded
   call s:setup()
 endif
 
-let g:haskell_nix_project = v:true
-let g:myo_haskell_stack = v:false
+let g:haskell_local_module_segments = 2

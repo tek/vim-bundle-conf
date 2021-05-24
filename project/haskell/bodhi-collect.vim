@@ -1,6 +1,6 @@
 let g:myo_command_collect_api_dev = {
       \ 'ident': 'collect-api-dev',
-      \ 'lines': ['ops/dev/ghcid-collect-api-dev.zsh'],
+      \ 'lines': ['nix run .#collect-api-dev'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ 'capture': v:true,
@@ -8,7 +8,7 @@ let g:myo_command_collect_api_dev = {
 
 let g:myo_command_collect = {
       \ 'ident': 'ghcid-collect',
-      \ 'lines': ['ops/dev/ghcid-collect.zsh'],
+      \ 'lines': ['nix run .#collect'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ 'capture': v:true,
@@ -16,17 +16,18 @@ let g:myo_command_collect = {
 
 let g:myo_command_collect_exe = {
       \ 'ident': 'collect-exe',
-      \ 'lines': ['nix-build -A ghc.bodhi-collect'],
+      \ 'lines': ['nix build .#bodhi-collect'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
 
 function! s:setup() abort "{{{
-  let g:myo_commands['system'] += [
-        \ g:myo_command_collect_api_dev,
-        \ g:myo_command_collect,
-        \ g:myo_command_collect_exe,
-        \ ]
+  call myo_commands#add([
+    \ g:myo_command_collect_api_dev,
+    \ g:myo_command_collect,
+    \ g:myo_command_collect_exe,
+    \ ]
+    \ )
 endfunction "}}}
 
 autocmd User MyoBuiltinsLoaded call s:setup()

@@ -1,1 +1,1 @@
-let g:htf_project_name = 'chromatin'
+let g:haskell_local_module_segments = 1
