@@ -7,9 +7,10 @@ function! haskell#nix#versions(pkg) abort "{{{
   return result['normal-version']
 endfunction "}}}
 
-function! haskell#nix#guess_version(pkg, prefix, bump) abort "{{{
+function! haskell#nix#guess_version(pkg, prefix, bump, exact) abort "{{{
   let all = haskell#nix#versions(a:pkg)
-  let matching = a:bump ? all : filter(all, { i, v -> v =~ '^' . a:prefix . '.*' })
+  let rex = a:exact ? a:prefix . '$' : a:prefix . '.*'
+  let matching = a:bump ? all : filter(all, { i, v -> v =~ '^' . rex })
   return get(matching, 0, '')
 endfunction "}}}
 
@@ -22,14 +23,14 @@ function! haskell#nix#hash(pkg) abort "{{{
   endif
 endfunction "}}}
 
-function! haskell#nix#hash_line_new(bump) abort "{{{
+function! haskell#nix#hash_line_new(bump, exact) abort "{{{
   let parts = matchlist(getline('.'), '\v(\S+) \= .*hackage "([^"]*)"')
   let pkg = get(parts, 1, '')
   let prefix = get(parts, 2, '')
   if empty(pkg)
     echo 'invalid line'
   else
-    let guess = haskell#nix#guess_version(pkg, prefix, a:bump)
+    let guess = haskell#nix#guess_version(pkg, prefix, a:bump, a:exact)
     if empty(guess)
       echo 'no matching version'
     else
@@ -44,14 +45,14 @@ function! haskell#nix#hash_line_new(bump) abort "{{{
   endif
 endfunction "}}}
 
-function! haskell#nix#hash_line(bump) abort "{{{
+function! haskell#nix#hash_line(bump, exact) abort "{{{
   let parts = matchlist(getline('.'), '\v%(pack|version) "([^"]+)" "([^"]+)"')
   let pkg = get(parts, 1, '')
   let prefix = get(parts, 2, '')
   if empty(pkg)
-    return haskell#nix#hash_line_new(a:bump)
+    return haskell#nix#hash_line_new(a:bump, a:exact)
   else
-    let guess = haskell#nix#guess_version(pkg, prefix, a:bump)
+    let guess = haskell#nix#guess_version(pkg, prefix, a:bump, a:exact)
     if empty(guess)
       echo 'no matching version'
     else
