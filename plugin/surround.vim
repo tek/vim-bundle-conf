@@ -39,6 +39,7 @@ endfunction "}}}
 
 nnoremap <silent> <leader>w :set opfunc=<sid>wrap_object_parens<cr>g@
 nnoremap <silent> <leader>q :set opfunc=<sid>wrap_object_brackets<cr>g@
+nmap <leader>W <leader>w$
 
 " same for visual
 xmap <leader>w <leader>s)i
