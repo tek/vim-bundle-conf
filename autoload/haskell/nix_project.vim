@@ -17,15 +17,23 @@ let g:myo_command_nix_build = {
       \ }
 
 let g:myo_command_nix_flake_check = {
-      \ 'ident': 'check',
+      \ 'ident': 'flake-check',
       \ 'lines': ['nix -L flake check'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ }
 
 let g:myo_command_nix_flake_update = {
-      \ 'ident': 'update',
+      \ 'ident': 'flake-update',
       \ 'lines': ['nix flake update'],
+      \ 'target': 'make',
+      \ 'kill': v:true,
+      \ 'skipHistory': v:true,
+      \ }
+
+let g:myo_command_nix_flake_update_hix = {
+      \ 'ident': 'flake-update-hix',
+      \ 'lines': ['nix flake lock --update-input hix'],
       \ 'target': 'make',
       \ 'kill': v:true,
       \ 'skipHistory': v:true,
@@ -33,13 +41,14 @@ let g:myo_command_nix_flake_update = {
 
 function! haskell#nix_project#setup_commands() abort "{{{
   let g:postsave += ['Hpack']
-  let g:myo_commands['system'] += [g:myo_command_hpack]
+  call myo_commands#add([g:myo_command_hpack])
   if g:flake
-    let g:myo_commands['system'] += [
+    call myo_commands#add([
       \ g:myo_command_nix_build,
       \ g:myo_command_nix_flake_check,
       \ g:myo_command_nix_flake_update,
-      \ ]
+      \ g:myo_command_nix_flake_update_hix,
+      \ ])
   endif
 endfunction "}}}
 
@@ -56,8 +65,9 @@ function! haskell#nix_project#setup() abort "{{{
   if g:myo_builtins_loaded
     call haskell#nix_project#setup_commands()
   endif
-  nnoremap <silent> <f5> <cmd>MyoRun check<cr>
-  nnoremap <silent> <f6> <cmd>MyoRun update<cr>
+  nnoremap <silent> <f5> <cmd>MyoRun flake-check<cr>
+  nnoremap <silent> <f6> <cmd>MyoRun flake-update<cr>
+  nnoremap <silent> <f7> <cmd>MyoRun flake-update-hix<cr>
 endfunction "}}}
 
 autocmd! BufWritePost *.yaml call Hpack()
