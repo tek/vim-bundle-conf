@@ -94,7 +94,7 @@ function! Hpack() abort "{{{
   MyoRun hpack
 endfunction "}}}
 
-if filereadable('default.nix')
+if filereadable('default.nix') || filereadable('flake.nix')
   call haskell#nix_project#setup()
 else
   nnoremap <silent> <f5> :MyoRun stack-test<cr>
