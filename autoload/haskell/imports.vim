@@ -1,24 +1,46 @@
-let s:import_start_re = '\v^%(--\s\s+)?import '
+let s:import_start_re = '\v^%(--\s+)?import '
 let s:import_prefix_re = '\vimport\s+(%("[^"]+"\s+|[a-z]+\s+)*)'
 let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)?%(\s+hiding)?))\s*%((\(.*\)))?$'
 let s:name_re = '%([^,()]+|\([^,()]+\))\s*'
 let s:ctor_re = s:name_re . '%(,\s*)?'
-let s:type_re = '\v%(%(type|pattern)\s+)?' . s:name_re
-let s:names_re = '\v^' . s:type_re . '%(\(%(' . s:ctor_re . ')*\))?\zs,\s*'
+let s:ns_re = '\v%(%(type|pattern)\s+)'
+let s:type_re = s:ns_re . '?' . s:name_re
+let s:split_names_re = '\v^' . s:type_re . '%(\(%(' . s:ctor_re . ')*\))?\zs,\s*'
+let s:fields_re = '\v^(' . s:type_re . ')%(\((%(' . s:ctor_re . ')*)\))?'
 
 function! s:find_block_end(found, current) abort "{{{
-  keepjumps let end = search('\v^(%(--\s\s+)?import|\s)@!', 'W')
+  let end = a:current
+  while end != line('$') && match(getline(end), '\v^%(%(--\s+)?import\s|\s).*') != -1
+    let end += 1
+  endwhile
   return end > 0 ? s:find_blocks(a:found + [[a:current, end - 1]], end) : a:found + [[a:current, line('$')]]
 endfunction "}}}
 
+function! s:find_block_start(start) abort "{{{
+  let cur = a:start
+  while cur != line('$') && match(getline(cur), '^\s*$') != -1
+    let cur += 1
+    if match(getline(cur), s:import_start_re) != -1
+      return cur
+    endif
+  endwhile
+  return -1
+endfunction "}}}
+
 function! s:find_blocks(found, previous) abort "{{{
-  keepjumps let next = search(s:import_start_re, 'W')
+  keepjumps let next = s:find_block_start(a:previous)
   return (next == 0 || next <= a:previous) ? a:found : s:find_block_end(a:found, next)
 endfunction "}}}
 
 function! haskell#imports#import_blocks() abort "{{{
-  keepjumps normal gg
-  return s:find_blocks([], 1)
+  let first = 1
+  while match(getline(first + 1), s:import_start_re) == -1
+    if first >= line('$')
+      return []
+    endif
+    let first += 1
+  endwhile
+  return s:find_blocks([], first)
 endfunction "}}}
 
 function! haskell#imports#all_imports() abort "{{{
@@ -30,19 +52,41 @@ function! haskell#imports#all_imports() abort "{{{
   endif
 endfunction "}}}
 
-function! s:compare_names(l, r) abort "{{{
-  let left_op = a:l[:0] == '('
-  let right_op = a:r[:0] == '('
-  return left_op ? (right_op ? a:l[1:] ># a:r[1:] : 1) : (right_op ? -1 : a:l ># a:r)
+function! s:starts_with(a, b) abort "{{{
+  return a:a[:len(a:b)] == (a:b . '.')
 endfunction "}}}
 
-function! s:sort(names) abort "{{{
-  return uniq(sort(copy(a:names), { l, r -> s:compare_names(l, r) }))
+function! s:compare(a, b) abort "{{{
+  return a:a ==# a:b ? 0 : a:a ># a:b ? 1 : -1
+endfunction "}}}
+
+function! s:compare_names(l, r) abort "{{{
+  let left_index = match(a:l, s:ns_re . '\zs')
+  let right_index = match(a:r, s:ns_re . '\zs')
+  let l = left_index == -1 ? a:l : a:l[left_index:]
+  let r = right_index == -1 ? a:r : a:r[right_index:]
+  let left_op = l[:0] == '('
+  let right_op = r[:0] == '('
+  return left_op ? (right_op ? s:compare(l[1:], r[1:]) : 1) : (right_op ? -1 : s:compare(l, r))
+endfunction "}}}
+
+function! s:sort_names(names) abort "{{{
+  return uniq(sort(map(copy(a:names), { i, a -> trim(a) }), { l, r -> s:compare_names(l, r) }))
+endfunction "}}}
+
+function! s:format_name(name) abort "{{{
+  let m = matchlist(a:name, s:fields_re)
+  if empty(m[2])
+    return a:name
+  else
+    let fields = split(m[2], '\v' . s:name_re . '\zs,\s*')
+    return trim(m[1]) . ' (' . join(s:sort_names(fields), ', ') . ')'
+  endif
 endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
   let names = substitute(a:match, '\v^\((.*)\)$', '\1', '')
-  return s:sort(map(split(names, s:names_re), { i, a -> trim(a) }))
+  return map(s:sort_names(split(names, s:split_names_re)), { i, a -> s:format_name(a) })
 endfunction "}}}
 
 function! haskell#imports#import_statement(cur, tail) abort "{{{
@@ -96,7 +140,7 @@ function! haskell#imports#format_multi_import(head, names) abort "{{{
 endfunction "}}}
 
 function! haskell#imports#format_import(import) abort "{{{
-  let names = map(s:sort(a:import.names), { i, a -> a . ',' })
+  let names = map(s:sort_names(a:import.names), { i, a -> a . ',' })
   let head = s:format_head(a:import)
   return a:import.multi ?
         \ haskell#imports#format_multi_import(head, names) :
@@ -320,7 +364,7 @@ function! haskell#imports#insert(module_line, file_module, import_module, identi
   let [module_base, import_base] = haskell#imports#prefixes(a:file_module, a:import_module)
   let prefix = a:import_type == 'qualified' ? 'qualified ' : ''
   let infix = a:import_type == 'qualified' ? ' as ' . a:identifier : ''
-  let names = a:import_type == 'ctor' ? ' (' . a:identifier . '(' . a:identifier . '))' :
+  let names = a:import_type == 'ctor' ? ' (' . a:identifier . ' (' . a:identifier . '))' :
         \ a:import_type == 'type' || a:import_type == 'function' ? ' (' . a:identifier . ')' : ''
   let import = 'import ' . prefix . a:import_module . infix . names
   return haskell#imports#insert_into(import, module_base == import_base, module_base, a:module_line, import_base)
@@ -331,16 +375,13 @@ function! s:import_module(result) abort "{{{
 endfunction "}}}
 
 function! haskell#imports#trim_import_results(file_module, results) abort "{{{
-  function! StartsWith(a, b) abort "{{{
-    return a:a[:len(a:b)] == (a:b . '.')
-  endfunction "}}}
   function! Valid(results, a) abort "{{{
-    return empty(filter(copy(a:results), { i, b -> StartsWith(a:a, b) })) ? [a:a] : []
+    return empty(filter(copy(a:results), { i, b -> s:starts_with(a:a, b) })) ? [a:a] : []
   endfunction "}}}
   function! FilterExports(results) abort "{{{
     return list#fold_left({ z, a -> z + Valid(a:results, a) }, [], a:results)
   endfunction "}}}
-  let non_cyclical = filter(copy(a:results), { i, a -> !StartsWith(a:file_module, a) })
+  let non_cyclical = filter(copy(a:results), { i, a -> !s:starts_with(a:file_module, a) })
   let safe = FilterExports(non_cyclical)
   return empty(safe) ? FilterExports(a:results) : safe
 endfunction "}}}
@@ -392,7 +433,7 @@ endfunction "}}}
 function! haskell#imports#search_existing(identifier, import_type) abort "{{{
   let query = haskell#imports#import_grep_query(a:import_type, a:identifier)
   let opt = '--multiline -r $1'
-  return map(ProGrepList('.', opt, query), { i, a -> a.text })
+  return map(ProGrepList('.', opt, query), { i, a -> a.content })
 endfunction "}}}
 
 function! haskell#imports#add_import_with(find_info) abort "{{{
