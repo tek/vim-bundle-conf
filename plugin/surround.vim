@@ -1,6 +1,7 @@
 " shortcut for surrounding inner word/WORD
 nmap <leader>s csw
 nmap S ys
+onoremap S $
 nmap <m-s> csW
 
 nmap <silent> <leader>C viwolB<Plug>VSurround)X
