@@ -14,7 +14,7 @@ let g:sbt_current_project = 0
 
 let s:code = $HOME . '/code/'
 
-let g:scala_project_dirs = [s:code . 'tek/scala', s:code . 'ext/scala', s:code . 'spr/scala']
+let g:scala_project_dirs = [s:code . 'tek/scala', s:code . 'ext/scala']
 let g:main_scala_project_dir = g:scala_project_dirs[0]
 
 command! -bar NextProject call tek#bundle#scala#cycle_projects(1)
