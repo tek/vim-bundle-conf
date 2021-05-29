@@ -1,12 +1,12 @@
 let s:import_start_re = '\v^%(--\s+)?import '
 let s:import_prefix_re = '\vimport\s+(%("[^"]+"\s+|[a-z]+\s+)*)'
 let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)?%(\s+hiding)?))\s*%((\(.*\)))?$'
-let s:name_re = '%([^,()]+|\([^,()]+\))\s*'
-let s:ctor_re = s:name_re . '%(,\s*)?'
+let s:name_re = '%([^,() ]+|\([^,() ]+\))'
+let s:ctor_re = s:name_re . '\s*%(,\s*)?'
 let s:ns_re = '\v%(%(type|pattern)\s+)'
 let s:type_re = s:ns_re . '?' . s:name_re
-let s:split_names_re = '\v^' . s:type_re . '%(\(%(' . s:ctor_re . ')*\))?\zs,\s*'
-let s:fields_re = '\v^(' . s:type_re . ')%(\((%(' . s:ctor_re . ')*)\))?'
+let s:split_names_re = '\v^' . s:type_re . '\s*%(\(%(' . s:ctor_re . ')*\))?\zs,\s*'
+let s:fields_re = '\v^(' . s:type_re . ')\s*%(\((%(' . s:ctor_re . ')*)\))?'
 
 function! s:find_block_end(found, current) abort "{{{
   let end = a:current
@@ -70,23 +70,39 @@ function! s:compare_names(l, r) abort "{{{
   return left_op ? (right_op ? s:compare(l[1:], r[1:]) : 1) : (right_op ? -1 : s:compare(l, r))
 endfunction "}}}
 
-function! s:sort_names(names) abort "{{{
-  return uniq(sort(map(copy(a:names), { i, a -> trim(a) }), { l, r -> s:compare_names(l, r) }))
+function! s:format_name(name) abort "{{{
+  let fields = empty(a:name.fields) ?
+    \ '' :
+    \ ' (' . join(a:name.fields, ', ') . ')'
+  return a:name.name . fields
 endfunction "}}}
 
-function! s:format_name(name) abort "{{{
+function! s:group_names(names) abort "{{{
+  let names = {}
+  for name in a:names
+    let names[name.name] = get(names, name.name, []) + name.fields
+  endfor
+  return map(items(names), { i, name -> {
+    \ 'name': name[0],
+    \ 'fields': uniq(sort(name[1], { l, r -> s:compare_names(l, r) }))
+    \ } })
+endfunction "}}}
+
+function! s:format_names(names) abort "{{{
+  let grouped = s:group_names(copy(a:names))
+  return map(uniq(sort(grouped, { l, r -> s:compare_names(l.name, r.name) })), { i, n -> s:format_name(n) })
+endfunction "}}}
+
+function! s:parse_name(name) abort "{{{
   let m = matchlist(a:name, s:fields_re)
-  if empty(m[2])
-    return a:name
-  else
-    let fields = split(m[2], '\v' . s:name_re . '\zs,\s*')
-    return trim(m[1]) . ' (' . join(s:sort_names(fields), ', ') . ')'
-  endif
+  return empty(m[2]) ?
+    \ { 'name': a:name, 'fields': [] } :
+    \ { 'name': m[1], 'fields': split(m[2], '\v\s*' . s:name_re . '\zs\s*,\s*') }
 endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
   let names = substitute(a:match, '\v^\((.*)\)$', '\1', '')
-  return map(s:sort_names(split(names, s:split_names_re)), { i, a -> s:format_name(a) })
+  return map(split(names, s:split_names_re), { i, a -> s:parse_name(a) })
 endfunction "}}}
 
 function! haskell#imports#import_statement(cur, tail) abort "{{{
@@ -140,7 +156,7 @@ function! haskell#imports#format_multi_import(head, names) abort "{{{
 endfunction "}}}
 
 function! haskell#imports#format_import(import) abort "{{{
-  let names = map(s:sort_names(a:import.names), { i, a -> a . ',' })
+  let names = map(s:format_names(a:import.names), { i, a -> a . ',' })
   let head = s:format_head(a:import)
   return a:import.multi ?
         \ haskell#imports#format_multi_import(head, names) :
