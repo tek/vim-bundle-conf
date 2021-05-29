@@ -1,7 +1,7 @@
 let s:import_start_re = '\v^%(--\s+)?import '
 let s:import_prefix_re = '\vimport\s+(%("[^"]+"\s+|[a-z]+\s+)*)'
 let s:import_re = '\v^(--\s*)?(' . s:import_prefix_re . '(\S+)(%(\s+as \S+)?%(\s+hiding)?))\s*%((\(.*\)))?$'
-let s:name_re = '%([^,() ]+|\([^,() ]+\))'
+let s:name_re = '%([^,()]+|\([^,()]+\))'
 let s:ctor_re = s:name_re . '\s*%(,\s*)?'
 let s:ns_re = '\v%(%(type|pattern)\s+)'
 let s:type_re = s:ns_re . '?' . s:name_re
@@ -102,7 +102,7 @@ endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
   let names = substitute(a:match, '\v^\((.*)\)$', '\1', '')
-  return map(split(names, s:split_names_re), { i, a -> s:parse_name(a) })
+  return map(split(names, s:split_names_re), { i, a -> s:parse_name(trim(a)) })
 endfunction "}}}
 
 function! haskell#imports#import_statement(cur, tail) abort "{{{
