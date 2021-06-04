@@ -97,7 +97,7 @@ function! s:parse_name(name) abort "{{{
   let m = matchlist(a:name, s:fields_re)
   return empty(m[2]) ?
     \ { 'name': a:name, 'fields': [] } :
-    \ { 'name': m[1], 'fields': split(m[2], '\v\s*' . s:name_re . '\zs\s*,\s*') }
+    \ { 'name': trim(m[1]), 'fields': split(m[2], '\v\s*' . s:name_re . '\zs\s*,\s*') }
 endfunction "}}}
 
 function! s:parse_names(match) abort "{{{
